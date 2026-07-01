@@ -1,0 +1,142 @@
+---
+title: "Export Address Tags: Bulk Nametag Data Download"
+sidebarTitle: "Export Address Tags"
+description: "Retrieve bulk address nametag exports via the Etherscan address tags export API, available in V1 and V2 formats for enterprise and analytics workflows."
+---
+
+The **Export Address Tags** endpoint lets you download bulk nametag data for all addresses under a given label category. This is ideal for compliance pipelines, security monitoring, and analytics workflows that need a complete snapshot of labelled addresses — such as all OFAC-sanctioned addresses or every known phishing wallet. Two versions of this endpoint are available: V2 (recommended, multi-chain) and V1 (legacy, Ethereum Mainnet only).
+
+<Warning>
+  This is a **PRO** endpoint, available exclusively to the [Enterprise tier](https://etherscan.io/apis). It is throttled to **2 calls/second** and **100 calls/day**.
+</Warning>
+
+---
+
+## Export Address Tags — V2 (Recommended)
+
+The V2 endpoint adds `chainid` support so you can export nametag data across any Etherscan-supported chain. The response returns a time-limited pre-signed URL pointing to the requested CSV or ZIP file.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key. Defaults to `YourApiKeyToken`.
+</ParamField>
+
+<ParamField query="chainid" type="string" required>
+  The chain ID to query. Refer to mainnet networks on the [supported chains](/supported-chains) page. Note: MegaETH (4326) is temporarily unavailable.
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `nametag` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `exportaddresstags` for this endpoint.
+</ParamField>
+
+<ParamField query="label" type="string" required>
+  The label category to export, e.g. `ofac-sanctioned` or `phish-hack`. Use the [Label Master List](/api-reference/nametags/label-master-list) to discover all available categories, or pass `all` to export every label.
+</ParamField>
+
+<ParamField query="format" type="string">
+  The response format — either `csv` or `zip`. Defaults to `csv`.
+</ParamField>
+
+### Example Request (V2)
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=nametag\
+&action=exportaddresstags\
+&label=ofac-sanctioned\
+&format=csv\
+&apikey=YourApiKeyToken"
+```
+
+### Response
+
+The API returns a JSON object whose `result` field is a **pre-signed download URL** that expires after **5 minutes**. Downloading that URL streams a semicolon-delimited CSV file containing all address tags for the requested label.
+
+<ResponseField name="status" type="string">
+  Returns `"1"` on success or `"0"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A human-readable status message, e.g. `"OK"`.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  A pre-signed S3 URL to download the CSV (or ZIP) file. The link expires after 5 minutes.
+</ResponseField>
+
+### Example Response (V2)
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": "https://metadata-export.etherscan.io/1/ofac-sanctioned_latest_nametags.csv?X-Amz-Expires=300&response-content-disposition=attachment%3B%20filename%3Dexport-ofac-sanctioned_latest_nametags.csv&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=0056c267039aefa0000000005/20260305/us-east-005/s3/aws4_request&X-Amz-Date=20260305T082747Z&X-Amz-SignedHeaders=host&X-Amz-Signature=ab0edf183956eb13c3cf58d38d6388e8cf16e2e9ec66f51b8ac00766b01b88ae"
+}
+```
+
+After downloading the URL, the CSV file uses `;` as the field delimiter:
+
+```csv
+"address";"nametag";"internal_nametag";"url";"shortdescription";"notes_1";"notes_2";"labels";"labels_slug";"reputation";"other_attributes";"lastupdatedtimestamp"
+"0x0000000000000000000000000000000000001111";"Fake_Phishing589039";"";"";"";...;"Phish / Hack";"phish-hack";"2";"";"1728292621"
+"0x00000000001adc2c0b202d0f72ad9d50f0675296";"Fake_Phishing1334182";"";"";"";...;"Phish / Hack";"phish-hack";"2";"";"1757057505"
+```
+
+---
+
+## Export Address Tags — V1 (Legacy)
+
+The V1 endpoint provides the same bulk export functionality but is limited to **Ethereum Mainnet** and does not support the `chainid` parameter. The response is a direct CSV stream rather than a pre-signed URL. Use V2 for new integrations.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key. Defaults to `YourApiKeyToken`.
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `nametag` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `exportaddresstags` for this endpoint.
+</ParamField>
+
+<ParamField query="label" type="string" required>
+  The label category to export, e.g. `ofac-sanctioned` or `phish-hack`. Use the [Label Master List](/api-reference/nametags/label-master-list) to discover available categories, or pass `all` to export every label.
+</ParamField>
+
+<ParamField query="format" type="string">
+  The response format. Currently only `csv` is supported in V1.
+</ParamField>
+
+### Example Request (V1)
+
+```bash
+curl "https://api.etherscan.io/api\
+?module=nametag\
+&action=exportaddresstags\
+&label=ofac-sanctioned\
+&format=csv\
+&apikey=YourApiKeyToken"
+```
+
+### Example Response (V1)
+
+The V1 endpoint streams the CSV directly in the response body, using `;` as the delimiter:
+
+```csv
+"address";"nametag";"internal_nametag";"url";"shortdescription";"notes_1";"notes_2";"labels";"labels_slug";"reputation";"other_attributes";"lastupdatedtimestamp"
+"0x0000000000000000000000000000000000001111";"Fake_Phishing589039";"";"";"";...;"Phish / Hack";"phish-hack";"2";"";"1728292621"
+"0x00000000001adc2c0b202d0f72ad9d50f0675296";"Fake_Phishing1334182";"";"";"";...;"Phish / Hack";"phish-hack";"2";"";"1757057505"
+"0x00000000006a2b6820feb8d5ac00cb6800795d8f";"Fake_Phishing326507";"";"";"";...;"Phish / Hack";"phish-hack";"2";"";"1711418316"
+"0x0000000000d67e5d5f991a40f04ed40fa3b150df";"Fake_Phishing326508";"";"";"";...;"Phish / Hack";"phish-hack";"2";"";"1711418362"
+"0x0000000000e7f7e18e6b7890ea1227ff088e6653";"Fake_Phishing686515";"";"";"";...;"Phish / Hack";"phish-hack";"2";"";"1734599538"
+"0x00000000020e203eb8fc5d0724e7c93e6b002c71";"Fake_Phishing119146";"";"";"";...;"Phish / Hack";"phish-hack";"2";"";"1738570688"
+```

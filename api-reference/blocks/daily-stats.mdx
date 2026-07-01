@@ -1,0 +1,513 @@
+---
+title: "Daily Block Statistics: Size, Count, Rewards, and Time"
+sidebarTitle: "Daily Block Stats"
+description: "Retrieve daily block analytics including average block size, daily block count and rewards, average block time, and uncle block statistics. PRO endpoints."
+---
+
+This page consolidates the daily block analytics endpoints, giving you access to historical blockchain health metrics over any date range. You can query the average size of blocks mined each day, how many blocks were produced, total rewards distributed, average block times, and uncle block statistics. All endpoints use `yyyy-MM-dd` date strings and support ascending or descending sort order.
+
+<Warning>
+  All endpoints on this page are **PRO endpoints** available to the Standard plan and above. Calling these endpoints with a free API key will return an error.
+</Warning>
+
+---
+
+## Get Daily Average Block Size
+
+Retrieves the daily average block size in bytes over a specified date range. Tracking block size over time helps you understand network load trends and how much data the chain is processing per block.
+
+### Query Parameters
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, such as `1` for Ethereum or `8453` for Base. See [supported chains](/supported-chains) for the full list.
+</ParamField>
+
+<ParamField query="module" type="string" default="stats" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="dailyavgblocksize" required>
+  Set to `dailyavgblocksize` for this endpoint.
+</ParamField>
+
+<ParamField query="startdate" type="string" default="2019-02-01" required>
+  Starting date in `yyyy-MM-dd` format.
+</ParamField>
+
+<ParamField query="enddate" type="string" default="2019-02-28" required>
+  Ending date in `yyyy-MM-dd` format.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order, either `asc` for oldest-first or `desc` for newest-first.
+</ParamField>
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  Returns `1` when the request succeeds, or `0` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Returns `OK` on success, or an error description on failure.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of daily average block size records.
+
+  <Expandable title="result item properties">
+    <ResponseField name="UTCDate" type="string">
+      The date in `yyyy-MM-dd` format (UTC).
+    </ResponseField>
+
+    <ResponseField name="unixTimeStamp" type="string">
+      Unix timestamp for the start of that UTC day.
+    </ResponseField>
+
+    <ResponseField name="blockSize_bytes" type="integer">
+      The average block size in bytes for that day.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api
+  ?chainid=1
+  &module=stats
+  &action=dailyavgblocksize
+  &startdate=2019-02-01
+  &enddate=2019-02-28
+  &sort=asc
+  &apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "UTCDate": "2019-02-01",
+      "unixTimeStamp": "1548979200",
+      "blockSize_bytes": 20373
+    },
+    {
+      "UTCDate": "2019-02-02",
+      "unixTimeStamp": "1549065600",
+      "blockSize_bytes": 17499
+    }
+  ]
+}
+```
+
+---
+
+## Get Daily Block Count and Rewards
+
+Retrieves the daily count of blocks mined along with the corresponding total block rewards for each day. This endpoint is useful for studying miner activity, emission schedules, and long-term reward trends.
+
+### Query Parameters
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, such as `1` for Ethereum or `8453` for Base. See [supported chains](/supported-chains) for the full list.
+</ParamField>
+
+<ParamField query="module" type="string" default="stats" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="dailyblkcount" required>
+  Set to `dailyblkcount` for this endpoint.
+</ParamField>
+
+<ParamField query="startdate" type="string" default="2019-02-01" required>
+  Starting date in `yyyy-MM-dd` format.
+</ParamField>
+
+<ParamField query="enddate" type="string" default="2019-02-28" required>
+  Ending date in `yyyy-MM-dd` format.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order, either `asc` for oldest-first or `desc` for newest-first.
+</ParamField>
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  Returns `1` when the request succeeds, or `0` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Returns `OK` on success, or an error description on failure.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of daily block count and reward records.
+
+  <Expandable title="result item properties">
+    <ResponseField name="UTCDate" type="string">
+      The date in `yyyy-MM-dd` format (UTC).
+    </ResponseField>
+
+    <ResponseField name="unixTimeStamp" type="string">
+      Unix timestamp for the start of that UTC day.
+    </ResponseField>
+
+    <ResponseField name="blockCount" type="integer">
+      Total number of blocks mined on that day.
+    </ResponseField>
+
+    <ResponseField name="blockRewards_Eth" type="string">
+      Total block rewards distributed to miners on that day, denominated in ETH.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api
+  ?chainid=1
+  &module=stats
+  &action=dailyblkcount
+  &startdate=2019-02-01
+  &enddate=2019-02-28
+  &sort=asc
+  &apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "UTCDate": "2019-02-01",
+      "unixTimeStamp": "1548979200",
+      "blockCount": 4848,
+      "blockRewards_Eth": "14929.464690870590355682"
+    },
+    {
+      "UTCDate": "2019-02-02",
+      "unixTimeStamp": "1549065600",
+      "blockCount": 4935,
+      "blockRewards_Eth": "15120.386084685869906669"
+    }
+  ]
+}
+```
+
+---
+
+## Get Daily Block Rewards
+
+Retrieves the total ETH distributed as block rewards to miners each day. Unlike the block count endpoint above, this endpoint focuses purely on the reward total and is useful for charting ETH issuance over time.
+
+### Query Parameters
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, such as `1` for Ethereum or `8453` for Base. See [supported chains](/supported-chains) for the full list.
+</ParamField>
+
+<ParamField query="module" type="string" default="stats" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="dailyblockrewards" required>
+  Set to `dailyblockrewards` for this endpoint.
+</ParamField>
+
+<ParamField query="startdate" type="string" default="2019-02-01" required>
+  Starting date in `yyyy-MM-dd` format.
+</ParamField>
+
+<ParamField query="enddate" type="string" default="2019-02-28" required>
+  Ending date in `yyyy-MM-dd` format.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order, either `asc` for oldest-first or `desc` for newest-first.
+</ParamField>
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  Returns `1` when the request succeeds, or `0` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Returns `OK` on success, or an error description on failure.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of daily block reward records.
+
+  <Expandable title="result item properties">
+    <ResponseField name="UTCDate" type="string">
+      The date in `yyyy-MM-dd` format (UTC).
+    </ResponseField>
+
+    <ResponseField name="unixTimeStamp" type="string">
+      Unix timestamp for the start of that UTC day.
+    </ResponseField>
+
+    <ResponseField name="blockRewards_Eth" type="string">
+      Total ETH distributed as block rewards to miners on that day.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api
+  ?chainid=1
+  &module=stats
+  &action=dailyblockrewards
+  &startdate=2019-02-01
+  &enddate=2019-02-28
+  &sort=asc
+  &apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "UTCDate": "2019-02-01",
+      "unixTimeStamp": "1548979200",
+      "blockRewards_Eth": "15300.65625"
+    },
+    {
+      "UTCDate": "2019-02-02",
+      "unixTimeStamp": "1549065600",
+      "blockRewards_Eth": "15611.625"
+    }
+  ]
+}
+```
+
+---
+
+## Get Daily Average Block Time
+
+Retrieves the daily average time in seconds between successfully mined blocks. Block time is a key indicator of network health — consistently high block times may indicate a drop in hash rate, while very low times reflect high mining throughput.
+
+### Query Parameters
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, such as `1` for Ethereum or `8453` for Base. See [supported chains](/supported-chains) for the full list.
+</ParamField>
+
+<ParamField query="module" type="string" default="stats" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="dailyavgblocktime" required>
+  Set to `dailyavgblocktime` for this endpoint.
+</ParamField>
+
+<ParamField query="startdate" type="string" default="2019-02-01" required>
+  Starting date in `yyyy-MM-dd` format.
+</ParamField>
+
+<ParamField query="enddate" type="string" default="2019-02-28" required>
+  Ending date in `yyyy-MM-dd` format.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order, either `asc` for oldest-first or `desc` for newest-first.
+</ParamField>
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  Returns `1` when the request succeeds, or `0` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Returns `OK` on success, or an error description on failure.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of daily average block time records.
+
+  <Expandable title="result item properties">
+    <ResponseField name="UTCDate" type="string">
+      The date in `yyyy-MM-dd` format (UTC).
+    </ResponseField>
+
+    <ResponseField name="unixTimeStamp" type="string">
+      Unix timestamp for the start of that UTC day.
+    </ResponseField>
+
+    <ResponseField name="blockTime_sec" type="string">
+      The average time between blocks in seconds for that day.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api
+  ?chainid=1
+  &module=stats
+  &action=dailyavgblocktime
+  &startdate=2019-02-01
+  &enddate=2019-02-28
+  &sort=asc
+  &apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "UTCDate": "2019-02-01",
+      "unixTimeStamp": "1548979200",
+      "blockTime_sec": "17.67"
+    },
+    {
+      "UTCDate": "2019-02-02",
+      "unixTimeStamp": "1549065600",
+      "blockTime_sec": "17.41"
+    }
+  ]
+}
+```
+
+---
+
+## Get Daily Uncle Block Count and Rewards
+
+Returns the daily count of uncle blocks mined and their associated rewards. Uncle blocks (also called ommer blocks) are valid blocks that were not included in the main chain due to latency. Miners who produce uncles still receive a partial reward. Tracking uncle rates can provide insight into network propagation latency and mining pool distribution.
+
+### Query Parameters
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, such as `1` for Ethereum or `8453` for Base. See [supported chains](/supported-chains) for the full list.
+</ParamField>
+
+<ParamField query="module" type="string" default="stats" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="dailyuncleblkcount" required>
+  Set to `dailyuncleblkcount` for this endpoint.
+</ParamField>
+
+<ParamField query="startdate" type="string" default="2019-02-01" required>
+  Starting date in `yyyy-MM-dd` format.
+</ParamField>
+
+<ParamField query="enddate" type="string" default="2019-02-28" required>
+  Ending date in `yyyy-MM-dd` format.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order, either `asc` for oldest-first or `desc` for newest-first.
+</ParamField>
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  Returns `1` when the request succeeds, or `0` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Returns `OK` on success, or an error description on failure.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of daily uncle block count and reward records.
+
+  <Expandable title="result item properties">
+    <ResponseField name="UTCDate" type="string">
+      The date in `yyyy-MM-dd` format (UTC).
+    </ResponseField>
+
+    <ResponseField name="unixTimeStamp" type="string">
+      Unix timestamp for the start of that UTC day.
+    </ResponseField>
+
+    <ResponseField name="uncleBlockCount" type="integer">
+      Total number of uncle blocks mined on that day.
+    </ResponseField>
+
+    <ResponseField name="uncleBlockRewards_Eth" type="string">
+      Total ETH distributed as uncle block rewards on that day.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api
+  ?chainid=1
+  &module=stats
+  &action=dailyuncleblkcount
+  &startdate=2019-02-01
+  &enddate=2019-02-28
+  &sort=asc
+  &apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "UTCDate": "2019-02-01",
+      "unixTimeStamp": "1548979200",
+      "uncleBlockCount": 287,
+      "uncleBlockRewards_Eth": "729.75"
+    },
+    {
+      "UTCDate": "2019-02-02",
+      "unixTimeStamp": "1549065600",
+      "uncleBlockCount": 304,
+      "uncleBlockRewards_Eth": "778.125"
+    }
+  ]
+}
+```

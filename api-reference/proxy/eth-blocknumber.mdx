@@ -1,0 +1,57 @@
+---
+title: "eth_blockNumber: Get the Latest Block Number"
+sidebarTitle: "eth_blockNumber"
+description: "GET /v2/api?module=proxy&action=eth_blockNumber — Returns the number of the most recently mined block as a hex string via Etherscan's JSON-RPC proxy."
+---
+
+Etherscan's Proxy module provides JSON-RPC-compatible methods for reading blockchain state without needing a direct node connection. By routing standard Ethereum JSON-RPC calls through Etherscan's infrastructure, you can query live chain data using familiar methods — authenticated with your API key and available across all supported networks.
+
+The `eth_blockNumber` method returns the number of the most recently mined (or finalized) block on the chain, expressed as a hexadecimal string. You can decode this value to get the current chain height, which is useful for syncing logic, block range calculations, and detecting chain progress.
+
+## Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `proxy` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `eth_blockNumber` for this endpoint.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="jsonrpc" type="string">
+  The JSON-RPC protocol version, always `"2.0"`.
+</ResponseField>
+
+<ResponseField name="id" type="number">
+  The request identifier echoed back from the JSON-RPC call.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  The latest block number as a hexadecimal string. Convert to decimal to get the current chain height. For example, `"0x1661760"` equals block `23,599,968`.
+</ResponseField>
+
+## Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_blockNumber&apikey=YourApiKeyToken"
+```
+
+## Example Response
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 83,
+  "result": "0x1661760"
+}
+```

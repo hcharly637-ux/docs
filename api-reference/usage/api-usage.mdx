@@ -1,0 +1,84 @@
+---
+title: "Get API Usage: Monitor Your API Credit Consumption"
+sidebarTitle: "API Usage"
+description: "GET /v2/api?module=stats&action=getapilimit — Returns your current API credit usage and daily limit, allowing you to monitor consumption and avoid hitting rate limits."
+---
+
+The **Get API Usage** endpoint returns your current API credit consumption alongside your plan's daily credit limit. You can call this endpoint at any time to check how many credits you have used in the current interval, how many remain, and when the interval resets. This helps you manage high-volume integrations and avoid unexpected throttling.
+
+<Tip>
+  You can also monitor your API credit usage directly from the [Etherscan API Dashboard](https://etherscan.io/apidashboard) without making an API call. Etherscan will also send you email reminders as your usage approaches your daily limit, so you can plan ahead before hitting your cap.
+</Tip>
+
+## Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key. Defaults to `YourApiKeyToken`.
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `getapilimit` for this endpoint.
+</ParamField>
+
+## Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?module=stats\
+&action=getapilimit\
+&apikey=YourApiKeyToken"
+```
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  Returns `"1"` on success or `"0"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A human-readable status message, e.g. `"OK"`.
+</ResponseField>
+
+<ResponseField name="result" type="object">
+  An object containing your current API credit usage details.
+
+  <ResponseField name="creditsUsed" type="integer">
+    The number of API credits consumed so far in the current interval, e.g. `22`.
+  </ResponseField>
+
+  <ResponseField name="creditsAvailable" type="integer">
+    The number of API credits still available for the current interval, e.g. `1499978`.
+  </ResponseField>
+
+  <ResponseField name="creditLimit" type="integer">
+    Your plan's total credit allowance per interval, e.g. `1500000`.
+  </ResponseField>
+
+  <ResponseField name="limitInterval" type="string">
+    The reset interval for your credit limit. Currently `"daily"`.
+  </ResponseField>
+
+  <ResponseField name="intervalExpiryTimespan" type="string">
+    The time remaining until the current interval resets, in `HH:MM:SS` format, e.g. `"08:42:34"`.
+  </ResponseField>
+</ResponseField>
+
+## Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": {
+    "creditsUsed": 22,
+    "creditsAvailable": 1499978,
+    "creditLimit": 1500000,
+    "limitInterval": "daily",
+    "intervalExpiryTimespan": "08:42:34"
+  }
+}
+```

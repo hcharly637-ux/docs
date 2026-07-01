@@ -1,0 +1,193 @@
+---
+title: "Get Token Info and Social Links by Contract Address"
+sidebarTitle: "Token Info"
+description: "GET /v2/api?module=token&action=tokeninfo — Retrieves project details, social media links, and token metadata for an ERC-20, ERC-721, or ERC-1155 token contract."
+---
+
+Use this endpoint to retrieve rich metadata about any token contract, including the project's website, social media profiles, a short description, and key token parameters such as total supply and decimal divisor. It supports ERC-20, ERC-721, and ERC-1155 token types, making it a useful first step when building token explorer views or enriching wallet interfaces.
+
+<Warning>
+  This is a PRO endpoint available to the Standard plan and above. This endpoint is also throttled to **2 calls/second** regardless of API Pro tier.
+</Warning>
+
+## Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken">
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base from our [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" default="token">
+  Set to `token` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="tokeninfo">
+  Set to `tokeninfo` for this endpoint.
+</ParamField>
+
+<ParamField query="contractaddress" type="string" default="0x0e3a2a1f2146d86a604adc220b4967a898d7fe07">
+  Contract address of the token to retrieve info for.
+</ParamField>
+
+## Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=token\
+&action=tokeninfo\
+&contractaddress=0x0e3a2a1f2146d86a604adc220b4967a898d7fe07\
+&apikey=YourApiKeyToken"
+```
+
+## Response
+
+The `result` array contains a single token info object for the requested contract.
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success, or an error description on failure.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  Array containing one token info object.
+
+  <ResponseField name="contractAddress" type="string">
+    The queried token contract address.
+  </ResponseField>
+
+  <ResponseField name="tokenName" type="string">
+    Full name of the token project, e.g. `"Gods Unchained Cards"`.
+  </ResponseField>
+
+  <ResponseField name="symbol" type="string">
+    Ticker symbol of the token, e.g. `"CARD"`.
+  </ResponseField>
+
+  <ResponseField name="divisor" type="string">
+    Number of decimal places used by the token. `"0"` for non-fungible tokens.
+  </ResponseField>
+
+  <ResponseField name="tokenType" type="string">
+    Token standard: `"ERC20"`, `"ERC721"`, or `"ERC1155"`.
+  </ResponseField>
+
+  <ResponseField name="totalSupply" type="string">
+    Total token supply in the token's smallest unit.
+  </ResponseField>
+
+  <ResponseField name="blueCheckmark" type="string">
+    Whether the project has been verified on Etherscan: `"true"` or `"false"`.
+  </ResponseField>
+
+  <ResponseField name="description" type="string">
+    Short description of the project, if available.
+  </ResponseField>
+
+  <ResponseField name="website" type="string">
+    Project's official website URL, if available.
+  </ResponseField>
+
+  <ResponseField name="email" type="string">
+    Project's contact email address, if available.
+  </ResponseField>
+
+  <ResponseField name="blog" type="string">
+    URL to the project's blog, if available.
+  </ResponseField>
+
+  <ResponseField name="reddit" type="string">
+    URL to the project's Reddit community, if available.
+  </ResponseField>
+
+  <ResponseField name="slack" type="string">
+    URL to the project's Slack workspace, if available.
+  </ResponseField>
+
+  <ResponseField name="facebook" type="string">
+    URL to the project's Facebook page, if available.
+  </ResponseField>
+
+  <ResponseField name="twitter" type="string">
+    URL to the project's Twitter/X profile, if available.
+  </ResponseField>
+
+  <ResponseField name="bitcointalk" type="string">
+    URL to the project's Bitcointalk thread, if available.
+  </ResponseField>
+
+  <ResponseField name="github" type="string">
+    URL to the project's GitHub organisation or repository, if available.
+  </ResponseField>
+
+  <ResponseField name="telegram" type="string">
+    URL to the project's Telegram group, if available.
+  </ResponseField>
+
+  <ResponseField name="wechat" type="string">
+    Project's WeChat handle, if available.
+  </ResponseField>
+
+  <ResponseField name="linkedin" type="string">
+    URL to the project's LinkedIn page, if available.
+  </ResponseField>
+
+  <ResponseField name="discord" type="string">
+    URL to the project's Discord server, if available.
+  </ResponseField>
+
+  <ResponseField name="whitepaper" type="string">
+    URL to the project's whitepaper, if available.
+  </ResponseField>
+
+  <ResponseField name="tokenPriceUSD" type="string">
+    Current token price in USD. May be `"0.000000000000000000"` if not tracked.
+  </ResponseField>
+
+  <ResponseField name="image" type="string">
+    URL to the token's logo image, if available.
+  </ResponseField>
+</ResponseField>
+
+<ResponseExample>
+```json Response
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "contractAddress": "0x0e3a2a1f2146d86a604adc220b4967a898d7fe07",
+      "tokenName": "Gods Unchained Cards",
+      "symbol": "CARD",
+      "divisor": "0",
+      "tokenType": "ERC721",
+      "totalSupply": "6972003",
+      "blueCheckmark": "true",
+      "description": "A TCG on the Ethereum blockchain that uses NFT's to bring real ownership to in-game assets.",
+      "website": "https://godsunchained.com/",
+      "email": "",
+      "blog": "https://medium.com/@fuelgames",
+      "reddit": "https://www.reddit.com/r/GodsUnchained/",
+      "slack": "",
+      "facebook": "https://www.facebook.com/godsunchained/",
+      "twitter": "https://twitter.com/godsunchained",
+      "bitcointalk": "",
+      "github": "",
+      "telegram": "",
+      "wechat": "",
+      "linkedin": "",
+      "discord": "https://discordapp.com/invite/DKGr2pW",
+      "whitepaper": "",
+      "tokenPriceUSD": "0.000000000000000000",
+      "image": ""
+    }
+  ]
+}
+```
+</ResponseExample>

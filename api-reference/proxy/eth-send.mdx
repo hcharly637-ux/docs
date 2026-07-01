@@ -1,0 +1,85 @@
+---
+title: "eth_sendRawTransaction: Broadcast a Signed Transaction"
+sidebarTitle: "eth_sendRawTransaction"
+description: "POST /v2/api?module=proxy&action=eth_sendRawTransaction — Broadcasts a signed raw transaction to the network via the Etherscan JSON-RPC proxy and returns the transaction hash."
+---
+
+The `eth_sendRawTransaction` method allows you to broadcast a pre-signed raw transaction to the Ethereum network via the Etherscan JSON-RPC proxy. You must sign the transaction offline using your private key before calling this endpoint. If the broadcast succeeds, the response returns the transaction hash you can use to track confirmation status. If it fails, the response includes a JSON-RPC error with a descriptive message.
+
+<Warning>
+  This endpoint submits a transaction to the live network. Ensure you have properly signed and validated your transaction data before broadcasting — submitted transactions cannot be reversed.
+</Warning>
+
+## Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `proxy` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `eth_sendRawTransaction` for this endpoint.
+</ParamField>
+
+<ParamField query="hex" type="string" required>
+  The RLP-encoded signed transaction data as a hex string, e.g. `0xf904808000831cfde080`. This should be the output of your wallet or signing library after encoding and signing the transaction.
+</ParamField>
+
+## Response Fields
+
+**On success:**
+
+<ResponseField name="jsonrpc" type="string">
+  The JSON-RPC protocol version, always `"2.0"`.
+</ResponseField>
+
+<ResponseField name="id" type="number">
+  The request identifier echoed back from the call.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  The 32-byte transaction hash of the broadcast transaction, as a hex string. You can use this hash to poll for confirmation via `eth_getTransactionByHash` or `eth_getTransactionReceipt`.
+</ResponseField>
+
+**On error:**
+
+<ResponseField name="error" type="object">
+  Present when the broadcast fails.
+
+  <Expandable title="error fields">
+    <ResponseField name="code" type="number">
+      A numeric JSON-RPC error code, e.g. `-32000` for server-side errors.
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      A human-readable description of why the broadcast failed, e.g. `"insufficient funds for gas * price + value"` or `"nonce too low"`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_sendRawTransaction&hex=0xf904808000831cfde080&apikey=YourApiKeyToken"
+```
+
+## Example Response (Error)
+
+The example below shows a failed broadcast, which is typical when testing with a malformed transaction hex. A successful broadcast returns a `result` field containing the transaction hash instead.
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "error": {
+    "code": -32000,
+    "message": "rlp: value size exceeds available input length"
+  }
+}
+```

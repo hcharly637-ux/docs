@@ -1,0 +1,219 @@
+---
+title: "ERC-20 Token Transfers Advanced Filter"
+sidebarTitle: "ERC-20 Filter"
+description: "GET /v2/api?module=accountsFilter&action=tokentx — Retrieve ERC-20 token transfers with advanced from and to address filtering for precise token flow analysis."
+---
+
+ERC-20 tokens represent fungible assets on Ethereum and EVM-compatible chains. The Advanced Filter for ERC-20 transfers lets you query token movements by both the sending address (`from`) and the receiving address (`to`) at the same time, optionally scoped to a specific token contract. This is ideal for tracking token flows between wallets, auditing DeFi interactions, or monitoring treasury movements with pinpoint accuracy. You can explore and preview this data interactively on the [Etherscan Advanced Filter](https://etherscan.io/advanced-filter) page.
+
+<Warning>
+  This endpoint is currently in **Beta**. Response structure and behavior may change as the feature matures.
+</Warning>
+
+## Query Parameters
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, such as `1` for Ethereum or `8453` for Base. See [supported chains](/supported-chains) for the full list.
+</ParamField>
+
+<ParamField query="module" type="string" default="accountsFilter" required>
+  Set to `accountsFilter` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="tokentx" required>
+  Set to `tokentx` for this endpoint.
+</ParamField>
+
+<ParamField query="contractaddress" type="string" default="0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2">
+  The ERC-20 token contract address to filter transfers by. Omit to search across all ERC-20 tokens.
+</ParamField>
+
+<ParamField query="from" type="string" default="0x73605779985A11B8Fe32E6eD5ae5F249FFD0D7f0">
+  The sender address to filter transfers by.
+</ParamField>
+
+<ParamField query="to" type="string" default="0x71c7656ec7ab88b098defb751b7401b5f6d8976f">
+  The recipient address to filter transfers by.
+</ParamField>
+
+<ParamField query="fromto_opr" type="string" default="or">
+  Address filter operator, either `and` or `or`.
+
+  Use `fromto_opr=and` when both `from` and `to` must match. Use `fromto_opr=or` when either `from` or `to` can match.
+</ParamField>
+
+<ParamField query="startblock" type="integer" default="0">
+  Starting block number to search from.
+</ParamField>
+
+<ParamField query="endblock" type="string" default="latest">
+  Ending block number to search to, or `latest` for the latest block.
+</ParamField>
+
+<ParamField query="sort" type="string" default="desc">
+  Sort order, either `desc` for the latest transfers first or `asc` for the oldest transfers first.
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination.
+</ParamField>
+
+<ParamField query="offset" type="integer" default="10">
+  Number of records per page. Use the `page` parameter for subsequent records.
+</ParamField>
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  Returns `1` when the request succeeds, or `0` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Returns `OK` on success, or an error description on failure.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of ERC-20 token transfer objects matching the filter criteria.
+
+  <Expandable title="result item properties">
+    <ResponseField name="blockNumber" type="string">
+      The block number in which the transfer was included.
+    </ResponseField>
+
+    <ResponseField name="timeStamp" type="string">
+      Unix timestamp of the block.
+    </ResponseField>
+
+    <ResponseField name="hash" type="string">
+      The transaction hash containing this transfer.
+    </ResponseField>
+
+    <ResponseField name="nonce" type="string">
+      The transaction nonce.
+    </ResponseField>
+
+    <ResponseField name="blockHash" type="string">
+      Hash of the block containing this transfer.
+    </ResponseField>
+
+    <ResponseField name="from" type="string">
+      The address sending the tokens.
+    </ResponseField>
+
+    <ResponseField name="contractAddress" type="string">
+      The ERC-20 token contract address.
+    </ResponseField>
+
+    <ResponseField name="to" type="string">
+      The address receiving the tokens.
+    </ResponseField>
+
+    <ResponseField name="value" type="string">
+      The raw token amount transferred (in the token's smallest unit).
+    </ResponseField>
+
+    <ResponseField name="tokenName" type="string">
+      The full name of the token.
+    </ResponseField>
+
+    <ResponseField name="tokenSymbol" type="string">
+      The ticker symbol of the token.
+    </ResponseField>
+
+    <ResponseField name="tokenDecimal" type="string">
+      The number of decimals for the token.
+    </ResponseField>
+
+    <ResponseField name="transactionIndex" type="string">
+      Position of the transaction within the block.
+    </ResponseField>
+
+    <ResponseField name="gas" type="string">
+      Gas limit for the transaction.
+    </ResponseField>
+
+    <ResponseField name="gasPrice" type="string">
+      Gas price in Wei.
+    </ResponseField>
+
+    <ResponseField name="gasUsed" type="string">
+      Actual gas consumed by the transaction.
+    </ResponseField>
+
+    <ResponseField name="cumulativeGasUsed" type="string">
+      Cumulative gas used up to this transaction in the block.
+    </ResponseField>
+
+    <ResponseField name="input" type="string">
+      Marked as `deprecated` in transfer records.
+    </ResponseField>
+
+    <ResponseField name="methodId" type="string">
+      The function selector (first 4 bytes of the input data).
+    </ResponseField>
+
+    <ResponseField name="functionName" type="string">
+      The decoded function name, if available.
+    </ResponseField>
+
+    <ResponseField name="confirmations" type="string">
+      Number of block confirmations since the transfer.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api
+  ?chainid=1
+  &module=accountsFilter
+  &action=tokentx
+  &contractaddress=0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2
+  &to=0x71c7656ec7ab88b098defb751b7401b5f6d8976f
+  &fromto_opr=or
+  &startblock=0
+  &endblock=latest
+  &sort=desc
+  &page=1
+  &offset=10
+  &apikey=YourApiKeyToken"
+```
+
+## Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "blockNumber": "4730207",
+      "timeStamp": "1513240363",
+      "hash": "0xe8c208398bd5ae8e4c237658580db56a2a94dfa0ca382c99b776fa6e7d31d5b4",
+      "nonce": "406",
+      "blockHash": "0x022c5e6a3d2487a8ccf8946a2ffb74938bf8e5c8a3f6d91b41c56378a96b5c37",
+      "from": "0x642ae78fafbb8032da552d619ad43f1d81e4dd7c",
+      "contractAddress": "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
+      "to": "0x4e83362442b8d1bec281594cea3050c8eb01311c",
+      "value": "5901522149285533025181",
+      "tokenName": "Maker",
+      "tokenSymbol": "MKR",
+      "tokenDecimal": "18",
+      "transactionIndex": "81",
+      "gas": "940000",
+      "gasPrice": "32010000000",
+      "gasUsed": "77759",
+      "cumulativeGasUsed": "2523379",
+      "input": "deprecated",
+      "methodId": "0xbe040fb0",
+      "functionName": "redeem()",
+      "confirmations": "18737452"
+    }
+  ]
+}
+```

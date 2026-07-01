@@ -1,0 +1,196 @@
+---
+title: "Get Normal Transactions by Address"
+sidebarTitle: "Transactions"
+description: "GET /v2/api?module=account&action=txlist — Retrieves the full transaction history of an address with pagination, block range filtering, and sort order control."
+---
+
+The `txlist` action retrieves the full list of normal (external) transactions sent to or from a specified address. You can narrow results using block range filters (`startblock` and `endblock`), paginate through large result sets with `page` and `offset`, and control the sort order of returned records. This endpoint returns up to 10,000 records per request (1,000 for Free tier users from July 2026).
+
+<Warning>
+  **Effective July 1, 2026**, the maximum records returned per request will be reduced from 10,000 to **1,000** for Free tier API users. See the full list of [affected endpoints](https://docs.etherscan.io/changelog#upcoming-change-reduced-maximum-records-per-request-on-the-free-api-tier).
+</Warning>
+
+## Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=account\
+&action=txlist\
+&address=0xc5102fE9359FD9a28f877a67E36B0F050d81a3CC\
+&startblock=0\
+&endblock=999999999\
+&page=1\
+&offset=100\
+&sort=asc\
+&apikey=YourApiKeyToken"
+```
+
+## Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base. See the full list at [supported chains](/api-reference/chainlist).
+</ParamField>
+
+<ParamField query="module" type="string" default="account" required>
+  Set to `account` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="txlist" required>
+  Set to `txlist` for this endpoint.
+</ParamField>
+
+<ParamField query="address" type="string" default="0xc5102fE9359FD9a28f877a67E36B0F050d81a3CC" required>
+  The address to query, like `0xfefefefefefefefefefefefefefefefefefefefe`.
+</ParamField>
+
+<ParamField query="startblock" type="integer" default="0">
+  Starting block number to search from.
+</ParamField>
+
+<ParamField query="endblock" type="integer" default="999999999">
+  Ending block number to search to.
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination.
+</ParamField>
+
+<ParamField query="offset" type="integer" default="100">
+  Number of records per page. Use the `page` parameter to retrieve subsequent pages.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order: use `desc` to return the latest transactions first, or `asc` to return the oldest transactions first.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on error or empty result.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success, or an error message string.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of transaction objects matching the query.
+</ResponseField>
+
+<ResponseField name="result[].blockNumber" type="string">
+  The block number in which the transaction was included.
+</ResponseField>
+
+<ResponseField name="result[].blockHash" type="string">
+  The hash of the block in which the transaction was included.
+</ResponseField>
+
+<ResponseField name="result[].timeStamp" type="string">
+  Unix timestamp of the block.
+</ResponseField>
+
+<ResponseField name="result[].hash" type="string">
+  The transaction hash.
+</ResponseField>
+
+<ResponseField name="result[].nonce" type="string">
+  The transaction nonce of the sender.
+</ResponseField>
+
+<ResponseField name="result[].transactionIndex" type="string">
+  The position of the transaction within the block.
+</ResponseField>
+
+<ResponseField name="result[].from" type="string">
+  The sender address.
+</ResponseField>
+
+<ResponseField name="result[].to" type="string">
+  The recipient address. Empty for contract creation transactions.
+</ResponseField>
+
+<ResponseField name="result[].value" type="string">
+  The value transferred in wei.
+</ResponseField>
+
+<ResponseField name="result[].gas" type="string">
+  Gas limit provided by the sender.
+</ResponseField>
+
+<ResponseField name="result[].gasPrice" type="string">
+  Gas price in wei.
+</ResponseField>
+
+<ResponseField name="result[].input" type="string">
+  The encoded input data of the transaction.
+</ResponseField>
+
+<ResponseField name="result[].methodId" type="string">
+  The first 4 bytes of the `input` data, representing the function selector.
+</ResponseField>
+
+<ResponseField name="result[].functionName" type="string">
+  The decoded function name and signature, if available.
+</ResponseField>
+
+<ResponseField name="result[].contractAddress" type="string">
+  The address of the contract created by this transaction, if applicable. Empty for non-contract-creation transactions.
+</ResponseField>
+
+<ResponseField name="result[].cumulativeGasUsed" type="string">
+  The total gas used in the block up to and including this transaction.
+</ResponseField>
+
+<ResponseField name="result[].txreceipt_status" type="string">
+  The transaction receipt status: `"1"` for success, `"0"` for failure.
+</ResponseField>
+
+<ResponseField name="result[].gasUsed" type="string">
+  The actual amount of gas consumed by this transaction.
+</ResponseField>
+
+<ResponseField name="result[].confirmations" type="string">
+  The number of block confirmations at the time of the API response.
+</ResponseField>
+
+<ResponseField name="result[].isError" type="string">
+  `"0"` if the transaction executed successfully, `"1"` if it encountered an error.
+</ResponseField>
+
+## Response Example
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "blockNumber": "23467053",
+      "blockHash": "0xf5646226f819fbdd6b2f1cb99de6e5d17da3d876ec166e69f4e9736c8ebf7ab4",
+      "timeStamp": "1759129619",
+      "hash": "0xf9db905d77704596d3600816bc70201586cfeec13bcf576320e2f38d6ca851a0",
+      "nonce": "8",
+      "transactionIndex": "184",
+      "from": "0x2449ecef5012f0a0e153b278ef4fcc9625bc4c78",
+      "to": "0xc5102fe9359fd9a28f877a67e36b0f050d81a3cc",
+      "value": "0",
+      "gas": "73271",
+      "gasPrice": "238744402",
+      "input": "0x5c19a95c0000000000000000000000002449ecef5012f0a0e153b278ef4fcc9625bc4c78",
+      "methodId": "0x5c19a95c",
+      "functionName": "delegate(address to)",
+      "contractAddress": "",
+      "cumulativeGasUsed": "22498564",
+      "txreceipt_status": "1",
+      "gasUsed": "48847",
+      "confirmations": "589",
+      "isError": "0"
+    }
+  ]
+}
+```

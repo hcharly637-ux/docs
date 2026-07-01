@@ -1,0 +1,101 @@
+---
+title: "Get Transaction Count for an Ethereum Block"
+sidebarTitle: "Block Tx Count"
+description: "GET /v2/api?module=block&action=getblocktxnscount — Retrieves the transaction count for a specified Ethereum block number."
+---
+
+Understanding the composition of a block is important for network analysis, gas usage studies, and DeFi monitoring. This endpoint returns a full breakdown of transaction counts for a given block number, split by transaction type: normal transactions, internal transactions, ERC-20 token transfers, ERC-721 NFT transfers, and ERC-1155 multi-token transfers.
+
+<Warning>
+  This endpoint is specific to the **Ethereum** mainnet (Chain ID `1`).
+</Warning>
+
+## Query Parameters
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query. This endpoint is specific to Ethereum (`1`). See [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" default="block" required>
+  Set to `block` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="getblocktxnscount" required>
+  Set to `getblocktxnscount` for this endpoint.
+</ParamField>
+
+<ParamField query="blockno" type="integer" default="24884529" required>
+  The block number to retrieve transaction counts for.
+</ParamField>
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  Returns `1` when the request succeeds.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Returns the request status message.
+</ResponseField>
+
+<ResponseField name="result" type="object">
+  Contains the transaction counts for the requested block.
+
+  <Expandable title="result properties">
+    <ResponseField name="block" type="integer">
+      Block number returned by the request.
+    </ResponseField>
+
+    <ResponseField name="txsCount" type="integer">
+      Number of normal transactions in the block.
+    </ResponseField>
+
+    <ResponseField name="internalTxsCount" type="integer">
+      Number of internal transactions in the block.
+    </ResponseField>
+
+    <ResponseField name="erc20TxsCount" type="integer">
+      Number of ERC-20 token transfers in the block.
+    </ResponseField>
+
+    <ResponseField name="erc721TxsCount" type="integer">
+      Number of ERC-721 NFT transfers in the block.
+    </ResponseField>
+
+    <ResponseField name="erc1155TxsCount" type="integer">
+      Number of ERC-1155 multi-token transfers in the block.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api
+  ?chainid=1
+  &module=block
+  &action=getblocktxnscount
+  &blockno=24884529
+  &apikey=YourApiKeyToken"
+```
+
+## Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": {
+    "block": 24884529,
+    "txsCount": 87,
+    "internalTxsCount": 55,
+    "erc20TxsCount": 103,
+    "erc721TxsCount": 1,
+    "erc1155TxsCount": 0
+  }
+}
+```

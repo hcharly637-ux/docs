@@ -1,0 +1,157 @@
+---
+title: "Get ERC-20 Token Balance for an Address"
+sidebarTitle: "Token Balance"
+description: "GET /v2/api?module=account&action=tokenbalance — Retrieves the current ERC-20 token balance for a specific address and token contract address."
+---
+
+These endpoints let you look up the ERC-20 token balance held by a specific address — either as of the latest block, or as it stood at a particular historical block height. The current balance endpoint is available on all plans; the historical balance endpoint requires a Standard plan or above.
+
+---
+
+## Current ERC-20 Token Balance
+
+Retrieves the current ERC-20 token balance for a specified address and token contract.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken">
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base from our [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" default="account">
+  Set to `account` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="tokenbalance">
+  Set to `tokenbalance` for this endpoint.
+</ParamField>
+
+<ParamField query="contractaddress" type="string" default="0x57d90b64a1a57749b0f932f1a3395792e12e7055">
+  Contract address of the ERC-20 token.
+</ParamField>
+
+<ParamField query="address" type="string" default="0xe04f27eb70e025b78871a2ad7eabe85e61212761">
+  Address to check for token balance.
+</ParamField>
+
+<ParamField query="tag" type="string" default="latest">
+  Use `latest` for the last block number of the chain.
+</ParamField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=account\
+&action=tokenbalance\
+&contractaddress=0x57d90b64a1a57749b0f932f1a3395792e12e7055\
+&address=0xe04f27eb70e025b78871a2ad7eabe85e61212761\
+&tag=latest\
+&apikey=YourApiKeyToken"
+```
+
+### Response
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success, or an error description on failure.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  The token balance in the token's smallest unit. Divide by `10^tokenDecimal` to get a human-readable value.
+</ResponseField>
+
+<ResponseExample>
+```json Response
+{
+  "status": "1",
+  "message": "OK",
+  "result": "135499"
+}
+```
+</ResponseExample>
+
+---
+
+## Historical ERC-20 Token Balance by Block
+
+<Warning>
+  This is a PRO endpoint available to the Standard plan and above. This endpoint is also throttled to **2 calls/second** regardless of API Pro tier.
+</Warning>
+
+Retrieves the ERC-20 token balance for a specified address at a given historical block height. This is useful for auditing balances at a particular point in time, such as at the end of a reporting period.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken">
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base from our [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" default="account">
+  Set to `account` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="tokenbalancehistory">
+  Set to `tokenbalancehistory` for this endpoint.
+</ParamField>
+
+<ParamField query="contractaddress" type="string" default="0x57d90b64a1a57749b0f932f1a3395792e12e7055">
+  Contract address of the ERC-20 token.
+</ParamField>
+
+<ParamField query="address" type="string" default="0xe04f27eb70e025b78871a2ad7eabe85e61212761">
+  Address to check for balance.
+</ParamField>
+
+<ParamField query="blockno" type="integer" default="8000000">
+  Block number to check balance for.
+</ParamField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=account\
+&action=tokenbalancehistory\
+&contractaddress=0x57d90b64a1a57749b0f932f1a3395792e12e7055\
+&address=0xe04f27eb70e025b78871a2ad7eabe85e61212761\
+&blockno=8000000\
+&apikey=YourApiKeyToken"
+```
+
+### Response
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success, or an error description on failure.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  The token balance at the specified block, in the token's smallest unit. Divide by `10^tokenDecimal` to convert to a human-readable value.
+</ResponseField>
+
+<ResponseExample>
+```json Response
+{
+  "status": "1",
+  "message": "OK",
+  "result": "135499"
+}
+```
+</ResponseExample>

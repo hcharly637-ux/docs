@@ -1,0 +1,112 @@
+---
+title: "Get Ethereum Blockchain Size Over Time"
+sidebarTitle: "Chain Size"
+description: "GET /v2/api?module=stats&action=chainsize — Retrieves the total size of the Ethereum blockchain in bytes within a specified date range. Includes July 2026 free tier record limit change."
+---
+
+The Chain Size endpoint returns the cumulative size of the Ethereum blockchain in bytes, sampled daily across a specified date range. You can filter results by client type (`geth` or `parity`) and sync mode (`default` or `archive`) to understand storage requirements for different node configurations. This is useful for capacity planning, infrastructure sizing, and monitoring storage growth trends.
+
+<Warning>
+  **Effective July 1, 2026**, the maximum records returned per request will be reduced from 10,000 to 1,000 for Free tier API users. See the full list of [affected endpoints](https://docs.etherscan.io/changelog#upcoming-change-reduced-maximum-records-per-request-on-the-free-api-tier).
+</Warning>
+
+## Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `chainsize` for this endpoint.
+</ParamField>
+
+<ParamField query="startdate" type="string" required>
+  Start of the date range in `yyyy-MM-dd` format, e.g. `2019-02-01`.
+</ParamField>
+
+<ParamField query="enddate" type="string" required>
+  End of the date range in `yyyy-MM-dd` format, e.g. `2019-02-28`.
+</ParamField>
+
+<ParamField query="clienttype" type="string" default="geth">
+  The Ethereum client implementation to query. Use `geth` for Go Ethereum or `parity` for OpenEthereum/Parity.
+</ParamField>
+
+<ParamField query="syncmode" type="string" default="default">
+  The node sync mode. Use `default` for a pruned node or `archive` for a full archive node.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order: `asc` for oldest-first or `desc` for newest-first.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on error.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A short status message such as `"OK"`.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of daily blockchain size records.
+
+  <Expandable title="result item fields">
+    <ResponseField name="blockNumber" type="string">
+      The block number at the end of the sampled day.
+    </ResponseField>
+    <ResponseField name="chainTimeStamp" type="string">
+      The date of the size snapshot in `yyyy-MM-dd` format.
+    </ResponseField>
+    <ResponseField name="chainSize" type="string">
+      The total size of the blockchain in bytes as of that date and block.
+    </ResponseField>
+    <ResponseField name="clientType" type="string">
+      The client type used for this measurement, e.g. `"Geth"`.
+    </ResponseField>
+    <ResponseField name="syncMode" type="string">
+      The sync mode used for this measurement, e.g. `"Default"`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=stats&action=chainsize&startdate=2019-02-01&enddate=2019-02-28&clienttype=geth&syncmode=default&sort=asc&apikey=YourApiKeyToken"
+```
+
+## Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "blockNumber": "7156164",
+      "chainTimeStamp": "2019-02-01",
+      "chainSize": "184726421279",
+      "clientType": "Geth",
+      "syncMode": "Default"
+    },
+    {
+      "blockNumber": "7161012",
+      "chainTimeStamp": "2019-02-02",
+      "chainSize": "184726654448",
+      "clientType": "Geth",
+      "syncMode": "Default"
+    }
+  ]
+}
+```

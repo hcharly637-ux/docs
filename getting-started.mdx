@@ -1,0 +1,49 @@
+---
+title: "Get Started with the Etherscan API"
+sidebarTitle: "Quick Start"
+description: "Create your Etherscan account, generate an API key, and make your first multichain blockchain data request in under five minutes."
+---
+
+The Etherscan API gives you programmatic access to Ethereum and 60+ EVM-compatible chains through a single, unified interface. Follow the steps below to create your account, generate an API key, and make your first live request.
+
+<Note>
+  Your API key activates within a few minutes of creation and is immediately valid for all 60+ supported chains under API V2 — no additional setup required per chain.
+</Note>
+
+<Steps>
+  <Step title="Create an Etherscan Account">
+    [Sign up](https://etherscan.io/register) for a free Etherscan account if you don't already have one. Your account serves as the central hub for managing API keys, monitoring usage, and upgrading your plan.
+  </Step>
+
+  <Step title="Get an API Key">
+    Log in and navigate to your [API Dashboard](https://etherscan.io/apidashboard). Click **Add +** to generate a new API key.
+
+    This single key provides authenticated access to all [supported chains](/supported-chains) under API V2. All requests to the Etherscan API must include your key to enforce rate limits and prevent abuse.
+  </Step>
+
+  <Step title="Make Your First Request">
+    Test your key immediately by querying the ETH balance of a known address. Paste the URL below into your browser or run it with `curl`, replacing `YourApiKeyToken` with your actual key:
+
+    ```bash
+    curl "https://api.etherscan.io/v2/api?chainid=1&module=account&action=balance&address=0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe&apikey=YourApiKeyToken"
+    ```
+
+    A successful response looks like this:
+
+    ```json
+    {
+      "status": "1",
+      "message": "OK",
+      "result": "40891626854930000000000"
+    }
+    ```
+
+    The `result` field contains the balance in Wei. Divide by `1e18` to convert to ETH. To query a different chain, simply change `chainid=1` to the relevant chain ID — for example, `chainid=56` for BNB Smart Chain or `chainid=8453` for Base. See the full [supported chains](/supported-chains) list for all available chain IDs.
+  </Step>
+
+  <Step title="Integrate into Your App">
+    Once your key is working, integrate the API into your application using the language or tooling of your choice. The API Playground in these docs includes ready-to-copy code samples in JavaScript, Python, and curl for every endpoint.
+
+    You can also use the API with general-purpose scripting tools and AI agents that support HTTP requests. Every endpoint is documented with example requests and responses — explore the full reference in the [API Reference](/api-reference) section.
+  </Step>
+</Steps>

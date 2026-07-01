@@ -1,0 +1,68 @@
+---
+title: "Get Estimated Block Countdown by Block Number"
+sidebarTitle: "Block Countdown"
+description: "GET /v2/api?module=block&action=getblockcountdown — Retrieves the estimated time remaining, in seconds, until a specific future block is mined."
+---
+
+If you need to know how long until a specific block is produced, this endpoint returns the estimated number of seconds remaining until a given future block number is mined. This is particularly useful for on-chain governance systems, scheduled contract executions, or any application that needs to communicate a time-to-event to users based on block progression.
+
+<Warning>
+  This endpoint only works for **future** block numbers. If you provide a block number that has already been mined, the API returns an error: `"Error! Block number already pass"`.
+</Warning>
+
+## Query Parameters
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, such as `1` for Ethereum or `8453` for Base. See [supported chains](/supported-chains) for the full list.
+</ParamField>
+
+<ParamField query="module" type="string" default="block" required>
+  Set to `block` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="getblockcountdown" required>
+  Set to `getblockcountdown` for this endpoint.
+</ParamField>
+
+<ParamField query="blockno" type="integer" default="16701588" required>
+  The future block number to estimate the countdown for. Must be greater than the current block number.
+</ParamField>
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  Returns `1` when the request succeeds, or `0` when the block has already been mined or on error.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Returns `OK` on success, or `NOTOK` with an explanation on failure.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  On success, returns the estimated time remaining in seconds as a string. On failure, returns an error message such as `"Error! Block number already pass"`.
+</ResponseField>
+
+## Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api
+  ?chainid=1
+  &module=block
+  &action=getblockcountdown
+  &blockno=16701588
+  &apikey=YourApiKeyToken"
+```
+
+## Example Response (Block Already Passed)
+
+```json
+{
+  "status": "0",
+  "message": "NOTOK",
+  "result": "Error! Block number already pass"
+}
+```

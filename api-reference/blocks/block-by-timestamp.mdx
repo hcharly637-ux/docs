@@ -1,0 +1,69 @@
+---
+title: "Get Block Number by Timestamp"
+sidebarTitle: "Block by Timestamp"
+description: "GET /v2/api?module=block&action=getblocknobytime — Retrieves the block number closest to a given Unix timestamp, with control over before or after direction."
+---
+
+When you need to anchor blockchain data to a specific point in time, this endpoint lets you look up the block number that was mined closest to a given Unix timestamp. You control the direction of the search — use `before` to find the latest block at or before your timestamp, or `after` to find the earliest block at or after it. This is useful for time-based analytics, historical data queries, and snapshotting on-chain state at a precise moment.
+
+## Query Parameters
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, such as `1` for Ethereum or `8453` for Base. See [supported chains](/supported-chains) for the full list.
+</ParamField>
+
+<ParamField query="module" type="string" default="block" required>
+  Set to `block` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="getblocknobytime" required>
+  Set to `getblocknobytime` for this endpoint.
+</ParamField>
+
+<ParamField query="timestamp" type="integer" default="1578638524" required>
+  Unix timestamp in seconds to look up the closest block for.
+</ParamField>
+
+<ParamField query="closest" type="string" default="before" required>
+  Closest available block to the provided timestamp, either `before` or `after`.
+</ParamField>
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  Returns `1` when the request succeeds, or `0` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Returns `OK` on success, or an error description on failure.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  The block number closest to the provided timestamp, returned as a string integer.
+</ResponseField>
+
+## Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api
+  ?chainid=1
+  &module=block
+  &action=getblocknobytime
+  &timestamp=1578638524
+  &closest=before
+  &apikey=YourApiKeyToken"
+```
+
+## Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": "9251482"
+}
+```

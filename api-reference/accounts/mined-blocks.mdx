@@ -1,0 +1,101 @@
+---
+title: "Get Blocks Validated by Address"
+sidebarTitle: "Mined Blocks"
+description: "GET /v2/api?module=account&action=getminedblocks — Retrieves the list of blocks validated (mined) by a specified address, useful for validator analytics."
+---
+
+The `getminedblocks` action retrieves the list of blocks that have been validated (mined or proposed) by a specified address. This is useful for tracking validator performance, calculating block rewards, and auditing the activity of mining or staking nodes. You can also request uncle blocks from pre-Merge activity using the `blocktype` parameter.
+
+<Warning>
+  **Effective July 1, 2026**, the maximum records returned per request will be reduced from 10,000 to **1,000** for Free tier API users. See the full list of [affected endpoints](https://docs.etherscan.io/changelog#upcoming-change-reduced-maximum-records-per-request-on-the-free-api-tier).
+</Warning>
+
+## Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=account\
+&action=getminedblocks\
+&address=0x9dd134d14d1e65f84b706d6f205cd5b1cd03a46b\
+&blocktype=blocks\
+&page=1\
+&offset=100\
+&apikey=YourApiKeyToken"
+```
+
+## Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base. See the full list at [supported chains](/api-reference/chainlist).
+</ParamField>
+
+<ParamField query="module" type="string" default="account" required>
+  Set to `account` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="getminedblocks" required>
+  Set to `getminedblocks` for this endpoint.
+</ParamField>
+
+<ParamField query="address" type="string" default="0x9dd134d14d1e65f84b706d6f205cd5b1cd03a46b" required>
+  The validator address to query, like `0xfefefefefefefefefefefefefefefefefefefefe`.
+</ParamField>
+
+<ParamField query="blocktype" type="string" default="blocks">
+  Use `blocks` for full blocks. Optionally set to `uncles` to retrieve [pre-Merge](https://ethereum.org/en/roadmap/merge/) uncle blocks.
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination.
+</ParamField>
+
+<ParamField query="offset" type="integer" default="100">
+  Number of records per page. Use the `page` parameter for subsequent records.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on error or empty result.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success, or an error message string.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of block objects validated by the specified address.
+</ResponseField>
+
+<ResponseField name="result[].blockNumber" type="string">
+  The number of the validated block.
+</ResponseField>
+
+<ResponseField name="result[].timeStamp" type="string">
+  Unix timestamp of when the block was validated.
+</ResponseField>
+
+<ResponseField name="result[].blockReward" type="string">
+  The block reward received by the validator in wei, including transaction fees and MEV where applicable.
+</ResponseField>
+
+## Response Example
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "blockNumber": "20226140",
+      "timeStamp": "1720011623",
+      "blockReward": "33424103001400554"
+    }
+  ]
+}
+```

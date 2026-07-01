@@ -1,0 +1,389 @@
+---
+title: "Verify Solidity, Vyper, and Stylus Smart Contract Source Code"
+sidebarTitle: "Verify Source Code"
+description: "Submit Solidity, Vyper, Stylus, or zkSync smart contract source code for verification on Etherscan using the contract verification API endpoints."
+---
+
+Etherscan's contract verification API lets you submit source code for on-chain verification programmatically. Once verified, the source code, ABI, and compiler settings become publicly visible on Etherscan and can be retrieved via the [Get Source Code](/api-reference/contracts/get-source-code) and [Get ABI](/api-reference/contracts/get-abi) endpoints. All verification submissions are asynchronous — you submit a request and receive a GUID, then poll the [Check Verification Status](#check-source-code-verification-status) endpoint to find out when verification completes.
+
+<Tip>
+  For tooling-based verification via Hardhat, Foundry, or Remix, see the [contract verification guides](https://docs.etherscan.io/contract-verification) for plugin-based workflows that don't require manual API calls.
+</Tip>
+
+---
+
+## Verify Solidity Source Code
+
+Submit a compiled Solidity contract's source code for verification. You can submit a single `.sol` file or provide a standard JSON input object that describes a multi-file project with all imports and settings.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `contract` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `verifysourcecode` for this endpoint.
+</ParamField>
+
+<ParamField query="contractaddress" type="string" required>
+  The address where the contract is deployed.
+</ParamField>
+
+<ParamField query="sourceCode" type="string" required>
+  The Solidity source code to verify. For `solidity-standard-json-input`, pass the full standard JSON object as a string.
+</ParamField>
+
+<ParamField query="codeformat" type="string" default="solidity-standard-json-input">
+  Use `solidity-single-file` for a single `.sol` file or `solidity-standard-json-input` for a standard JSON input object.
+</ParamField>
+
+<ParamField query="contractname" type="string" required>
+  The contract name, including the file path when using standard JSON input, e.g. `contracts/Verified.sol:Verified` or `erc20.sol:erc20`.
+</ParamField>
+
+<ParamField query="compilerversion" type="string" required>
+  The exact compiler version used for compilation, e.g. `v0.8.24+commit.e11b9ed9`.
+</ParamField>
+
+<ParamField query="optimizationUsed" type="string" default="0">
+  Set to `1` if optimization was enabled during compilation, or `0` if disabled.
+</ParamField>
+
+<ParamField query="runs" type="string" default="200">
+  Number of optimizer runs. Only relevant when `optimizationUsed` is `1`.
+</ParamField>
+
+<ParamField query="constructorArguments" type="string">
+  ABI-encoded constructor arguments used during contract deployment. Omit if the constructor takes no arguments.
+</ParamField>
+
+<ParamField query="evmVersion" type="string" default="default">
+  The EVM version to target. Use `default` for the compiler default, or specify a version such as `byzantium` or `shanghai`.
+</ParamField>
+
+<ParamField query="licenseType" type="string" default="1">
+  Numeric identifier for the [open-source license](https://etherscan.io/contract-license-types) to associate with the source code, e.g. `3` for MIT.
+</ParamField>
+
+### Example Request
+
+```bash
+curl -X POST "https://api.etherscan.io/v2/api" \
+  -d "chainid=1" \
+  -d "module=contract" \
+  -d "action=verifysourcecode" \
+  -d "contractaddress=0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413" \
+  -d "sourceCode=<your_source_code_here>" \
+  -d "codeformat=solidity-standard-json-input" \
+  -d "contractname=contracts/Verified.sol:Verified" \
+  -d "compilerversion=v0.8.24+commit.e11b9ed9" \
+  -d "optimizationUsed=0" \
+  -d "runs=200" \
+  -d "constructorArguments=00000000000000000000000074271f2282ed7ee35c166122a60c9830354be42a" \
+  -d "evmVersion=default" \
+  -d "licenseType=1" \
+  -d "apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": "a7lpxkm9kpcpicx7daftmjifrfhiuhf5vqqnawhkfhzfrcpnxj"
+}
+```
+
+The `result` value is the GUID you use to poll the [Check Source Code Verification Status](#check-source-code-verification-status) endpoint.
+
+---
+
+## Verify Vyper Source Code
+
+Submit a Vyper contract for verification. Vyper verification uses the same `verifysourcecode` action but requires the `vyper-json` code format and a Vyper-specific compiler version string.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `contract` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `verifysourcecode` for this endpoint.
+</ParamField>
+
+<ParamField query="codeformat" type="string" required>
+  Set to `vyper-json` for Vyper contracts.
+</ParamField>
+
+<ParamField query="sourceCode" type="string" required>
+  The Vyper source code in JSON format.
+</ParamField>
+
+<ParamField query="contractaddress" type="string" required>
+  The address where the contract is deployed.
+</ParamField>
+
+<ParamField query="contractname" type="string" required>
+  The contract name, including path if applicable, e.g. `contracts/Verified.vy:Verified`.
+</ParamField>
+
+<ParamField query="compilerversion" type="string" required>
+  The Vyper compiler version used for compilation, e.g. `vyper:0.4.0`.
+</ParamField>
+
+<ParamField query="optimizationUsed" type="string" default="0">
+  Set to `1` if compiler optimizations were enabled, otherwise `0`.
+</ParamField>
+
+<ParamField query="constructorArguments" type="string">
+  Optional ABI-encoded constructor arguments used during contract deployment.
+</ParamField>
+
+### Example Request
+
+```bash
+curl -X POST "https://api.etherscan.io/v2/api" \
+  -d "chainid=1" \
+  -d "module=contract" \
+  -d "action=verifysourcecode" \
+  -d "codeformat=vyper-json" \
+  -d "sourceCode=<your_vyper_json_here>" \
+  -d "contractaddress=0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413" \
+  -d "contractname=contracts/Verified.vy:Verified" \
+  -d "compilerversion=vyper:0.4.0" \
+  -d "optimizationUsed=0" \
+  -d "constructorArguments=00000000000000000000000074271f2282ed7ee35c166122a60c9830354be42a" \
+  -d "apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": "a7lpxkm9kpcpicx7daftmjifrfhiuhf5vqqnawhkfhzfrcpnxj"
+}
+```
+
+---
+
+## Verify Stylus Source Code
+
+Submit a Stylus smart contract for verification. Stylus contracts are written in Rust and compiled to WebAssembly, and verification requires a **public Git repository URL** rather than inline source code. This endpoint is only available on Arbitrum networks.
+
+<Warning>
+  Stylus verification is only supported on **Arbitrum One Mainnet** (chain ID `42161`) and **Arbitrum Sepolia Testnet** (chain ID `421614`). Submitting to other chains will return an error.
+</Warning>
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="42161">
+  Chain ID to query, e.g. `42161` for Arbitrum One. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `contract` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `verifysourcecode` for this endpoint.
+</ParamField>
+
+<ParamField query="codeformat" type="string" required>
+  Set to `stylus` for Stylus projects.
+</ParamField>
+
+<ParamField query="sourceCode" type="string" required>
+  The URL of a public Git repository hosting the Stylus source code, e.g. `https://github.com/OffchainLabs/stylus-hello-world`.
+</ParamField>
+
+<ParamField query="contractaddress" type="string" required>
+  The address where the Stylus contract is deployed.
+</ParamField>
+
+<ParamField query="contractname" type="string" required>
+  The contract name matching your Stylus deployment, e.g. `stylus_hello_world`.
+</ParamField>
+
+<ParamField query="compilerversion" type="string" required>
+  The Stylus compiler version used, e.g. `stylus:0.5.3`.
+</ParamField>
+
+<ParamField query="licenseType" type="integer" default="3">
+  Numeric license identifier from the [open-source license options](https://arbiscan.io/contract-license-types).
+</ParamField>
+
+### Example Request
+
+```bash
+curl -X POST "https://api.etherscan.io/v2/api" \
+  -d "chainid=42161" \
+  -d "module=contract" \
+  -d "action=verifysourcecode" \
+  -d "codeformat=stylus" \
+  -d "sourceCode=https://github.com/OffchainLabs/stylus-hello-world" \
+  -d "contractaddress=0x915f0B2f34F5B5b84D1F066b398D7F0E3C2F8f83" \
+  -d "contractname=stylus_hello_world" \
+  -d "compilerversion=stylus:0.5.3" \
+  -d "licenseType=3" \
+  -d "apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": "a7lpxkm9kpcpicx7daftmjifrfhiuhf5vqqnawhkfhzfrcpnxj"
+}
+```
+
+---
+
+## Verify Source Code on zkSync
+
+Submit a Solidity contract deployed on a zkSync network for verification. This uses the same `verifysourcecode` action but requires additional zkSync-specific parameters including the `zksolc` compiler version and compiler mode.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="324">
+  Chain ID to query, e.g. `324` for zkSync Era Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `contract` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `verifysourcecode` for this endpoint.
+</ParamField>
+
+<ParamField query="codeformat" type="string" default="solidity-standard-json-input">
+  Use `solidity-single-file` for a single `.sol` file or `solidity-standard-json-input` for a standard JSON input object.
+</ParamField>
+
+<ParamField query="sourceCode" type="string" required>
+  The Solidity source code to verify.
+</ParamField>
+
+<ParamField query="contractaddress" type="string" required>
+  The address where the contract is deployed on zkSync.
+</ParamField>
+
+<ParamField query="contractname" type="string" required>
+  The contract name, including path if applicable, e.g. `contracts/Verified.sol:Verified`.
+</ParamField>
+
+<ParamField query="compilerversion" type="string" required>
+  The Solidity compiler version used for compilation, e.g. `v0.8.24+commit.e11b9ed9`.
+</ParamField>
+
+<ParamField query="zksolcVersion" type="string" required>
+  The zkSync `zksolc` compiler version used for compilation, e.g. `1.3.13`.
+</ParamField>
+
+<ParamField query="compilermode" type="string" default="zksync">
+  The zkSync compiler mode for processing build artifacts. Use `zksync`.
+</ParamField>
+
+<ParamField query="constructorArguments" type="string">
+  Optional ABI-encoded constructor arguments used during deployment.
+</ParamField>
+
+### Example Request
+
+```bash
+curl -X POST "https://api.etherscan.io/v2/api" \
+  -d "chainid=324" \
+  -d "module=contract" \
+  -d "action=verifysourcecode" \
+  -d "codeformat=solidity-standard-json-input" \
+  -d "sourceCode=<your_source_code_here>" \
+  -d "contractaddress=0xf66f984e0b73453193b452f84c8fff0ed19f6d81" \
+  -d "contractname=contracts/Verified.sol:Verified" \
+  -d "compilerversion=v0.8.24+commit.e11b9ed9" \
+  -d "zksolcVersion=1.3.13" \
+  -d "compilermode=zksync" \
+  -d "constructorArguments=00000000000000000000000074271f2282ed7ee35c166122a60c9830354be42a" \
+  -d "apikey=YourApiKeyToken"
+```
+
+---
+
+## Check Source Code Verification Status
+
+After submitting a verification request, poll this endpoint with the GUID returned in the submission response to determine whether verification succeeded or failed.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID where the verification was submitted. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `contract` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `checkverifystatus` for this endpoint.
+</ParamField>
+
+<ParamField query="guid" type="string" required>
+  The GUID received from the verification submission response, e.g. `x3ryqcqr1zdknhfhkimqmizlcqpxncqc6nrvp3pgrcpfsqedqi`.
+</ParamField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=contract\
+&action=checkverifystatus\
+&guid=x3ryqcqr1zdknhfhkimqmizlcqpxncqc6nrvp3pgrcpfsqedqi\
+&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": "Pass - Verified"
+}
+```
+
+If verification is still pending, `result` will be `"Pending in queue"`. If it failed, `result` will contain the failure reason.

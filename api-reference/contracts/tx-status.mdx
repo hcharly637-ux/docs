@@ -1,0 +1,162 @@
+---
+title: "Check Contract Execution and Transaction Receipt Status"
+sidebarTitle: "Transaction Status"
+description: "Check whether a contract execution succeeded or failed, and retrieve transaction receipt status, using Etherscan transaction status API endpoints."
+---
+
+Etherscan provides two complementary endpoints for checking transaction outcomes. The first tells you whether a contract execution encountered an error and why. The second tells you whether the transaction was included in a block and confirmed successfully. Together they give you a complete picture of a transaction's lifecycle — from execution semantics to on-chain finality.
+
+---
+
+## Check Contract Execution Status
+
+Retrieve the execution result of a specific transaction, including whether it errored and a description of the error. This is especially useful for transactions that were mined but whose contract execution reverted or encountered a bad opcode.
+
+<Warning>
+  A transaction can be **mined successfully** (receipt status `1`) but still have an execution error (e.g. a revert). Use this endpoint to distinguish between the two outcomes. The `isError` field reflects the execution result, not whether the transaction was included in a block.
+</Warning>
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `transaction` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `getstatus` for this endpoint.
+</ParamField>
+
+<ParamField query="txhash" type="string" required>
+  The transaction hash to check the execution status of. Example: `0x15f8e5ea1079d9a0bb04a4c58ae5fe7654b5b2b4463375ff7ffb490aa0032f3a`.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` indicates the API call succeeded, `"0"` indicates a failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success.
+</ResponseField>
+
+<ResponseField name="result" type="object">
+  An object describing the contract execution outcome.
+
+  <Expandable title="result fields">
+    <ResponseField name="isError" type="string">
+      `"0"` if the contract execution completed without errors. `"1"` if the execution encountered an error such as a revert or bad jump destination.
+    </ResponseField>
+
+    <ResponseField name="errDescription" type="string">
+      A human-readable description of the execution error when `isError` is `"1"`, e.g. `"Bad jump destination"` or `"Out of gas"`. Empty string when `isError` is `"0"`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=transaction\
+&action=getstatus\
+&txhash=0x15f8e5ea1079d9a0bb04a4c58ae5fe7654b5b2b4463375ff7ffb490aa0032f3a\
+&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": {
+    "isError": "1",
+    "errDescription": "Bad jump destination"
+  }
+}
+```
+
+---
+
+## Check Transaction Receipt Status
+
+Retrieve the receipt status of a mined transaction. This corresponds to the EIP-658 `status` field in the transaction receipt — `1` for success and `0` for failure. Unlike the contract execution status endpoint above, this only reflects whether the transaction was accepted by the EVM, not the details of any revert.
+
+<Warning>
+  This endpoint only works for transactions on the **Byzantium hard fork** (block 4,370,000 on Ethereum Mainnet) and later, since the `status` field in transaction receipts was introduced in EIP-658. Pre-Byzantium transactions will not return a meaningful status.
+</Warning>
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `transaction` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `gettxreceiptstatus` for this endpoint.
+</ParamField>
+
+<ParamField query="txhash" type="string" required>
+  The transaction hash to look up. Example: `0x513c1ba0bebf66436b5fed86ab668452b7805593c05073eb2d51d3a52f480a76`.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` indicates the API call succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success.
+</ResponseField>
+
+<ResponseField name="result" type="object">
+  An object containing the transaction receipt status.
+
+  <Expandable title="result fields">
+    <ResponseField name="status" type="string">
+      `"1"` if the transaction was executed successfully. `"0"` if the transaction failed (reverted or ran out of gas).
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=transaction\
+&action=gettxreceiptstatus\
+&txhash=0x513c1ba0bebf66436b5fed86ab668452b7805593c05073eb2d51d3a52f480a76\
+&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": {
+    "status": "1"
+  }
+}
+```

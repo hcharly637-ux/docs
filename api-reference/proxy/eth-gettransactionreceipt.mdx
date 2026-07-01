@@ -1,0 +1,158 @@
+---
+title: "eth_getTransactionReceipt: Get Transaction Receipt"
+sidebarTitle: "eth_getTransactionReceipt"
+description: "GET /v2/api?module=proxy&action=eth_getTransactionReceipt — Returns the transaction receipt for a mined transaction, including status, gas used, and event logs."
+---
+
+The `eth_getTransactionReceipt` proxy method returns the receipt generated for a transaction after it has been included in a block. Unlike `eth_getTransactionByHash`, which returns the transaction as submitted, the receipt contains post-execution data — including whether the transaction succeeded or reverted, the exact amount of gas consumed, the contract address if a new contract was deployed, and all event logs emitted during execution.
+
+## Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `proxy` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `eth_getTransactionReceipt` for this endpoint.
+</ParamField>
+
+<ParamField query="txhash" type="string" required>
+  The hash of the mined transaction to retrieve the receipt for, e.g. `0xadb8aec59e80db99811ac4a0235efa3e45da32928bcff557998552250fa672eb`.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="jsonrpc" type="string">
+  The JSON-RPC protocol version, always `"2.0"`.
+</ResponseField>
+
+<ResponseField name="id" type="number">
+  The request identifier echoed back from the call.
+</ResponseField>
+
+<ResponseField name="result" type="object">
+  The transaction receipt object.
+
+  <Expandable title="result fields">
+    <ResponseField name="transactionHash" type="string">
+      The hash of the transaction this receipt belongs to.
+    </ResponseField>
+    <ResponseField name="transactionIndex" type="string">
+      Position of this transaction within its block, as a hex string.
+    </ResponseField>
+    <ResponseField name="blockHash" type="string">
+      Hash of the block in which this transaction was included.
+    </ResponseField>
+    <ResponseField name="blockNumber" type="string">
+      Block number in which this transaction was included, as a hex string.
+    </ResponseField>
+    <ResponseField name="from" type="string">
+      Address of the transaction sender.
+    </ResponseField>
+    <ResponseField name="to" type="string">
+      Address of the recipient, or `null` for contract deployments.
+    </ResponseField>
+    <ResponseField name="contractAddress" type="string">
+      Address of the newly deployed contract if this was a contract creation transaction; otherwise `null`.
+    </ResponseField>
+    <ResponseField name="gasUsed" type="string">
+      Amount of gas actually consumed by this transaction, as a hex string.
+    </ResponseField>
+    <ResponseField name="cumulativeGasUsed" type="string">
+      Total gas used in the block up to and including this transaction, as a hex string.
+    </ResponseField>
+    <ResponseField name="effectiveGasPrice" type="string">
+      The actual gas price paid per unit of gas, in Wei, as a hex string.
+    </ResponseField>
+    <ResponseField name="status" type="string">
+      `"0x1"` if the transaction succeeded, `"0x0"` if it reverted.
+    </ResponseField>
+    <ResponseField name="logs" type="array">
+      Array of event log objects emitted by the transaction.
+
+      <Expandable title="log fields">
+        <ResponseField name="address" type="string">
+          Address of the contract that emitted the event.
+        </ResponseField>
+        <ResponseField name="topics" type="array">
+          Array of indexed log topics, where the first is the event signature hash.
+        </ResponseField>
+        <ResponseField name="data" type="string">
+          ABI-encoded non-indexed log parameters.
+        </ResponseField>
+        <ResponseField name="blockNumber" type="string">
+          Block number in which this log was emitted.
+        </ResponseField>
+        <ResponseField name="transactionHash" type="string">
+          Hash of the transaction that generated this log.
+        </ResponseField>
+        <ResponseField name="logIndex" type="string">
+          Position of this log within the block, as a hex string.
+        </ResponseField>
+        <ResponseField name="removed" type="boolean">
+          `true` if the log was removed due to a chain reorganization; otherwise `false`.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="logsBloom" type="string">
+      Bloom filter of all log entries in this transaction, used for fast log lookups.
+    </ResponseField>
+    <ResponseField name="type" type="string">
+      Transaction type: `"0x0"` for legacy, `"0x1"` for access list, `"0x2"` for EIP-1559.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_getTransactionReceipt&txhash=0xadb8aec59e80db99811ac4a0235efa3e45da32928bcff557998552250fa672eb&apikey=YourApiKeyToken"
+```
+
+## Example Response
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "blockHash": "0x07c17710dbb7514e92341c9f83b4aab700c5dba7c4fb98caadd7926a32e47799",
+    "blockNumber": "0xcf2427",
+    "contractAddress": null,
+    "cumulativeGasUsed": "0xeb67d5",
+    "effectiveGasPrice": "0x1a96b24c26",
+    "from": "0x292f04a44506c2fd49bac032e1ca148c35a478c8",
+    "gasUsed": "0xb41d",
+    "logs": [
+      {
+        "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+        "topics": [
+          "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+          "0x000000000000000000000000292f04a44506c2fd49bac032e1ca148c35a478c8",
+          "0x000000000000000000000000ab6960a6511ff18ed8b8c012cb91c7f637947fc0"
+        ],
+        "data": "0x00000000000000000000000000000000000000000000000000000000013f81a6",
+        "blockNumber": "0xcf2427",
+        "transactionHash": "0xadb8aec59e80db99811ac4a0235efa3e45da32928bcff557998552250fa672eb",
+        "transactionIndex": "0x122",
+        "blockHash": "0x07c17710dbb7514e92341c9f83b4aab700c5dba7c4fb98caadd7926a32e47799",
+        "logIndex": "0xdb",
+        "removed": false
+      }
+    ],
+    "status": "0x1",
+    "to": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+    "transactionHash": "0xadb8aec59e80db99811ac4a0235efa3e45da32928bcff557998552250fa672eb",
+    "transactionIndex": "0x122",
+    "type": "0x2"
+  }
+}
+```

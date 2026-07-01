@@ -1,27 +1,11 @@
 {
-  "$schema": "https://mintlify.com/docs.json",
-  "name": "Etherscan",
+  "projectType": "api-service",
+  "projectName": "Etherscan",
+  "projectDescription": "Etherscan is the leading blockchain explorer, search, API, and analytics platform for Ethereum and 60+ EVM-compatible chains.",
   "theme": "luma",
-  "logo": {
-    "light": "https://media.brand.dev/2ffdfd62-bad9-433b-ba31-e498a660f25c.svg",
-    "dark": "https://media.brand.dev/2ffdfd62-bad9-433b-ba31-e498a660f25c.svg"
-  },
-  "favicon": "https://media.brand.dev/40268469-75f5-41eb-8e17-af760a8875e9.png",
-  "colors": {
-    "primary": "#23345c",
-    "light": "#969595"
-  },
-  "font": {
-    "headings": { "family": "Inter" },
-    "body": { "family": "Inter" }
-  },
-  "navbar": {
-    "primary": {
-      "type": "button",
-      "label": "Get API Key",
-      "href": "https://etherscan.io/apidashboard"
-    }
-  },
+  "primaryColor": "#23345c",
+  "lightColor": "#969595",
+  "darkColor": null,
   "navigation": {
     "tabs": [
       {
@@ -189,5 +173,38 @@
         ]
       }
     ]
-  }
+  },
+  "keyFeatures": [
+    "Unified API V2 with a single key for 60+ EVM chains",
+    "Normal, internal, ERC20, ERC721, and ERC1155 transaction history",
+    "Smart contract ABI retrieval and source code verification",
+    "Gas Oracle and real-time gas price recommendations",
+    "Address metadata: nametags, labels, and entity categorization",
+    "Advanced filters for multi-address transaction queries",
+    "JSON-RPC proxy endpoints (eth_call, eth_getBlockByNumber, etc.)",
+    "Historical token balances, supply, and holder data (PRO)",
+    "Daily network statistics and analytics (PRO)",
+    "Model Context Protocol (MCP) server for AI integration"
+  ],
+  "publicApiSurface": [
+    "GET /v2/api?module=account&action=balance",
+    "GET /v2/api?module=account&action=txlist",
+    "GET /v2/api?module=account&action=txlistinternal",
+    "GET /v2/api?module=token&action=tokentx",
+    "GET /v2/api?module=token&action=tokennfttx",
+    "GET /v2/api?module=token&action=token1155tx",
+    "GET /v2/api?module=contract&action=getabi",
+    "GET /v2/api?module=contract&action=getsourcecode",
+    "GET /v2/api?module=contract&action=getcontractcreation",
+    "POST /v2/api?module=contract&action=verifysourcecode",
+    "GET /v2/api?module=logs&action=getLogs",
+    "GET /v2/api?module=block&action=getblocknobytime",
+    "GET /v2/api?module=gastracker&action=gasoracle",
+    "GET /v2/api?module=stats&action=ethprice",
+    "GET /v2/api?module=stats&action=ethsupply",
+    "GET /v2/api?module=proxy&action=eth_blockNumber",
+    "GET /v2/api?module=proxy&action=eth_getTransactionByHash",
+    "GET /v2/api?module=proxy&action=eth_call",
+    "GET /mcp (Streamable HTTP MCP server)"
+  ]
 }

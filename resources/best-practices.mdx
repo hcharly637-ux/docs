@@ -1,0 +1,75 @@
+---
+title: "Etherscan API Best Practices and Performance Tips"
+sidebarTitle: "Best Practices"
+description: "Optimize your Etherscan API integration with pagination, block range filtering, retry logic, and usage monitoring to avoid rate limits and timeouts."
+---
+
+Following these best practices will help you build a faster, more resilient integration and avoid common pitfalls like rate limit errors, query timeouts, and unexpectedly large result sets.
+
+## Limit Return Results
+
+<Tip>
+  Use the `page` and `offset` parameters to request only the records you need.
+</Tip>
+
+The `offset` parameter controls how many records are returned per request. Requesting thousands of records when you only need the most recent handful significantly increases response time and consumes your daily call quota faster.
+
+For example, if your app needs only the latest 10 transactions for an address, set `offset=10`. Pair it with `page=1` to get the most recent results:
+
+```text
+https://api.etherscan.io/v2/api?chainid=1&module=account&action=txlist&address=0x...&page=1&offset=10&sort=desc&apikey=YourApiKeyToken
+```
+
+## Limit Your Block Range
+
+<Tip>
+  Use the `startblock` and `endblock` parameters whenever your target block range is known.
+</Tip>
+
+Scoping your query to a specific block range significantly reduces query time. If you know the blocks you care about — for example, transactions from the [last 24 hours](/api-reference/blocks/block-by-timestamp) — pass `startblock` and `endblock` explicitly:
+
+```text
+https://api.etherscan.io/v2/api?chainid=1&module=account&action=txlist&address=0x...&startblock=19000000&endblock=latest&apikey=YourApiKeyToken
+```
+
+Use the `latest` keyword for `endblock` to always target the most recent block without hardcoding a value.
+
+## Implement Retry Logic with Backoff
+
+On-chain activity spikes (high transaction TPS) or temporary surges in shared API traffic can occasionally cause request timeouts. Rather than failing immediately, implement **exponential backoff** in your retry logic: wait a short interval after the first failure, then double the wait on each subsequent retry up to a maximum threshold.
+
+A basic pattern:
+
+```javascript
+async function fetchWithRetry(url, maxRetries = 3) {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data.status === "1") return data;
+    } catch (err) {
+      // continue to retry
+    }
+    await new Promise(res => setTimeout(res, Math.pow(2, attempt) * 500));
+  }
+  throw new Error("Max retries exceeded");
+}
+```
+
+If timeouts persist beyond transient spikes, [reach out to support](/resources/contact-us).
+
+## Monitor Your Usage
+
+<Tip>
+  You will receive an email reminder when you approach your API usage limit.
+</Tip>
+
+From your [API Dashboard](https://etherscan.io/apidashboard), you can monitor call volume broken down by IP address and endpoint to spot unexpected spikes or misuse.
+
+For automated monitoring, use the [API Usage](/api-reference/usage/api-usage) endpoint to programmatically check your current usage and daily limit:
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=stats&action=getapilimit&apikey=YourApiKeyToken"
+```
+
+This lets you build alerting into your own infrastructure before hitting your plan ceiling.

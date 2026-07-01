@@ -1,0 +1,142 @@
+---
+title: "Verify and Check Proxy Contract on Etherscan"
+sidebarTitle: "Verify Proxy"
+description: "Submit a proxy contract for verification on Etherscan and check its verification status using the proxy contract verification API endpoints."
+---
+
+Etherscan's proxy verification links a proxy contract to its underlying implementation contract, enabling users to read the implementation's source code and ABI directly from the proxy's contract page. Proxy verification is separate from source code verification — the proxy contract itself must already be source-verified before you can verify it as a proxy. After submitting, use the [Check Proxy Contract Verification Status](#check-proxy-contract-verification-status) endpoint to poll for the result.
+
+<Warning>
+  The proxy contract must have its **source code already verified** on Etherscan before you can submit a proxy verification request. If it is not source-verified, the check status endpoint will return an error indicating this requirement.
+</Warning>
+
+---
+
+## Verify Proxy Contract
+
+Submit a deployed proxy contract address to link it to its implementation on Etherscan. You can optionally specify the expected implementation address to enforce during verification.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `contract` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `verifyproxycontract` for this endpoint.
+</ParamField>
+
+<ParamField query="address" type="string" required>
+  The proxy contract address you want to verify. Example: `0xcbdcd3815b5f975e1a2c944a9b2cd1c985a1cb7f`.
+</ParamField>
+
+<ParamField query="expectedimplementation" type="string">
+  Optional. The expected implementation contract address. If provided, Etherscan will enforce that the proxy resolves to this address during verification.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success, or an error message on failure.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  A GUID string you use to poll the [Check Proxy Contract Verification Status](#check-proxy-contract-verification-status) endpoint.
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=contract\
+&action=verifyproxycontract\
+&address=0xcbdcd3815b5f975e1a2c944a9b2cd1c985a1cb7f\
+&expectedimplementation=0xB0F24CEB2616F6Bb608B00875Db306167c0f2E8C\
+&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": "a7lpxkm9kpcpicx7daftmjifrfhiuhf5vqqnawhkfhzfrcpnxj"
+}
+```
+
+---
+
+## Check Proxy Contract Verification Status
+
+Poll this endpoint with the GUID returned from a proxy verification submission to determine whether the proxy verification succeeded or failed.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID where the verification was submitted. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `contract` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `checkproxyverification` for this endpoint.
+</ParamField>
+
+<ParamField query="guid" type="string" required>
+  The GUID received from the proxy verification request, e.g. `gwgrrnfy56zf6vc1fljuejwg6pelnc5yns6fg6y2i6zfpgzquz`.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` if the proxy verification succeeded, `"0"` if it failed or is pending.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success, `"NOTOK"` on failure.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  A human-readable status message. On success, this confirms the proxy is linked. On failure, this describes the reason — for example, that the proxy's source code is not yet verified.
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=contract\
+&action=checkproxyverification\
+&guid=gwgrrnfy56zf6vc1fljuejwg6pelnc5yns6fg6y2i6zfpgzquz\
+&apikey=YourApiKeyToken"
+```
+
+### Example Response (Failure — proxy not source-verified)
+
+```json
+{
+  "status": "0",
+  "message": "NOTOK",
+  "result": "The proxy contract at 0xcbdcd3815b5f975e1a2c944a9b2cd1c985a1cb7f does not seem to be verified. Please verify and publish the contract source before proceeding with this proxy verification."
+}
+```

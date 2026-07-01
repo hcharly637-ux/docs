@@ -1,0 +1,219 @@
+---
+title: "ERC-1155 Token Transfers Advanced Filter"
+sidebarTitle: "ERC-1155 Filter"
+description: "GET /v2/api?module=accountsFilter&action=token1155tx — Retrieve ERC-1155 multi-token transfers with advanced from and to address filtering."
+---
+
+ERC-1155 is the multi-token standard that supports both fungible and non-fungible tokens within a single contract. Each transfer can involve any quantity of any token ID, making this standard popular for gaming items, digital collectibles, and semi-fungible assets. The Advanced Filter for ERC-1155 transfers lets you query these multi-token movements by both sender (`from`) and receiver (`to`) addresses, optionally scoped to a specific contract, giving you fine-grained visibility into multi-token flows. You can explore and preview this data interactively on the [Etherscan Advanced Filter](https://etherscan.io/advanced-filter) page.
+
+<Warning>
+  This endpoint is currently in **Beta**. Response structure and behavior may change as the feature matures.
+</Warning>
+
+## Query Parameters
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, such as `1` for Ethereum or `8453` for Base. See [supported chains](/supported-chains) for the full list.
+</ParamField>
+
+<ParamField query="module" type="string" default="accountsFilter" required>
+  Set to `accountsFilter` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="token1155tx" required>
+  Set to `token1155tx` for this endpoint.
+</ParamField>
+
+<ParamField query="contractaddress" type="string" default="0x76be3b62873462d2142405439777e971754e8e77">
+  The ERC-1155 token contract address to filter transfers by. Omit to search across all ERC-1155 tokens.
+</ParamField>
+
+<ParamField query="from" type="string" default="0x73605779985A11B8Fe32E6eD5ae5F249FFD0D7f0">
+  The sender address to filter transfers by.
+</ParamField>
+
+<ParamField query="to" type="string" default="0x71c7656ec7ab88b098defb751b7401b5f6d8976f">
+  The recipient address to filter transfers by.
+</ParamField>
+
+<ParamField query="fromto_opr" type="string" default="or">
+  Address filter operator, either `and` or `or`.
+
+  Use `fromto_opr=and` when both `from` and `to` must match. Use `fromto_opr=or` when either `from` or `to` can match.
+</ParamField>
+
+<ParamField query="startblock" type="integer" default="0">
+  Starting block number to search from.
+</ParamField>
+
+<ParamField query="endblock" type="string" default="latest">
+  Ending block number to search to, or `latest` for the latest block.
+</ParamField>
+
+<ParamField query="sort" type="string" default="desc">
+  Sort order, either `desc` for the latest transfers first or `asc` for the oldest transfers first.
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination.
+</ParamField>
+
+<ParamField query="offset" type="integer" default="10">
+  Number of records per page. Use the `page` parameter for subsequent records.
+</ParamField>
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  Returns `1` when the request succeeds, or `0` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Returns `OK` on success, or an error description on failure.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of ERC-1155 token transfer objects matching the filter criteria.
+
+  <Expandable title="result item properties">
+    <ResponseField name="blockNumber" type="string">
+      The block number in which the transfer was included.
+    </ResponseField>
+
+    <ResponseField name="timeStamp" type="string">
+      Unix timestamp of the block.
+    </ResponseField>
+
+    <ResponseField name="hash" type="string">
+      The transaction hash containing this transfer.
+    </ResponseField>
+
+    <ResponseField name="nonce" type="string">
+      The transaction nonce.
+    </ResponseField>
+
+    <ResponseField name="blockHash" type="string">
+      Hash of the block containing this transfer.
+    </ResponseField>
+
+    <ResponseField name="transactionIndex" type="string">
+      Position of the transaction within the block.
+    </ResponseField>
+
+    <ResponseField name="gas" type="string">
+      Gas limit for the transaction.
+    </ResponseField>
+
+    <ResponseField name="gasPrice" type="string">
+      Gas price in Wei.
+    </ResponseField>
+
+    <ResponseField name="gasUsed" type="string">
+      Actual gas consumed by the transaction.
+    </ResponseField>
+
+    <ResponseField name="cumulativeGasUsed" type="string">
+      Cumulative gas used up to this transaction in the block.
+    </ResponseField>
+
+    <ResponseField name="input" type="string">
+      Marked as `deprecated` in transfer records.
+    </ResponseField>
+
+    <ResponseField name="methodId" type="string">
+      The function selector (first 4 bytes of the input data).
+    </ResponseField>
+
+    <ResponseField name="functionName" type="string">
+      The decoded function name, if available.
+    </ResponseField>
+
+    <ResponseField name="contractAddress" type="string">
+      The ERC-1155 contract address.
+    </ResponseField>
+
+    <ResponseField name="from" type="string">
+      The address sending the tokens.
+    </ResponseField>
+
+    <ResponseField name="to" type="string">
+      The address receiving the tokens.
+    </ResponseField>
+
+    <ResponseField name="tokenID" type="string">
+      The token ID transferred within the ERC-1155 contract.
+    </ResponseField>
+
+    <ResponseField name="tokenValue" type="string">
+      The quantity of the token ID transferred.
+    </ResponseField>
+
+    <ResponseField name="tokenName" type="string">
+      The full name of the token collection.
+    </ResponseField>
+
+    <ResponseField name="tokenSymbol" type="string">
+      The ticker symbol of the token collection.
+    </ResponseField>
+
+    <ResponseField name="confirmations" type="string">
+      Number of block confirmations since the transfer.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api
+  ?chainid=1
+  &module=accountsFilter
+  &action=token1155tx
+  &contractaddress=0x76be3b62873462d2142405439777e971754e8e77
+  &to=0x71c7656ec7ab88b098defb751b7401b5f6d8976f
+  &fromto_opr=or
+  &startblock=0
+  &endblock=latest
+  &sort=desc
+  &page=1
+  &offset=10
+  &apikey=YourApiKeyToken"
+```
+
+## Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "blockNumber": "13472395",
+      "timeStamp": "1634973285",
+      "hash": "0x643b15f3ffaad5d38e33e5872b4ebaa7a643eda8b50ffd5331f682934ee65d4d",
+      "nonce": "41",
+      "blockHash": "0xa5da536dfbe8125eb146114e2ee0d0bdef2b20483aacbf30fed6b60f092059e6",
+      "transactionIndex": "100",
+      "gas": "140000",
+      "gasPrice": "52898577246",
+      "gasUsed": "105030",
+      "cumulativeGasUsed": "11739203",
+      "input": "deprecated",
+      "methodId": "0x3e6b214b",
+      "functionName": "",
+      "contractAddress": "0x76be3b62873462d2142405439777e971754e8e77",
+      "from": "0x1e63326a84d2fa207bdfa856da9278a93deba418",
+      "to": "0x83f564d180b58ad9a02a449105568189ee7de8cb",
+      "tokenID": "10371",
+      "tokenValue": "1",
+      "tokenName": "parallel",
+      "tokenSymbol": "LL",
+      "confirmations": "9995266"
+    }
+  ]
+}
+```

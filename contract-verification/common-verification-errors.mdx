@@ -1,0 +1,153 @@
+---
+title: "Common Smart Contract Verification Errors on Etherscan"
+sidebarTitle: "Verification Errors"
+description: "Diagnose and fix the most common Etherscan smart contract source code verification errors including compiler mismatches, constructor arguments, and proxy issues."
+---
+
+Verification errors usually fall into a small number of categories: mismatched compiler settings, missing inputs, or transient issues on Etherscan's end. Use this reference to quickly diagnose what went wrong and how to fix it.
+
+---
+
+### Contract Doesn't Match
+
+<Warning>
+  "Compiled contract deployment bytecode does NOT match the transaction deployment bytecode"
+</Warning>
+
+The submitted source code does not match the contract code deployed on chain.
+
+Common causes include using a different compiler version or enabling a different number of optimisation runs. For an exact match to be found, both the **source code** and the **compiler settings** you specify must exactly match the conditions used during the original deployment so that the same bytecode can be reproduced.
+
+---
+
+### Solidity Compilation Error
+
+<Warning>
+  "Solidity Compilation Error: Identifier not found or not unique"
+</Warning>
+
+A compilation issue occurred due to syntax errors in your Solidity source code.
+
+Consider debugging your contract with a compiler such as [Remix](https://remix.ethereum.org/) or [Hardhat](https://hardhat.org/) and reference the error against Solidity's [official documentation](https://docs.soliditylang.org).
+
+---
+
+### Contract Not Deployed
+
+<Warning>
+  "Unable to locate ContractCode at 0x539a277b12a3f6723f4c1769edb11b0be7c214da"
+</Warning>
+
+The contract has not been deployed at the specified address on the specified chain.
+
+Check the contract address you deployed to, confirm that your deployment transaction succeeded, and verify that the [chainId](/supported-chains) you specified is correct.
+
+Etherscan typically picks up deployments within a few blocks of the chain tip. This may be delayed during periods of high chain activity, but should not exceed a few minutes. [Ping us](/resources/contact-us) if the contract is confirmed deployed with an Etherscan link and the error persists.
+
+---
+
+### Missing or Invalid Library Names
+
+<Warning>
+  "Library was required but suitable match not found"
+</Warning>
+
+A [library](https://solidity-by-example.org/library/) was used in your contract deployment but was not specified, was misspelled, or had the wrong library address.
+
+Double-check your library names (they are **case sensitive** — for example `"PRBMath"`) and ensure that both the library name and the library address are provided correctly.
+
+---
+
+### Missing Contract Name
+
+<Warning>
+  "Unable to locate ContractName , did you specify the correct Contract Name ?"
+</Warning>
+
+A match was not found for the contract name you specified when multiple files are provided.
+
+Ensure you have provided the correct contract name and that you are submitting the **main contract** name — not one of its dependencies.
+
+---
+
+### Missing/Invalid Constructor Arguments
+
+<Warning>
+  "Please check if the correct constructor argument was entered"
+</Warning>
+
+If your contract uses the `constructor` keyword, you must provide the constructor arguments in hex format. If your contract has no constructor arguments, leave this field empty.
+
+You can obtain the correct arguments from your original deployment transaction, or determine them from the [end of your compiled bytecode](https://info.etherscan.com/contract-verification-constructor-arguments/).
+
+---
+
+### Mismatched Bytecode Metadata Hash
+
+<Warning>
+  "Please check if the correct bytecodehash was specified via standard-json verification."
+</Warning>
+
+The [metadata hash](https://docs.soliditylang.org/en/v0.8.17/metadata.html#encoding-of-the-metadata-hash-in-the-bytecode) settings of your submitted source code differ from those used in your original deployment — for example, your deployment used `ipfs` while your submission uses `none`, or vice versa.
+
+Submit your verification using the **solc JSON input format** and [specify the settings](https://github.com/PaulRBerg/hardhat-template/blob/f6406c4e7c9e23d5169b39fb11d528a975b678e6/hardhat.config.ts#L104) explicitly. Note that other submission formats such as single-file or multi-file **do not support** changing this setting and will always use the compiler defaults.
+
+---
+
+### Similar Match Found
+
+<Warning>
+  "This contract already Similar Matches the deployed ByteCode at 0x4200000000000000000000000000000000000042"
+</Warning>
+
+The contract has already been verified via [Similar Match](https://info.etherscan.com/types-of-contract-verification/) to another contract.
+
+If you need this updated to a Full Match, please [reach out](https://info.etherscan.com/update-on-similar-match-contract-verification/) to the Etherscan team.
+
+---
+
+### Unsupported Solc Version
+
+<Warning>
+  "Invalid or not supported solc version, see https://etherscan.io/solcversions for list"
+</Warning>
+
+This error is thrown when you specify an invalid or unsupported version of the Solidity compiler — for example, anything below `v0.4.11-nightly.2017.3.15+`.
+
+[Let us know](/resources/contact-us) if you need to verify a contract compiled with a version below this threshold.
+
+---
+
+### Source Code Already Verified
+
+<Warning>
+  "Source code already verified"
+</Warning>
+
+An [Exact Match](https://info.etherscan.com/types-of-contract-verification/) has already been obtained for this contract. No further action is needed.
+
+If you think this is a mistake, check whether you submitted verification to the correct explorer and chain. A contract verified on Etherscan is **not automatically verified** on other explorers.
+
+---
+
+### Unsupported File Import Callback
+
+<Warning>
+  "Source \"@openzeppelin/contracts/ERC20.sol\" not found: File import callback not supported"
+</Warning>
+
+This error occurs when your contracts reference imports from external sources such as [OpenZeppelin](https://docs.openzeppelin.com/) libraries or GitHub links.
+
+Consider [flattening](https://hardhat.org/hardhat-runner/docs/advanced/flattening#flattening-your-contracts) your source code into a single file, or use the Solidity Standard JSON Input format (provided by tools such as [Hardhat](https://hardhat.org/hardhat-runner/docs/guides/verifying#verifying-your-contracts)) to resolve external imports automatically.
+
+---
+
+### Temporary Error
+
+<Warning>
+  "This could be a temporary error, please retry or contact us (Error Code 10001/10002/10003)"
+</Warning>
+
+Something went wrong on Etherscan's end. This may include downtime or scheduled [maintenance](https://etherscan.freshstatus.io/) windows.
+
+Please retry after a short wait, and [ping us](/resources/contact-us) if the issue continues to persist.

@@ -1,0 +1,48 @@
+---
+title: "Etherscan Metadata Other Attributes Reference"
+sidebarTitle: "Other Attributes"
+description: "Reference for additional address metadata attributes returned by the Etherscan Metadata API, beyond nametags and reputation scores."
+---
+
+In addition to nametags and reputation scores, the Etherscan Metadata API returns a set of supplementary attributes that provide deeper context about an address. Use this reference to understand each attribute header and the values it can carry.
+
+## Attribute Reference
+
+| Header | Description |
+| :----: | ----------- |
+| TT | **Token Type.** Indicates the type of token associated with the address. Possible values: `erc-20` and `nft`. |
+| TR | **Token Reputation.** Indicates the reputation standing of a token. Possible values: `Ok`, `Poor`, `Unsafe`, `Suspicious`, `Spam`, and `BrandInfringement`. |
+| SC | **Verified Smart Contract.** Indicates whether the contract's source code has been verified on Etherscan. |
+| CN | **Contract Name.** The name of the smart contract as registered during verification. |
+| ENS | **Ethereum Name Service.** The ENS name associated with the address, if one exists. |
+
+## Attribute Details
+
+### TT — Token Type
+
+The `TT` attribute identifies whether a token contract is a fungible ERC-20 token or a non-fungible token (NFT). This helps applications display the correct UI and apply appropriate handling logic when interacting with a given address.
+
+### TR — Token Reputation
+
+The `TR` attribute reflects Etherscan's assessment of a token's legitimacy and safety. Use this attribute to surface warnings to users before they interact with or display a token.
+
+| Value | Meaning |
+| ----- | ------- |
+| `Ok` | Token appears legitimate. |
+| `Poor` | Token has low activity or credibility concerns. |
+| `Unsafe` | Interacting with this token carries significant risk. |
+| `Suspicious` | Token exhibits suspicious characteristics. |
+| `Spam` | Token has been identified as spam. |
+| `BrandInfringement` | Token impersonates a known brand or project. |
+
+### SC — Verified Smart Contract
+
+The `SC` attribute indicates whether the address is a smart contract that has had its source code verified on Etherscan. Verified contracts allow users to inspect the code and build greater trust before interacting with a protocol.
+
+### CN — Contract Name
+
+The `CN` attribute contains the human-readable name of a smart contract as submitted during the verification process. This is useful for displaying friendly labels in UIs and analytics dashboards.
+
+### ENS — Ethereum Name Service
+
+The `ENS` attribute returns the ENS name mapped to an address, if one exists. ENS names (e.g., `vitalik.eth`) can be used in place of raw addresses in user-facing interfaces to improve readability.

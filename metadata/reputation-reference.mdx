@@ -1,0 +1,49 @@
+---
+title: "Etherscan Address Reputation Scoring Reference"
+sidebarTitle: "Reputation Scores"
+description: "Reference guide for Etherscan's address reputation scoring system, including score ranges, categories, and how reputation data is used in the Metadata API."
+---
+
+Etherscan assigns a reputation score to addresses to help developers, compliance teams, and end users quickly assess the risk profile of an address before interacting with it. The score is returned as part of the Metadata API response and is sourced from the same dataset that powers Etherscan's explorer address tags.
+
+## Score Reference
+
+| Score | Label | Description |
+| :---: | ----- | ----------- |
+| 0 | `UNKNOWN` | Default state. No reputation information is available for this address. |
+| 1 | `OK` | An OK reputation is not an endorsement, but the address is likely a known or public entity. |
+| 2 | `CAUTION` | Moderate caution is advised when interacting with this address. |
+| 3 | `UNSAFE` | Extreme caution is advised when interacting with this address. |
+
+## Interpreting Scores
+
+### Score 0 — UNKNOWN
+
+An `UNKNOWN` score is the default and simply means Etherscan does not yet have reputation data for this address. This is common for newly deployed contracts or addresses that have not yet been reviewed. Treat unknown addresses with appropriate caution.
+
+### Score 1 — OK
+
+An `OK` score indicates the address is a recognized entity — for example, a well-known protocol, exchange, or public project. This is **not** a safety guarantee or endorsement; it means the address is identifiable and publicly associated with a legitimate activity.
+
+### Score 2 — CAUTION
+
+A `CAUTION` score indicates moderate risk. The address may have been associated with questionable activity, phishing attempts, or other behaviors that warrant user-facing warnings. Display clear warnings before users interact with or send funds to such an address.
+
+### Score 3 — UNSAFE
+
+An `UNSAFE` score indicates extreme risk. The address has been associated with confirmed malicious activity such as scams, hacks, or exploits. Applications should surface strong warnings or block interactions with addresses at this level entirely.
+
+## Using Reputation Scores in Your Application
+
+<Tip>
+  Always pair a reputation score with the address's nametag and category data from the Metadata API for the fullest picture of an address's identity and risk profile.
+</Tip>
+
+When integrating reputation scores into your application, consider the following patterns:
+
+- **Score 0** — Allow interaction, but do not display a trust indicator.
+- **Score 1** — Display a positive or neutral entity label (e.g., a verified badge).
+- **Score 2** — Surface an in-line caution banner before the user proceeds.
+- **Score 3** — Block the interaction or require explicit user acknowledgement of risk.
+
+Reputation data is continuously updated as Etherscan's team reviews and classifies new addresses across all [supported chains](/supported-chains).

@@ -1,0 +1,104 @@
+---
+title: "Get Contract Creator and Creation Transaction Hash"
+sidebarTitle: "Contract Creation"
+description: "GET /v2/api?module=contract&action=getcontractcreation — Retrieves the deployer address and creation transaction hash for up to 5 contract addresses in a single call."
+---
+
+Look up who deployed a contract and which transaction created it. This endpoint accepts up to five comma-separated contract addresses and returns the deployer address, creation transaction hash, block number, timestamp, and creation bytecode for each. It's useful for provenance checks, audit trails, and indexing contract deployments.
+
+## Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key. [Register here](https://etherscan.io/register) to obtain one.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  The chain ID to query. For example, `1` for Ethereum Mainnet or `8453` for Base. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `contract` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `getcontractcreation` for this endpoint.
+</ParamField>
+
+<ParamField query="contractaddresses" type="string" required>
+  A comma-separated list of up to **5** contract addresses to look up. Example: `0xB83c27805aAcA5C7082eB45C868d955Cf04C337F,0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45`.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success, or an error message on failure.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of objects, one per queried contract address.
+
+  <Expandable title="result object fields">
+    <ResponseField name="contractAddress" type="string">
+      The queried contract address (checksummed).
+    </ResponseField>
+
+    <ResponseField name="contractCreator" type="string">
+      The address of the account that deployed the contract.
+    </ResponseField>
+
+    <ResponseField name="txHash" type="string">
+      The transaction hash of the contract creation transaction.
+    </ResponseField>
+
+    <ResponseField name="blockNumber" type="string">
+      The block number in which the contract was created.
+    </ResponseField>
+
+    <ResponseField name="timestamp" type="string">
+      The Unix timestamp of the block in which the contract was created.
+    </ResponseField>
+
+    <ResponseField name="contractFactory" type="string">
+      The factory contract address if the contract was deployed via a factory, otherwise an empty string.
+    </ResponseField>
+
+    <ResponseField name="creationBytecode" type="string">
+      The bytecode submitted in the creation transaction's data field.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=contract\
+&action=getcontractcreation\
+&contractaddresses=0xB83c27805aAcA5C7082eB45C868d955Cf04C337F,0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45\
+&apikey=YourApiKeyToken"
+```
+
+## Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "contractAddress": "0xcbdcd3815b5f975e1a2c944a9b2cd1c985a1cb7f",
+      "contractCreator": "0x3d080421c9dd5fb387d6e3124f7e1c241ade9568",
+      "txHash": "0xdce495a9261c4a2a5d4e879cfb55c060b4616a846d3425c441a9e31aa34c956f",
+      "blockNumber": "10720863",
+      "timestamp": "1598242563",
+      "contractFactory": "",
+      "creationBytecode": "0x602d3d8160093d39f3363d3d373d3d3d363d73c6cf0f044ba8ea402bfedf9e87b88bf1c008d1625af43d82803e903d91602b57fd5bf3"
+    }
+  ]
+}
+```

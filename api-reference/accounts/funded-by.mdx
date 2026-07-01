@@ -1,0 +1,94 @@
+---
+title: "Get Address Funded By (Fund Origin Tracing)"
+sidebarTitle: "Funded By"
+description: "GET /v2/api?module=account&action=fundedby — Retrieves the address and transaction that first funded a specific EOA, useful for tracing fund origins and KYC workflows."
+---
+
+The `fundedby` action returns the address and transaction that first sent funds to a given externally owned account (EOA). This is particularly useful for tracing the origin of funds in compliance, KYC, and anti-money laundering workflows. Note that this endpoint only works for EOA addresses — it is **not available for contract addresses**.
+
+<Warning>
+  This is a **PRO endpoint**, available to the [Standard Plan](/resources/rate-limits) and above. This endpoint is also throttled to **2 calls/second** regardless of API Pro tier.
+</Warning>
+
+## Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=account\
+&action=fundedby\
+&address=0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97\
+&apikey=YourApiKeyToken"
+```
+
+## Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, e.g. `1` for Ethereum, `137` for Polygon. See the full list at [supported chains](/api-reference/chainlist).
+</ParamField>
+
+<ParamField query="module" type="string" default="account" required>
+  Set to `account` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="fundedby" required>
+  Set to `fundedby` for this endpoint.
+</ParamField>
+
+<ParamField query="address" type="string" default="0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97" required>
+  The EOA address to trace, like `0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97`. Contract addresses are not supported.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on error.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success, or an error message string.
+</ResponseField>
+
+<ResponseField name="result" type="object">
+  An object describing the first funding event for the queried address.
+</ResponseField>
+
+<ResponseField name="result.block" type="integer">
+  The block number in which the first funding transaction was included.
+</ResponseField>
+
+<ResponseField name="result.timeStamp" type="string">
+  Unix timestamp of the block containing the first funding transaction.
+</ResponseField>
+
+<ResponseField name="result.fundingAddress" type="string">
+  The address that first sent funds to the queried address.
+</ResponseField>
+
+<ResponseField name="result.fundingTxn" type="string">
+  The transaction hash of the first funding transaction.
+</ResponseField>
+
+<ResponseField name="result.value" type="string">
+  The value sent in the first funding transaction, expressed in wei.
+</ResponseField>
+
+## Response Example
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": {
+    "block": 53708500,
+    "timeStamp": "1708349932",
+    "fundingAddress": "0x6969174fd72466430a46e18234d0b530c9fd5f49",
+    "fundingTxn": "0xbc0ca4a67eb1555920552246409626cd60df01314dd2bcdb99718b506d9c9946",
+    "value": "1000000000000000"
+  }
+}
+```

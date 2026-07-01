@@ -1,0 +1,110 @@
+---
+title: "Etherscan API V2 Reference Overview"
+sidebarTitle: "Overview"
+description: "Etherscan API V2 provides a unified endpoint for 60+ EVM chains. Authenticate with a single API key and query accounts, tokens, contracts, logs, gas, and more."
+---
+
+The Etherscan API V2 is a unified REST API that gives you programmatic access to on-chain data across 60+ EVM-compatible networks — all from a single endpoint and a single API key. Whether you're querying Ethereum Mainnet, Base, Polygon, Arbitrum, or any other supported chain, every request follows the same structure: you specify the target chain, the module, and the action you want to execute.
+
+## Base URL
+
+All V2 API requests are made to the following base URL:
+
+```
+https://api.etherscan.io/v2/api
+```
+
+## How Requests Work
+
+Every request to the Etherscan API V2 is a simple HTTP `GET` call. There are no path segments to construct — all parameters are passed as **query string parameters**. The combination of `module` and `action` determines which endpoint you are calling.
+
+The four required parameters present on every request are:
+
+| Parameter | Description |
+|-----------|-------------|
+| `chainid`  | The numeric ID of the chain you want to query (e.g. `1` for Ethereum Mainnet) |
+| `module`   | The API module to target (e.g. `account`, `contract`, `transaction`) |
+| `action`   | The specific action within that module (e.g. `balance`, `txlist`) |
+| `apikey`   | Your Etherscan API key |
+
+### Generic Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=account\
+&action=balance\
+&address=0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae\
+&tag=latest\
+&apikey=YourApiKeyToken"
+```
+
+## Authentication
+
+You must include your API key on **every request** by appending `&apikey=YourApiKeyToken` to the query string. You can obtain a free API key by registering at [etherscan.io/register](https://etherscan.io/register).
+
+```
+&apikey=YourApiKeyToken
+```
+
+<Note>
+  Keep your API key private. Avoid committing it to public repositories or exposing it in client-side code.
+</Note>
+
+## Multichain Support
+
+To query a specific chain, include the `&chainid=` parameter with the numeric chain ID of the network you want to target. For example, use `&chainid=1` for Ethereum Mainnet or `&chainid=8453` for Base.
+
+```
+&chainid=1
+```
+
+You can retrieve the full list of supported networks — including their chain IDs and dedicated API URLs — by calling the [Chainlist](/api-reference/chainlist) endpoint.
+
+## Response Format
+
+All API responses return a JSON object with three top-level fields:
+
+<ResponseField name="status" type="string">
+  `"1"` indicates a successful response. `"0"` indicates an error or empty result.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A human-readable status message. Typically `"OK"` on success, or a descriptive error string on failure.
+</ResponseField>
+
+<ResponseField name="result" type="string | array | object">
+  The payload returned by the endpoint. The shape of this field varies by endpoint — it may be a plain string, an array of objects, or a single object.
+</ResponseField>
+
+### Success Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": "172774397764084972158218"
+}
+```
+
+### Error Response
+
+```json
+{
+  "status": "0",
+  "message": "NOTOK",
+  "result": "Error! Invalid address format"
+}
+```
+
+<Note>
+  A `status` of `"0"` does not always indicate a server error — it can also mean no records were found for your query (e.g. an address with no transactions). Always inspect the `message` field for context.
+</Note>
+
+## Rate Limits
+
+Request rate limits vary by API plan tier. Free accounts are subject to lower limits than Pro accounts. See [Rate Limits](/resources/rate-limits) for the full breakdown.
+
+## Error Handling
+
+For a complete list of error codes, messages, and recommended actions, see [Common Error Messages](/resources/common-error-messages).

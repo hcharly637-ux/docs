@@ -1,0 +1,279 @@
+---
+title: "eth_getTransactionByHash: Get Transaction Details"
+sidebarTitle: "eth_getTransactionByHash"
+description: "GET /v2/api?module=proxy&action=eth_getTransactionByHash — Returns full transaction details by hash, including block number, from/to addresses, value, and gas fields."
+---
+
+These three proxy endpoints let you look up transaction data from different access paths: by transaction hash, by block position, or by address nonce. Together, they cover the most common patterns for inspecting transaction details — whether you're building an explorer, a wallet dashboard, or an on-chain analytics tool.
+
+---
+
+## eth_getTransactionByHash
+
+Returns the full details of a transaction identified by its hash. The response includes all standard transaction fields — sender, recipient, value, gas parameters, and signature components.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `proxy` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `eth_getTransactionByHash` for this endpoint.
+</ParamField>
+
+<ParamField query="txhash" type="string" required>
+  The transaction hash to query, e.g. `0xbc78ab8a9e9a0bca7d0321a27b2c03addeae08ba81ea98b03cd3dd237eabed44`.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="jsonrpc" type="string">
+  The JSON-RPC protocol version, always `"2.0"`.
+</ResponseField>
+
+<ResponseField name="id" type="number">
+  The request identifier echoed back from the call.
+</ResponseField>
+
+<ResponseField name="result" type="object">
+  The full transaction object.
+
+  <Expandable title="result fields">
+    <ResponseField name="hash" type="string">
+      The transaction hash.
+    </ResponseField>
+    <ResponseField name="blockHash" type="string">
+      Hash of the block in which this transaction was included.
+    </ResponseField>
+    <ResponseField name="blockNumber" type="string">
+      Block number in which this transaction was included, as a hex string.
+    </ResponseField>
+    <ResponseField name="from" type="string">
+      Address of the sender.
+    </ResponseField>
+    <ResponseField name="to" type="string">
+      Address of the recipient, or `null` for contract creation transactions.
+    </ResponseField>
+    <ResponseField name="value" type="string">
+      Amount of ETH transferred in Wei, as a hex string.
+    </ResponseField>
+    <ResponseField name="gas" type="string">
+      Gas limit provided by the sender, as a hex string.
+    </ResponseField>
+    <ResponseField name="gasPrice" type="string">
+      Gas price in Wei the sender was willing to pay, as a hex string.
+    </ResponseField>
+    <ResponseField name="maxFeePerGas" type="string">
+      Maximum total fee per gas unit the sender is willing to pay (EIP-1559), as a hex string.
+    </ResponseField>
+    <ResponseField name="maxPriorityFeePerGas" type="string">
+      Maximum priority fee (tip) per gas the sender offers to the validator (EIP-1559), as a hex string.
+    </ResponseField>
+    <ResponseField name="nonce" type="string">
+      The number of transactions sent from the sender address prior to this one, as a hex string.
+    </ResponseField>
+    <ResponseField name="transactionIndex" type="string">
+      Position of this transaction within its block, as a hex string.
+    </ResponseField>
+    <ResponseField name="input" type="string">
+      Encoded call data sent with the transaction.
+    </ResponseField>
+    <ResponseField name="type" type="string">
+      Transaction type: `"0x0"` for legacy, `"0x1"` for access list, `"0x2"` for EIP-1559.
+    </ResponseField>
+    <ResponseField name="chainId" type="string">
+      The chain ID to prevent replay attacks, as a hex string.
+    </ResponseField>
+    <ResponseField name="v" type="string">
+      Recovery identifier of the ECDSA signature.
+    </ResponseField>
+    <ResponseField name="r" type="string">
+      R component of the ECDSA signature.
+    </ResponseField>
+    <ResponseField name="s" type="string">
+      S component of the ECDSA signature.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_getTransactionByHash&txhash=0xbc78ab8a9e9a0bca7d0321a27b2c03addeae08ba81ea98b03cd3dd237eabed44&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "blockHash": "0xf850331061196b8f2b67e1f43aaa9e69504c059d3d3fb9547b04f9ed4d141ab7",
+    "blockNumber": "0xcf2420",
+    "from": "0x00192fb10df37c9fb26829eb2cc623cd1bf599e8",
+    "gas": "0x5208",
+    "gasPrice": "0x19f017ef49",
+    "maxFeePerGas": "0x1f6ea08600",
+    "maxPriorityFeePerGas": "0x3b9aca00",
+    "hash": "0xbc78ab8a9e9a0bca7d0321a27b2c03addeae08ba81ea98b03cd3dd237eabed44",
+    "input": "0x",
+    "nonce": "0x33b79d",
+    "to": "0xc67f4e626ee4d3f272c2fb31bad60761ab55ed9f",
+    "transactionIndex": "0x5b",
+    "value": "0x19755d4ce12c00",
+    "type": "0x2",
+    "chainId": "0x1",
+    "v": "0x0",
+    "r": "0xa681faea68ff81d191169010888bbbe90ec3eb903e31b0572cd34f13dae281b9",
+    "s": "0x3f59b0fa5ce6cf38aff2cfeb68e7a503ceda2a72b4442c7e2844d63544383e3"
+  }
+}
+```
+
+---
+
+## eth_getTransactionByBlockNumberAndIndex
+
+Returns a transaction's details by specifying the block it belongs to and its index position within that block. This is useful when you're iterating over all transactions in a block and need to retrieve them one by one.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `proxy` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `eth_getTransactionByBlockNumberAndIndex` for this endpoint.
+</ParamField>
+
+<ParamField query="tag" type="string" required>
+  The block number in hexadecimal format, e.g. `0xC6331D`.
+</ParamField>
+
+<ParamField query="index" type="string" required>
+  The transaction's index position within the block, in hexadecimal, e.g. `0x11A`.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="jsonrpc" type="string">
+  The JSON-RPC protocol version, always `"2.0"`.
+</ResponseField>
+
+<ResponseField name="id" type="number">
+  The request identifier echoed back from the call.
+</ResponseField>
+
+<ResponseField name="result" type="object">
+  The full transaction object. Fields are identical to those returned by `eth_getTransactionByHash`.
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_getTransactionByBlockNumberAndIndex&tag=0xC6331D&index=0x11A&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "blockHash": "0x13c5311a78b9a8790c58f1d0d0660226352a498cc98b06e1861f1967d3a9d1b4",
+    "blockNumber": "0xc6331d",
+    "from": "0xd1af036d589b6ebfbaa184b339a30d32ef611708",
+    "gas": "0x11170",
+    "gasPrice": "0x5b7e259a7",
+    "hash": "0xc7ef51f0bfe85eefbb1d4d88f5a39e82fbfc94987d8cbcb515f74d80b6e44902",
+    "input": "0x2d2da806000000000000000000000000d1af036d589b6ebfbaa184b339a30d32ef611708",
+    "nonce": "0x0",
+    "to": "0xabea9132b05a70803a4e85094fd0e1800777fbef",
+    "transactionIndex": "0x11a",
+    "value": "0x57930b5db6a000",
+    "type": "0x2",
+    "chainId": "0x1"
+  }
+}
+```
+
+---
+
+## eth_getTransactionCount
+
+Returns the total number of transactions sent from a given address, also known as the account nonce. You can use this to determine the next nonce when constructing a new transaction for that address.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `proxy` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `eth_getTransactionCount` for this endpoint.
+</ParamField>
+
+<ParamField query="address" type="string" required>
+  The Ethereum address to query, e.g. `0x4bd5900Cb274ef15b153066D736bf3e83A9ba44e`.
+</ParamField>
+
+<ParamField query="tag" type="string" default="latest">
+  Block reference: `latest`, `earliest`, `pending`, or a block number in hexadecimal.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="jsonrpc" type="string">
+  The JSON-RPC protocol version, always `"2.0"`.
+</ResponseField>
+
+<ResponseField name="id" type="number">
+  The request identifier echoed back from the call.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  The nonce (transaction count) for the given address at the specified block, as a hexadecimal string.
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_getTransactionCount&address=0x4bd5900Cb274ef15b153066D736bf3e83A9ba44e&tag=latest&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": "0x73"
+}
+```

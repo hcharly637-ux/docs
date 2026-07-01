@@ -1,0 +1,142 @@
+---
+title: "Get ERC-20 Token Total Supply"
+sidebarTitle: "Token Supply"
+description: "GET /v2/api?module=stats&action=tokensupply — Retrieves the circulating supply of an ERC-20 token, with optional historical supply at a given block height (PRO)."
+---
+
+These endpoints let you query the total circulating supply of any ERC-20 token — either at the current tip of the chain, or as it stood at a specific historical block height. Current supply is available on all plans; historical supply requires a Standard plan or above.
+
+---
+
+## Current ERC-20 Token Total Supply
+
+Returns the amount of an ERC-20 token currently in circulation for the given contract address.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken">
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base from our [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" default="stats">
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="tokensupply">
+  Set to `tokensupply` for this endpoint.
+</ParamField>
+
+<ParamField query="contractaddress" type="string" default="0x57d90b64a1a57749b0f932f1a3395792e12e7055">
+  Contract address of the ERC-20 token.
+</ParamField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=stats\
+&action=tokensupply\
+&contractaddress=0x57d90b64a1a57749b0f932f1a3395792e12e7055\
+&apikey=YourApiKeyToken"
+```
+
+### Response
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success, or an error description on failure.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  Total circulating supply in the token's smallest unit. Divide by `10^tokenDecimal` to convert to a human-readable value.
+</ResponseField>
+
+<ResponseExample>
+```json Response
+{
+  "status": "1",
+  "message": "OK",
+  "result": "21265524714464"
+}
+```
+</ResponseExample>
+
+---
+
+## Historical ERC-20 Token Total Supply by Block
+
+<Warning>
+  This is a PRO endpoint available to the Standard plan and above. This endpoint is also throttled to **2 calls/second** regardless of API Pro tier.
+</Warning>
+
+Returns the amount of an ERC-20 token that was in circulation at a specific historical block height. This is useful for tracking token emission schedules, burn events, or supply at a particular snapshot date.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken">
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base from our [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" default="stats">
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="tokensupplyhistory">
+  Set to `tokensupplyhistory` for this endpoint.
+</ParamField>
+
+<ParamField query="contractaddress" type="string" default="0x57d90b64a1a57749b0f932f1a3395792e12e7055">
+  Contract address of the ERC-20 token.
+</ParamField>
+
+<ParamField query="blockno" type="integer" default="8000000">
+  Block number to check total supply for.
+</ParamField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=stats\
+&action=tokensupplyhistory\
+&contractaddress=0x57d90b64a1a57749b0f932f1a3395792e12e7055\
+&blockno=8000000\
+&apikey=YourApiKeyToken"
+```
+
+### Response
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success, or an error description on failure.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  Total circulating supply at the specified block, in the token's smallest unit. Divide by `10^tokenDecimal` to convert to a human-readable value.
+</ResponseField>
+
+<ResponseExample>
+```json Response
+{
+  "status": "1",
+  "message": "OK",
+  "result": "21265524714464"
+}
+```
+</ResponseExample>

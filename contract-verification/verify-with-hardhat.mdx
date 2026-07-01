@@ -1,0 +1,107 @@
+---
+title: "Verify Smart Contracts with Hardhat on Etherscan"
+sidebarTitle: "Hardhat"
+description: "Step-by-step guide to deploying and verifying Solidity smart contracts on Etherscan using Hardhat 3 and the hardhat-verify plugin."
+---
+
+[Hardhat](https://hardhat.org/) is a smart contracts development tool, perfect if you're familiar with JavaScript or TypeScript. This guide walks you through installing the verification plugin, configuring your project, and verifying contracts on Etherscan — both during deployment and after the fact.
+
+<Info>
+  This guide covers Hardhat 3. There is an official [**migration guide**](https://hardhat.org/docs/hardhat3/migration) from the Hardhat team if you are upgrading from an earlier version.
+</Info>
+
+## Prerequisites
+
+This guide assumes you already have a [Hardhat 3 project](https://hardhat.org/docs/getting-started) set up and are ready to deploy and verify your contracts.
+
+## Install
+
+Install the `hardhat-verify` plugin via npm.
+
+```bash
+npm add --save-dev @nomicfoundation/hardhat-verify
+```
+
+## Config
+
+In `hardhat.config.ts`, import the plugin at the top and add it to the list of `plugins`.
+
+Then specify a `verify` config block with your Etherscan API key. This key works for most [supported chains](/supported-chains). If you are targeting a chain not yet supported by Hardhat's defaults, see the [Custom Chains](#custom-chains) section below.
+
+```ts
+import { defineConfig } from "hardhat/config";
+import hardhatVerify from "@nomicfoundation/hardhat-verify";
+
+export default defineConfig({
+  plugins: [
+    hardhatVerify,
+    // ...other plugins...
+  ],
+  solidity: "0.8.28",
+  networks: {
+    sepolia: {
+      url: configVariable("SEPOLIA_RPC_URL"),
+      accounts: [configVariable("SEPOLIA_PRIVATE_KEY")],
+    },
+  },
+  verify: {
+    etherscan: {
+      apiKey: "YourEtherscanApiKey",
+    },
+  },
+});
+```
+
+## Deploy and Verify (using Hardhat Ignition)
+
+You can deploy and verify your contract in a single command using Hardhat Ignition. Pass the `--verify` flag to automatically submit your source code to Etherscan after deployment.
+
+```bash
+npx hardhat ignition deploy ignition/modules/Counter.ts --network sepolia --verify
+```
+
+## Verify an Existing Contract
+
+If you have already deployed a contract and want to verify it after the fact, use the `hardhat verify` command with the contract's address.
+
+```bash
+npx hardhat verify --network sepolia 0xdCBdBAA8404554502B433106e62728B659aCfE3b
+```
+
+## Custom Chains
+
+For new chains that have an Etherscan explorer but are not yet supported by Hardhat's defaults, you need to add both the `networks` entry and a `chainDescriptors` entry to `hardhat.config.ts`.
+
+The example below shows how to configure Monad Testnet.
+
+```ts
+export default defineConfig({
+  // ...
+  networks: {
+    monadTestnet: {
+      type: "http",
+      chainType: "l1",
+      url: configVariable("MONAD_TESTNET_RPC_URL"),
+      accounts: [configVariable("MONAD_TESTNET_PRIVATE_KEY")],
+    },
+  },
+  chainDescriptors: {
+    10143: {
+      name: "monadTestnet",
+      blockExplorers: {
+        etherscan: {
+          name: "Monad Testnet Explorer",
+          url: "https://testnet.monadscan.com",
+          apiUrl: "https://api.etherscan.io/v2/api",
+        },
+      },
+    },
+  },
+});
+```
+
+Use the same deploy and verify command as before, substituting your custom network name for `--network`.
+
+```bash
+npx hardhat ignition deploy ignition/modules/Counter.ts --network monadTestnet --verify
+```

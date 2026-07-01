@@ -1,0 +1,137 @@
+---
+title: "Get Nametag and Metadata for an Ethereum Address"
+sidebarTitle: "Get Address Tag"
+description: "GET /v2/api?module=nametag&action=getaddresstag — Returns the nametag, labels, and metadata associated with an Ethereum address, such as exchange labels and entity names."
+---
+
+The **Get Address Tag** endpoint returns the nametag, labels, and associated metadata for one or more Ethereum addresses. You can look up details such as the entity name, public URL, reputation score, and label slugs (e.g. `exchange`, `coinbase`) for any address that Etherscan has indexed. This is especially useful for enriching transaction data with human-readable identity information.
+
+<Warning>
+  This is a **Pro Plus** endpoint, available exclusively to the [Pro Plus tier](https://etherscan.io/apis). It is throttled to **2 calls/second** regardless of your API Pro tier.
+</Warning>
+
+## Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key. Defaults to `YourApiKeyToken`.
+</ParamField>
+
+<ParamField query="chainid" type="string" required>
+  The chain ID to query. Use `1` for Ethereum Mainnet, `8453` for Base, or any other chain from the [supported chains](/supported-chains) list.
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `nametag` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `getaddresstag` for this endpoint.
+</ParamField>
+
+<ParamField query="address" type="string" required>
+  The Ethereum address to query, e.g. `0x0000db5C8B030AE20308AC975898E09741E70000`. You may supply up to **100 addresses** per call as a comma-separated list.
+</ParamField>
+
+## Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=nametag\
+&action=getaddresstag\
+&address=0xa9d1e08c7793af67e9d92fe308d5697fb81d3e43\
+&apikey=YourApiKeyToken"
+```
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  Returns `"1"` on success or `"0"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A human-readable status message, e.g. `"OK"`.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of address tag objects, one per queried address.
+
+  <ResponseField name="address" type="string">
+    The queried Ethereum address.
+  </ResponseField>
+
+  <ResponseField name="nametag" type="string">
+    The public-facing nametag for the address, e.g. `"Coinbase 10"`.
+  </ResponseField>
+
+  <ResponseField name="internal_nametag" type="string">
+    An internal nametag for the address, if available. May be empty.
+  </ResponseField>
+
+  <ResponseField name="url" type="string">
+    The official website URL associated with the address entity, e.g. `"https://coinbase.com"`. May be empty.
+  </ResponseField>
+
+  <ResponseField name="shortdescription" type="string">
+    A short description of the entity. May be empty.
+  </ResponseField>
+
+  <ResponseField name="notes_1" type="string">
+    Additional notes about the address. May be empty.
+  </ResponseField>
+
+  <ResponseField name="notes_2" type="string">
+    Secondary notes about the address. May be empty.
+  </ResponseField>
+
+  <ResponseField name="labels" type="array">
+    A list of human-readable label names applied to the address, e.g. `["Coinbase", "Exchange"]`.
+  </ResponseField>
+
+  <ResponseField name="labels_slug" type="array">
+    A list of URL-friendly label slugs corresponding to the `labels` array, e.g. `["coinbase", "exchange"]`.
+  </ResponseField>
+
+  <ResponseField name="reputation" type="integer">
+    A numeric reputation score for the address. A value of `0` indicates neutral; higher values may indicate negative reputation (e.g. scam or phishing).
+  </ResponseField>
+
+  <ResponseField name="other_attributes" type="array">
+    An array of any additional structured attributes associated with the address. May be empty.
+  </ResponseField>
+
+  <ResponseField name="lastupdatedtimestamp" type="integer">
+    Unix timestamp of when this address tag was last updated, e.g. `1721899658`.
+  </ResponseField>
+</ResponseField>
+
+## Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "address": "0xa9d1e08c7793af67e9d92fe308d5697fb81d3e43",
+      "nametag": "Coinbase 10",
+      "internal_nametag": "",
+      "url": "https://coinbase.com",
+      "shortdescription": "",
+      "notes_1": "",
+      "notes_2": "",
+      "labels": [
+        "Coinbase",
+        "Exchange"
+      ],
+      "labels_slug": [
+        "coinbase",
+        "exchange"
+      ],
+      "reputation": 0,
+      "other_attributes": [],
+      "lastupdatedtimestamp": 1721899658
+    }
+  ]
+}
+```

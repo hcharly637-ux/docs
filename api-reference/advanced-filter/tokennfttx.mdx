@@ -1,0 +1,219 @@
+---
+title: "ERC-721 NFT Transfers Advanced Filter"
+sidebarTitle: "ERC-721 Filter"
+description: "GET /v2/api?module=accountsFilter&action=tokennfttx — Retrieve ERC-721 NFT token transfers with advanced from and to address filtering for precise NFT flow analysis."
+---
+
+ERC-721 tokens are non-fungible tokens (NFTs) — each token is unique and identified by a distinct token ID. The Advanced Filter for ERC-721 transfers enables you to query NFT movements by both sender (`from`) and receiver (`to`) addresses simultaneously, with optional scoping to a specific NFT contract. Whether you are tracking provenance of a specific collection, auditing wallet activity, or building NFT analytics, this endpoint gives you precise control over which transfers you retrieve. You can explore and preview this data interactively on the [Etherscan Advanced Filter](https://etherscan.io/advanced-filter) page.
+
+<Warning>
+  This endpoint is currently in **Beta**. Response structure and behavior may change as the feature matures.
+</Warning>
+
+## Query Parameters
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, such as `1` for Ethereum or `8453` for Base. See [supported chains](/supported-chains) for the full list.
+</ParamField>
+
+<ParamField query="module" type="string" default="accountsFilter" required>
+  Set to `accountsFilter` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="tokennfttx" required>
+  Set to `tokennfttx` for this endpoint.
+</ParamField>
+
+<ParamField query="contractaddress" type="string" default="0x06012c8cf97bead5deae237070f9587f8e7a266d">
+  The ERC-721 NFT contract address to filter transfers by. Omit to search across all ERC-721 tokens.
+</ParamField>
+
+<ParamField query="from" type="string" default="0x73605779985A11B8Fe32E6eD5ae5F249FFD0D7f0">
+  The sender address to filter transfers by.
+</ParamField>
+
+<ParamField query="to" type="string" default="0x71c7656ec7ab88b098defb751b7401b5f6d8976f">
+  The recipient address to filter transfers by.
+</ParamField>
+
+<ParamField query="fromto_opr" type="string" default="or">
+  Address filter operator, either `and` or `or`.
+
+  Use `fromto_opr=and` when both `from` and `to` must match. Use `fromto_opr=or` when either `from` or `to` can match.
+</ParamField>
+
+<ParamField query="startblock" type="integer" default="0">
+  Starting block number to search from.
+</ParamField>
+
+<ParamField query="endblock" type="string" default="latest">
+  Ending block number to search to, or `latest` for the latest block.
+</ParamField>
+
+<ParamField query="sort" type="string" default="desc">
+  Sort order, either `desc` for the latest transfers first or `asc` for the oldest transfers first.
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination.
+</ParamField>
+
+<ParamField query="offset" type="integer" default="10">
+  Number of records per page. Use the `page` parameter for subsequent records.
+</ParamField>
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  Returns `1` when the request succeeds, or `0` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Returns `OK` on success, or an error description on failure.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of ERC-721 NFT transfer objects matching the filter criteria.
+
+  <Expandable title="result item properties">
+    <ResponseField name="blockNumber" type="string">
+      The block number in which the transfer was included.
+    </ResponseField>
+
+    <ResponseField name="timeStamp" type="string">
+      Unix timestamp of the block.
+    </ResponseField>
+
+    <ResponseField name="hash" type="string">
+      The transaction hash containing this transfer.
+    </ResponseField>
+
+    <ResponseField name="nonce" type="string">
+      The transaction nonce.
+    </ResponseField>
+
+    <ResponseField name="blockHash" type="string">
+      Hash of the block containing this transfer.
+    </ResponseField>
+
+    <ResponseField name="from" type="string">
+      The address sending the NFT.
+    </ResponseField>
+
+    <ResponseField name="contractAddress" type="string">
+      The ERC-721 contract address of the NFT collection.
+    </ResponseField>
+
+    <ResponseField name="to" type="string">
+      The address receiving the NFT.
+    </ResponseField>
+
+    <ResponseField name="tokenID" type="string">
+      The unique token ID of the transferred NFT.
+    </ResponseField>
+
+    <ResponseField name="tokenName" type="string">
+      The full name of the NFT collection.
+    </ResponseField>
+
+    <ResponseField name="tokenSymbol" type="string">
+      The ticker symbol of the NFT collection.
+    </ResponseField>
+
+    <ResponseField name="tokenDecimal" type="string">
+      The decimal precision of the token (typically `0` for NFTs).
+    </ResponseField>
+
+    <ResponseField name="transactionIndex" type="string">
+      Position of the transaction within the block.
+    </ResponseField>
+
+    <ResponseField name="gas" type="string">
+      Gas limit for the transaction.
+    </ResponseField>
+
+    <ResponseField name="gasPrice" type="string">
+      Gas price in Wei.
+    </ResponseField>
+
+    <ResponseField name="gasUsed" type="string">
+      Actual gas consumed by the transaction.
+    </ResponseField>
+
+    <ResponseField name="cumulativeGasUsed" type="string">
+      Cumulative gas used up to this transaction in the block.
+    </ResponseField>
+
+    <ResponseField name="input" type="string">
+      Marked as `deprecated` in transfer records.
+    </ResponseField>
+
+    <ResponseField name="methodId" type="string">
+      The function selector (first 4 bytes of the input data).
+    </ResponseField>
+
+    <ResponseField name="functionName" type="string">
+      The decoded function name, if available.
+    </ResponseField>
+
+    <ResponseField name="confirmations" type="string">
+      Number of block confirmations since the transfer.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api
+  ?chainid=1
+  &module=accountsFilter
+  &action=tokennfttx
+  &contractaddress=0x06012c8cf97bead5deae237070f9587f8e7a266d
+  &to=0x71c7656ec7ab88b098defb751b7401b5f6d8976f
+  &fromto_opr=or
+  &startblock=0
+  &endblock=latest
+  &sort=desc
+  &page=1
+  &offset=10
+  &apikey=YourApiKeyToken"
+```
+
+## Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "blockNumber": "4708120",
+      "timeStamp": "1512907118",
+      "hash": "0x031e6968a8de362e4328d60dcc7f72f0d6fc84284c452f63176632177146de66",
+      "nonce": "0",
+      "blockHash": "0x4be19c278bfaead5cb0bc9476fa632e2447f6e6259e0303af210302d22779a24",
+      "from": "0xb1690c08e213a35ed9bab7b318de14420fb57d8c",
+      "contractAddress": "0x06012c8cf97bead5deae237070f9587f8e7a266d",
+      "to": "0x6975be450864c02b4613023c2152ee0743572325",
+      "tokenID": "202106",
+      "tokenName": "CryptoKitties",
+      "tokenSymbol": "CK",
+      "tokenDecimal": "0",
+      "transactionIndex": "81",
+      "gas": "158820",
+      "gasPrice": "40000000000",
+      "gasUsed": "60508",
+      "cumulativeGasUsed": "4880352",
+      "input": "deprecated",
+      "methodId": "0x454a2ab3",
+      "functionName": "bid(uint256 _tokenId)",
+      "confirmations": "18759540"
+    }
+  ]
+}
+```

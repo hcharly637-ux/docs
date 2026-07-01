@@ -1,0 +1,169 @@
+---
+title: "Get Event Logs by Contract Address"
+sidebarTitle: "Logs by Address"
+description: "GET /v2/api?module=logs&action=getLogs — Retrieves event logs emitted by a specific contract address, with optional block range filtering and pagination."
+---
+
+Retrieve all event logs emitted by a specific contract address, optionally filtered to a block range. This is the simplest form of log query — you specify an address and a block window, and Etherscan returns all matching log entries with full topic and data payloads. Use the `page` and `offset` parameters to paginate through large result sets.
+
+<Warning>
+  **Effective July 1, 2026**, the maximum records returned per request will be reduced from 10,000 to 1,000 for Free tier API users. See the full list of [affected endpoints](https://docs.etherscan.io/changelog#upcoming-change-reduced-maximum-records-per-request-on-the-free-api-tier).
+</Warning>
+
+## Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `logs` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `getLogs` for this endpoint.
+</ParamField>
+
+<ParamField query="address" type="string" required>
+  The contract address to retrieve logs from. Example: `0xbd3531da5cf5857e7cfaa92426877b022e612cf8`.
+</ParamField>
+
+<ParamField query="fromBlock" type="integer" default="12878196">
+  The starting block number (inclusive) to retrieve logs from.
+</ParamField>
+
+<ParamField query="toBlock" type="integer" default="12878196">
+  The ending block number (inclusive) to retrieve logs up to. Use `latest` to query to the most recently mined block.
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  The page number for paginating through results.
+</ParamField>
+
+<ParamField query="offset" type="integer" default="100">
+  The number of log records per page. Increase this to retrieve more records per call, up to the tier limit.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of log entry objects.
+
+  <Expandable title="log entry fields">
+    <ResponseField name="address" type="string">
+      The contract address that emitted the log.
+    </ResponseField>
+
+    <ResponseField name="topics" type="array">
+      An array of up to four 32-byte indexed topics. `topics[0]` is typically the keccak-256 hash of the event signature.
+    </ResponseField>
+
+    <ResponseField name="data" type="string">
+      The ABI-encoded non-indexed event parameters as a hex string. `"0x"` if the event has no non-indexed data.
+    </ResponseField>
+
+    <ResponseField name="blockNumber" type="string">
+      The block number in which the log was emitted, as a hex string.
+    </ResponseField>
+
+    <ResponseField name="blockHash" type="string">
+      The hash of the block in which the log was emitted.
+    </ResponseField>
+
+    <ResponseField name="timeStamp" type="string">
+      The Unix timestamp of the block, as a hex string.
+    </ResponseField>
+
+    <ResponseField name="gasPrice" type="string">
+      The gas price of the transaction that emitted this log, as a hex string in wei.
+    </ResponseField>
+
+    <ResponseField name="gasUsed" type="string">
+      The total gas used by the transaction that emitted this log, as a hex string.
+    </ResponseField>
+
+    <ResponseField name="logIndex" type="string">
+      The index of this log within the block, as a hex string.
+    </ResponseField>
+
+    <ResponseField name="transactionHash" type="string">
+      The hash of the transaction that emitted this log.
+    </ResponseField>
+
+    <ResponseField name="transactionIndex" type="string">
+      The index of the transaction within the block, as a hex string.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=logs\
+&action=getLogs\
+&address=0xbd3531da5cf5857e7cfaa92426877b022e612cf8\
+&fromBlock=12878196\
+&toBlock=12878196\
+&page=1\
+&offset=100\
+&apikey=YourApiKeyToken"
+```
+
+## Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "address": "0xbd3531da5cf5857e7cfaa92426877b022e612cf8",
+      "topics": [
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+        "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "0x000000000000000000000000c45a4b3b698f21f88687548e7f5a80df8b99d93d",
+        "0x00000000000000000000000000000000000000000000000000000000000000b5"
+      ],
+      "data": "0x",
+      "blockNumber": "0xc48174",
+      "blockHash": "0x837e109ab8b1b40ec7d1032bff82397325d85e719b97d900fa0d9aa9745b2c27",
+      "timeStamp": "0x60f9ce56",
+      "gasPrice": "0x2e90edd000",
+      "gasUsed": "0x247205",
+      "logIndex": "0x",
+      "transactionHash": "0x4ffd22d986913d33927a392fe4319bcd2b62f3afe1c15a2c59f77fc2cc4c20a9",
+      "transactionIndex": "0x"
+    },
+    {
+      "address": "0xbd3531da5cf5857e7cfaa92426877b022e612cf8",
+      "topics": [
+        "0x645f26e653c951cec836533f8fe0616d301c20a17153debc17d7c3dbe4f32b28",
+        "0x00000000000000000000000000000000000000000000000000000000000000b5"
+      ],
+      "data": "0x",
+      "blockNumber": "0xc48174",
+      "blockHash": "0x837e109ab8b1b40ec7d1032bff82397325d85e719b97d900fa0d9aa9745b2c27",
+      "timeStamp": "0x60f9ce56",
+      "gasPrice": "0x2e90edd000",
+      "gasUsed": "0x247205",
+      "logIndex": "0x1",
+      "transactionHash": "0x4ffd22d986913d33927a392fe4319bcd2b62f3afe1c15a2c59f77fc2cc4c20a9",
+      "transactionIndex": "0x"
+    }
+  ]
+}
+```

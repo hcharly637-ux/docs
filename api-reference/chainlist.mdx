@@ -1,0 +1,94 @@
+---
+title: "Chainlist API: Get All Supported Etherscan Networks"
+sidebarTitle: "Chainlist"
+description: "GET /v2/api?module=chainid&action=chainlist — Returns the full list of all Etherscan-supported mainnet and testnet chain IDs and their API URLs."
+---
+
+The Chainlist endpoint returns every network supported by the Etherscan V2 API, including both mainnets and testnets. You can use this endpoint programmatically to discover valid chain IDs before constructing requests to other endpoints, or to build chain-selector UIs in your application.
+
+## Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=chainid\
+&action=chainlist\
+&apikey=YourApiKeyToken"
+```
+
+## Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key. Append `&apikey=YourApiKeyToken` to every request.
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `chainid` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `chainlist` for this endpoint.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on error.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success, or an error message string.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of chain objects, one per supported network.
+</ResponseField>
+
+<ResponseField name="result[].chainname" type="string">
+  The human-readable name of the chain (e.g. `"Ethereum Mainnet"`).
+</ResponseField>
+
+<ResponseField name="result[].chainid" type="string">
+  The numeric chain ID as a string (e.g. `"1"` for Ethereum, `"137"` for Polygon).
+</ResponseField>
+
+<ResponseField name="result[].blockexplorer" type="string">
+  The URL of the block explorer for that chain (e.g. `"https://etherscan.io"`).
+</ResponseField>
+
+<ResponseField name="result[].apiurl" type="string">
+  The dedicated API URL for that chain, which can also be used as an alternative to the V2 unified endpoint.
+</ResponseField>
+
+## Response Example
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "chainname": "Ethereum Mainnet",
+      "chainid": "1",
+      "blockexplorer": "https://etherscan.io",
+      "apiurl": "https://api.etherscan.io/api"
+    },
+    {
+      "chainname": "Base Mainnet",
+      "chainid": "8453",
+      "blockexplorer": "https://basescan.org",
+      "apiurl": "https://api.basescan.org/api"
+    },
+    {
+      "chainname": "Polygon Mainnet",
+      "chainid": "137",
+      "blockexplorer": "https://polygonscan.com",
+      "apiurl": "https://api.polygonscan.com/api"
+    }
+  ]
+}
+```
+
+<Note>
+  The `chainid` value from this response is what you pass as the `&chainid=` parameter in all other V2 API requests.
+</Note>

@@ -1,0 +1,288 @@
+---
+title: "Daily Gas Statistics: Limit, Used, and Average Price"
+sidebarTitle: "Daily Gas Stats"
+description: "Retrieve daily gas analytics including average gas limit, total gas used, and average gas price over a date range. PRO endpoints for Standard plan and above."
+---
+
+These three endpoints give you a comprehensive view of daily gas activity on the Ethereum network. You can track how the block gas limit has evolved, measure the total gas consumed by all transactions each day, and observe the spread of min, max, and average gas prices. All three endpoints share the same date-range and sort parameters, making it easy to pull consistent time-series data across all three metrics.
+
+<Warning>
+  All endpoints on this page are **PRO** and require a [Standard Plan](/resources/rate-limits) or above to access.
+</Warning>
+
+---
+
+## Get Daily Average Gas Limit
+
+Retrieves the daily average gas limit across all blocks for a given date range. The gas limit determines the maximum amount of computational work that can fit in a single block.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `dailyavggaslimit` for this endpoint.
+</ParamField>
+
+<ParamField query="startdate" type="string" required>
+  Start of the date range in `yyyy-MM-dd` format, e.g. `2019-02-01`.
+</ParamField>
+
+<ParamField query="enddate" type="string" required>
+  End of the date range in `yyyy-MM-dd` format, e.g. `2019-02-28`.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order: `asc` for oldest-first or `desc` for newest-first.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on error.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A short status message such as `"OK"`.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of daily gas limit records.
+
+  <Expandable title="result item fields">
+    <ResponseField name="UTCDate" type="string">
+      The date of the record in `yyyy-MM-dd` format.
+    </ResponseField>
+    <ResponseField name="unixTimeStamp" type="string">
+      Unix timestamp corresponding to the start of the UTC day.
+    </ResponseField>
+    <ResponseField name="gasLimit" type="string">
+      The average gas limit across all blocks on that day.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=stats&action=dailyavggaslimit&startdate=2019-02-01&enddate=2019-02-28&sort=asc&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "UTCDate": "2019-02-01",
+      "unixTimeStamp": "1548979200",
+      "gasLimit": "8001360"
+    },
+    {
+      "UTCDate": "2019-02-02",
+      "unixTimeStamp": "1549065600",
+      "gasLimit": "8001269"
+    }
+  ]
+}
+```
+
+---
+
+## Get Ethereum Daily Total Gas Used
+
+Retrieves the total gas consumed by all transactions on the network each day. This metric reflects the overall level of on-chain activity and demand for block space.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `dailygasused` for this endpoint.
+</ParamField>
+
+<ParamField query="startdate" type="string" required>
+  Start of the date range in `yyyy-MM-dd` format, e.g. `2019-02-01`.
+</ParamField>
+
+<ParamField query="enddate" type="string" required>
+  End of the date range in `yyyy-MM-dd` format, e.g. `2019-02-28`.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order: `asc` for oldest-first or `desc` for newest-first.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on error.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A short status message such as `"OK"`.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of daily gas used records.
+
+  <Expandable title="result item fields">
+    <ResponseField name="UTCDate" type="string">
+      The date of the record in `yyyy-MM-dd` format.
+    </ResponseField>
+    <ResponseField name="unixTimeStamp" type="string">
+      Unix timestamp corresponding to the start of the UTC day.
+    </ResponseField>
+    <ResponseField name="gasUsed" type="string">
+      Total gas units consumed by all transactions on that day.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=stats&action=dailygasused&startdate=2019-02-01&enddate=2019-02-28&sort=asc&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "UTCDate": "2019-02-01",
+      "unixTimeStamp": "1548979200",
+      "gasUsed": "32761450415"
+    },
+    {
+      "UTCDate": "2019-02-02",
+      "unixTimeStamp": "1549065600",
+      "gasUsed": "30168904532"
+    }
+  ]
+}
+```
+
+---
+
+## Get Daily Average Gas Price
+
+Retrieves the minimum, maximum, and average gas price paid across all transactions on a given day, expressed in Wei. This helps you understand the historical gas price environment and compare it to current conditions.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `dailyavggasprice` for this endpoint.
+</ParamField>
+
+<ParamField query="startdate" type="string" required>
+  Start of the date range in `yyyy-MM-dd` format, e.g. `2019-02-01`.
+</ParamField>
+
+<ParamField query="enddate" type="string" required>
+  End of the date range in `yyyy-MM-dd` format, e.g. `2019-02-28`.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order: `asc` for oldest-first or `desc` for newest-first.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on error.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A short status message such as `"OK"`.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of daily gas price records.
+
+  <Expandable title="result item fields">
+    <ResponseField name="UTCDate" type="string">
+      The date of the record in `yyyy-MM-dd` format.
+    </ResponseField>
+    <ResponseField name="unixTimeStamp" type="string">
+      Unix timestamp corresponding to the start of the UTC day.
+    </ResponseField>
+    <ResponseField name="maxGasPrice_Wei" type="string">
+      The highest gas price paid by any transaction that day, in Wei.
+    </ResponseField>
+    <ResponseField name="minGasPrice_Wei" type="string">
+      The lowest gas price paid by any transaction that day, in Wei.
+    </ResponseField>
+    <ResponseField name="avgGasPrice_Wei" type="string">
+      The average gas price paid across all transactions that day, in Wei.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=stats&action=dailyavggasprice&startdate=2019-02-01&enddate=2019-02-28&sort=asc&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "UTCDate": "2019-02-01",
+      "unixTimeStamp": "1548979200",
+      "maxGasPrice_Wei": "60814303896257",
+      "minGasPrice_Wei": "432495",
+      "avgGasPrice_Wei": "13234562600"
+    },
+    {
+      "UTCDate": "2019-02-02",
+      "unixTimeStamp": "1549065600",
+      "maxGasPrice_Wei": "20000000000000",
+      "minGasPrice_Wei": "2352",
+      "avgGasPrice_Wei": "12000569516"
+    }
+  ]
+}
+```

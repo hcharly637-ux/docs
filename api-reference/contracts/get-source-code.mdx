@@ -1,0 +1,153 @@
+---
+title: "Get Verified Smart Contract Source Code"
+sidebarTitle: "Get Source Code"
+description: "GET /v2/api?module=contract&action=getsourcecode — Retrieves the verified Solidity/Vyper source code, ABI, compiler settings, and constructor arguments for a smart contract."
+---
+
+Retrieve the full verified source code for a smart contract, along with its ABI, compiler configuration, constructor arguments, and metadata such as the license type and proxy status. This endpoint is useful for auditing contracts, building developer tooling, or reproducing a deterministic compilation.
+
+<Warning>
+  Only verified contracts return source code. If you call this endpoint against an unverified contract, the `result` array will contain an entry with `"ABI": "Contract source code not verified"`.
+</Warning>
+
+## Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key. [Register here](https://etherscan.io/register) to obtain one.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  The chain ID to query. For example, `1` for Ethereum Mainnet or `8453` for Base. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `contract` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `getsourcecode` for this endpoint.
+</ParamField>
+
+<ParamField query="address" type="string" required>
+  The contract address whose source code you want to retrieve. Example: `0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413`.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success, or an error message on failure.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array containing one object with the contract's full details.
+
+  <Expandable title="result object fields">
+    <ResponseField name="SourceCode" type="string">
+      The full Solidity or Vyper source code of the contract. For multi-file projects, this will be a JSON-encoded string wrapped in double braces (`{{ }}`).
+    </ResponseField>
+
+    <ResponseField name="ABI" type="string">
+      A JSON-encoded string of the contract's ABI. Parse with `JSON.parse()` to use.
+    </ResponseField>
+
+    <ResponseField name="ContractName" type="string">
+      The name of the contract as defined in the source code.
+    </ResponseField>
+
+    <ResponseField name="CompilerVersion" type="string">
+      The exact Solidity or Vyper compiler version used, e.g. `v0.4.26+commit.4563c3fc`.
+    </ResponseField>
+
+    <ResponseField name="CompilerType" type="string">
+      The compiler type, e.g. `solc` or `vyper`.
+    </ResponseField>
+
+    <ResponseField name="OptimizationUsed" type="string">
+      `"1"` if compiler optimization was enabled, `"0"` if not.
+    </ResponseField>
+
+    <ResponseField name="Runs" type="string">
+      The number of optimizer runs configured at compile time, e.g. `"200"`.
+    </ResponseField>
+
+    <ResponseField name="ConstructorArguments" type="string">
+      ABI-encoded constructor arguments used at deployment. Empty string if there were no constructor arguments.
+    </ResponseField>
+
+    <ResponseField name="EVMVersion" type="string">
+      The EVM version targeted by the compiler, e.g. `"Default"`, `"byzantium"`, `"shanghai"`.
+    </ResponseField>
+
+    <ResponseField name="Library" type="string">
+      Linked library addresses, if any.
+    </ResponseField>
+
+    <ResponseField name="ContractFileName" type="string">
+      The file name of the contract, if available.
+    </ResponseField>
+
+    <ResponseField name="LicenseType" type="string">
+      The open-source license associated with the source code, e.g. `"MIT"` or `"None"`.
+    </ResponseField>
+
+    <ResponseField name="Proxy" type="string">
+      `"1"` if this contract is a proxy, `"0"` otherwise.
+    </ResponseField>
+
+    <ResponseField name="Implementation" type="string">
+      The implementation contract address if this is a proxy contract. Empty string if not a proxy.
+    </ResponseField>
+
+    <ResponseField name="SwarmSource" type="string">
+      The Swarm/IPFS content hash of the contract metadata, if embedded in bytecode.
+    </ResponseField>
+
+    <ResponseField name="SimilarMatch" type="string">
+      Address of a similar previously-verified contract, if one was detected.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=contract\
+&action=getsourcecode\
+&address=0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413\
+&apikey=YourApiKeyToken"
+```
+
+## Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "SourceCode": "pragma solidity 0.4.26;\r\n\r\ncontract Test12345 {\r\n    string public test;\r\n    \r\n    function enterValue(string _c) {\r\n        test = _c;\r\n    }\r\n}",
+      "ABI": "[{\"constant\":false,\"inputs\":[{\"name\":\"_c\",\"type\":\"string\"}],\"name\":\"enterValue\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"test\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}]",
+      "ContractName": "Test12345",
+      "CompilerVersion": "v0.4.26+commit.4563c3fc",
+      "CompilerType": "solc",
+      "OptimizationUsed": "1",
+      "Runs": "200",
+      "ConstructorArguments": "",
+      "EVMVersion": "Default",
+      "Library": "",
+      "ContractFileName": "",
+      "LicenseType": "None",
+      "Proxy": "0",
+      "Implementation": "",
+      "SwarmSource": "bzzr://f6b932198e10e83a6c872406a4252cf5eea48f37bac9a33085eba887820370cf",
+      "SimilarMatch": "0x60810f4d8a618edb533a168e790ab6c09b0e7707"
+    }
+  ]
+}
+```

@@ -1,0 +1,187 @@
+---
+title: "eth_getBlockByNumber: Get Block Information"
+sidebarTitle: "eth_getBlockByNumber"
+description: "GET /v2/api?module=proxy&action=eth_getBlockByNumber — Returns block details including transactions list for a given block number via Etherscan's JSON-RPC proxy."
+---
+
+These two proxy endpoints give you access to block-level data by number. Use `eth_getBlockByNumber` to retrieve the full block object — including header fields, miner address, gas metrics, and the list of transactions. Use `eth_getBlockTransactionCountByNumber` when you only need a fast count of how many transactions were included in a specific block.
+
+---
+
+## eth_getBlockByNumber
+
+Returns block details for a given block number including all header fields and the list of transactions. You can choose to receive full transaction objects or only transaction hashes, depending on your use case.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `proxy` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `eth_getBlockByNumber` for this endpoint.
+</ParamField>
+
+<ParamField query="tag" type="string" required>
+  The block number in hexadecimal format, e.g. `0x10d4f`, or the string `"latest"` for the most recent block.
+</ParamField>
+
+<ParamField query="boolean" type="string" required>
+  Set to `true` to return full transaction objects or `false` to return only transaction hashes.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="jsonrpc" type="string">
+  The JSON-RPC protocol version, always `"2.0"`.
+</ResponseField>
+
+<ResponseField name="id" type="number">
+  The request identifier echoed back from the call.
+</ResponseField>
+
+<ResponseField name="result" type="object">
+  The full block object.
+
+  <Expandable title="result fields">
+    <ResponseField name="number" type="string">
+      Block number as a hex string.
+    </ResponseField>
+    <ResponseField name="hash" type="string">
+      Hash of this block.
+    </ResponseField>
+    <ResponseField name="parentHash" type="string">
+      Hash of the parent block.
+    </ResponseField>
+    <ResponseField name="miner" type="string">
+      Address of the validator or miner who produced this block.
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      Unix timestamp for when the block was produced, as a hex string.
+    </ResponseField>
+    <ResponseField name="gasLimit" type="string">
+      Maximum gas allowed in this block, as a hex string.
+    </ResponseField>
+    <ResponseField name="gasUsed" type="string">
+      Total gas consumed by all transactions in this block, as a hex string.
+    </ResponseField>
+    <ResponseField name="transactions" type="array">
+      Array of transaction hashes (if `boolean=false`) or full transaction objects (if `boolean=true`).
+    </ResponseField>
+    <ResponseField name="difficulty" type="string">
+      Difficulty target for this block, as a hex string (pre-Merge only).
+    </ResponseField>
+    <ResponseField name="nonce" type="string">
+      Proof-of-work nonce (pre-Merge only).
+    </ResponseField>
+    <ResponseField name="uncles" type="array">
+      Array of uncle block hashes included in this block.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_getBlockByNumber&tag=0x10d4f&boolean=true&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "difficulty": "0x1d95715bd14",
+    "extraData": "0x",
+    "gasLimit": "0x2fefd8",
+    "gasUsed": "0x5208",
+    "hash": "0x7eb7c23a5ac2f2d70aa1ba4e5c56d89de5ac993590e5f6e79c394e290d998ba8",
+    "miner": "0xf927a40c8b7f6e07c5af7fa2155b4864a4112b13",
+    "nonce": "0xc60a782e2e69ce22",
+    "number": "0x10d4f",
+    "parentHash": "0xf8d01370e6e274f8188954fbee435b40c35b2ad3d4ab671f6d086cd559e48f04",
+    "timestamp": "0x55c9ea07",
+    "transactions": [
+      {
+        "blockHash": "0x7eb7c23a5ac2f2d70aa1ba4e5c56d89de5ac993590e5f6e79c394e290d998ba8",
+        "blockNumber": "0x10d4f",
+        "from": "0x4458f86353b4740fe9e09071c23a7437640063c9",
+        "gas": "0x5208",
+        "gasPrice": "0xba43b7400",
+        "hash": "0xa442249820de6be754da81eafbd44a865773e4b23d7c0522d31fd03977823008",
+        "to": "0xbf3403210f9802205f426759947a80a9fda71b1e",
+        "value": "0xaa9f075c200000"
+      }
+    ],
+    "uncles": []
+  }
+}
+```
+
+---
+
+## eth_getBlockTransactionCountByNumber
+
+Returns the number of transactions included in a block identified by its block number. This is a lightweight alternative to `eth_getBlockByNumber` when you only need the transaction count without fetching the full block.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `proxy` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `eth_getBlockTransactionCountByNumber` for this endpoint.
+</ParamField>
+
+<ParamField query="tag" type="string" required>
+  The block number in hexadecimal format, e.g. `0x10FB78`.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="jsonrpc" type="string">
+  The JSON-RPC protocol version, always `"2.0"`.
+</ResponseField>
+
+<ResponseField name="id" type="number">
+  The request identifier echoed back from the call.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  The number of transactions in the specified block, as a hexadecimal string.
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_getBlockTransactionCountByNumber&tag=0x10FB78&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": "0x3"
+}
+```

@@ -1,0 +1,201 @@
+---
+title: "eth_call and eth_estimateGas: Execute and Estimate Calls"
+sidebarTitle: "eth_call"
+description: "Execute a read-only smart contract call (eth_call) or estimate gas usage for a transaction (eth_estimateGas) via the Etherscan JSON-RPC proxy."
+---
+
+These three proxy endpoints give you tools for interacting with smart contracts and querying current network gas conditions. Use `eth_call` to execute a read-only message call against a contract without broadcasting a transaction — ideal for reading on-chain state. Use `eth_estimateGas` to predict the gas cost of a transaction before sending it. Use `eth_gasPrice` to retrieve the current network gas price in Wei.
+
+---
+
+## eth_call
+
+Executes a new message call immediately, without creating a transaction on the blockchain. This is the standard way to invoke view or pure functions on a smart contract and read their return values. The call is executed against the state at the specified block.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `proxy` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `eth_call` for this endpoint.
+</ParamField>
+
+<ParamField query="to" type="string" required>
+  The address of the contract to call, e.g. `0xAEEF46DB4855E25702F8237E8f403FddcaF931C0`.
+</ParamField>
+
+<ParamField query="data" type="string" required>
+  The ABI-encoded call data, consisting of the 4-byte function selector followed by encoded parameters, e.g. `0x70a08231000000000000000000000000e16359506c028e51f16be38986ec5746251e9724`.
+</ParamField>
+
+<ParamField query="tag" type="string" default="latest">
+  Block reference for state context: `latest`, `earliest`, `pending`, or a block number in hexadecimal.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="jsonrpc" type="string">
+  The JSON-RPC protocol version, always `"2.0"`.
+</ResponseField>
+
+<ResponseField name="id" type="number">
+  The request identifier echoed back from the call.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  The ABI-encoded return value from the contract call, as a hex string. Decode this using the contract's ABI to get the actual return value.
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_call&to=0xAEEF46DB4855E25702F8237E8f403FddcaF931C0&data=0x70a08231000000000000000000000000e16359506c028e51f16be38986ec5746251e9724&tag=latest&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": "0x00000000000000000000000000000000000000000000000000601d8888141c00"
+}
+```
+
+---
+
+## eth_estimateGas
+
+Estimates the amount of gas required to execute a transaction without actually submitting it to the network. You can use this to set an appropriate gas limit before broadcasting a transaction, reducing the risk of out-of-gas failures.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `proxy` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `eth_estimateGas` for this endpoint.
+</ParamField>
+
+<ParamField query="data" type="string" required>
+  ABI-encoded call data for the transaction, e.g. `0x4e71d92d`.
+</ParamField>
+
+<ParamField query="to" type="string" required>
+  The recipient address for the transaction, e.g. `0xf0160428a8552ac9bb7e050d90eeade4ddd52843`.
+</ParamField>
+
+<ParamField query="value" type="string">
+  The amount of ETH to send with the transaction in hex Wei, e.g. `0xff22`.
+</ParamField>
+
+<ParamField query="gasPrice" type="string">
+  Gas price to use for the estimation in Wei, as a hex string, e.g. `0x51da038cc`.
+</ParamField>
+
+<ParamField query="gas" type="string">
+  Gas limit to set for the estimation as a hex string, e.g. `0x5f5e0ff`.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="jsonrpc" type="string">
+  The JSON-RPC protocol version, always `"2.0"`.
+</ResponseField>
+
+<ResponseField name="id" type="number">
+  The request identifier echoed back from the call.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  The estimated gas required for the transaction, as a hexadecimal string. Add a safety buffer (e.g. 10–20%) before using this as your transaction gas limit.
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_estimateGas&data=0x4e71d92d&to=0xf0160428a8552ac9bb7e050d90eeade4ddd52843&value=0xff22&gasPrice=0x51da038cc&gas=0x5f5e0ff&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": "0x66ac"
+}
+```
+
+---
+
+## eth_gasPrice
+
+Returns the current gas price on the network in Wei, as reported by the node. Use this alongside `eth_estimateGas` to compute the total estimated cost of a transaction.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `proxy` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `eth_gasPrice` for this endpoint.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="jsonrpc" type="string">
+  The JSON-RPC protocol version, always `"2.0"`.
+</ResponseField>
+
+<ResponseField name="id" type="number">
+  The request identifier echoed back from the call.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  The current gas price in Wei, as a hexadecimal string. For example, `"0x1d9d2db2"` equals approximately 499 million Wei, or ~0.5 Gwei.
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_gasPrice&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 73,
+  "result": "0x1d9d2db2"
+}
+```

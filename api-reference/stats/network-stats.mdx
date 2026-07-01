@@ -1,0 +1,497 @@
+---
+title: "Daily Network Statistics: Transactions, Addresses, and Fees"
+sidebarTitle: "Network Stats"
+description: "Retrieve daily Ethereum network statistics including transaction counts, new address counts, network utilization, average hash rate, mining difficulty, and daily fees. PRO."
+---
+
+These PRO endpoints give you a comprehensive historical view of Ethereum network activity and health over time. You can query daily transaction volumes, new address creation rates, block space utilization, mining power, proof-of-work difficulty, and the total fees paid to validators — all scoped to any date range you choose. Each endpoint shares the same date-range and sort parameters for consistency.
+
+<Warning>
+  All endpoints on this page are **PRO** and require a [Standard Plan](/resources/rate-limits) or above to access.
+</Warning>
+
+---
+
+## Daily Transaction Count
+
+Retrieves the number of transactions processed on the network for each day in a given date range. Use this to track adoption trends, identify high-traffic periods, and correlate network activity with market events.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `dailytx` for this endpoint.
+</ParamField>
+
+<ParamField query="startdate" type="string" required>
+  Start of the date range in `yyyy-MM-dd` format, e.g. `2019-02-01`.
+</ParamField>
+
+<ParamField query="enddate" type="string" required>
+  End of the date range in `yyyy-MM-dd` format, e.g. `2019-02-28`.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order: `asc` for oldest-first or `desc` for newest-first.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="result" type="array">
+  An array of daily transaction count records.
+
+  <Expandable title="result item fields">
+    <ResponseField name="UTCDate" type="string">
+      The date of the record in `yyyy-MM-dd` format.
+    </ResponseField>
+    <ResponseField name="unixTimeStamp" type="string">
+      Unix timestamp for the start of the UTC day.
+    </ResponseField>
+    <ResponseField name="transactionCount" type="number">
+      Total number of transactions processed on that day.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=stats&action=dailytx&startdate=2019-02-01&enddate=2019-02-28&sort=asc&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "UTCDate": "2019-02-01",
+      "unixTimeStamp": "1548979200",
+      "transactionCount": 498856
+    },
+    {
+      "UTCDate": "2019-02-02",
+      "unixTimeStamp": "1549065600",
+      "transactionCount": 450314
+    }
+  ]
+}
+```
+
+---
+
+## Daily New Address Count
+
+Retrieves the number of unique new addresses created on the network each day. Tracking new address creation helps you gauge network growth and the pace of new user or contract onboarding.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `dailynewaddress` for this endpoint.
+</ParamField>
+
+<ParamField query="startdate" type="string" required>
+  Start of the date range in `yyyy-MM-dd` format, e.g. `2019-02-01`.
+</ParamField>
+
+<ParamField query="enddate" type="string" required>
+  End of the date range in `yyyy-MM-dd` format, e.g. `2019-02-28`.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order: `asc` for oldest-first or `desc` for newest-first.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="result" type="array">
+  An array of daily new address count records.
+
+  <Expandable title="result item fields">
+    <ResponseField name="UTCDate" type="string">
+      The date of the record in `yyyy-MM-dd` format.
+    </ResponseField>
+    <ResponseField name="unixTimeStamp" type="string">
+      Unix timestamp for the start of the UTC day.
+    </ResponseField>
+    <ResponseField name="newAddressCount" type="number">
+      Number of new unique addresses that appeared on-chain that day.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=stats&action=dailynewaddress&startdate=2019-02-01&enddate=2019-02-28&sort=asc&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "UTCDate": "2019-02-01",
+      "unixTimeStamp": "1548979200",
+      "newAddressCount": 54081
+    },
+    {
+      "UTCDate": "2019-02-02",
+      "unixTimeStamp": "1549065600",
+      "newAddressCount": 65152
+    }
+  ]
+}
+```
+
+---
+
+## Daily Network Utilization
+
+Retrieves the average daily percentage of available block space (gas limit) that was actually used. A value near `1.0` indicates the network was running at full capacity, while lower values suggest spare throughput was available.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `dailynetutilization` for this endpoint.
+</ParamField>
+
+<ParamField query="startdate" type="string" required>
+  Start of the date range in `yyyy-MM-dd` format, e.g. `2019-02-01`.
+</ParamField>
+
+<ParamField query="enddate" type="string" required>
+  End of the date range in `yyyy-MM-dd` format, e.g. `2019-02-28`.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order: `asc` for oldest-first or `desc` for newest-first.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="result" type="array">
+  An array of daily network utilization records.
+
+  <Expandable title="result item fields">
+    <ResponseField name="UTCDate" type="string">
+      The date of the record in `yyyy-MM-dd` format.
+    </ResponseField>
+    <ResponseField name="unixTimeStamp" type="string">
+      Unix timestamp for the start of the UTC day.
+    </ResponseField>
+    <ResponseField name="networkUtilization" type="string">
+      Average ratio of gas used to gas limit for that day, expressed as a decimal between 0 and 1.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=stats&action=dailynetutilization&startdate=2019-02-01&enddate=2019-02-28&sort=asc&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "UTCDate": "2019-02-01",
+      "unixTimeStamp": "1548979200",
+      "networkUtilization": "0.8464"
+    },
+    {
+      "UTCDate": "2019-02-02",
+      "unixTimeStamp": "1549065600",
+      "networkUtilization": "0.7687"
+    }
+  ]
+}
+```
+
+---
+
+## Daily Average Network Hash Rate
+
+Retrieves the historical daily average hash rate of the Ethereum network. This data is relevant for the pre-Merge proof-of-work era and reflects the total mining power directed at the network.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `dailyavghashrate` for this endpoint.
+</ParamField>
+
+<ParamField query="startdate" type="string" required>
+  Start of the date range in `yyyy-MM-dd` format, e.g. `2019-02-01`.
+</ParamField>
+
+<ParamField query="enddate" type="string" required>
+  End of the date range in `yyyy-MM-dd` format, e.g. `2019-02-28`.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order: `asc` for oldest-first or `desc` for newest-first.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="result" type="array">
+  An array of daily hash rate records.
+
+  <Expandable title="result item fields">
+    <ResponseField name="UTCDate" type="string">
+      The date of the record in `yyyy-MM-dd` format.
+    </ResponseField>
+    <ResponseField name="unixTimeStamp" type="string">
+      Unix timestamp for the start of the UTC day.
+    </ResponseField>
+    <ResponseField name="networkHashRate" type="string">
+      The average network hash rate on that day, in GH/s.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=stats&action=dailyavghashrate&startdate=2019-02-01&enddate=2019-02-28&sort=asc&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "UTCDate": "2019-02-01",
+      "unixTimeStamp": "1548979200",
+      "networkHashRate": "143116.0140"
+    },
+    {
+      "UTCDate": "2019-02-02",
+      "unixTimeStamp": "1549065600",
+      "networkHashRate": "143036.2313"
+    }
+  ]
+}
+```
+
+---
+
+## Daily Average Network Difficulty
+
+Returns the historical daily average mining difficulty of the Ethereum network. Like hash rate, this data covers the pre-Merge proof-of-work period and reflects how hard it was to mine a block on any given day.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `dailyavgnetdifficulty` for this endpoint.
+</ParamField>
+
+<ParamField query="startdate" type="string" required>
+  Start of the date range in `yyyy-MM-dd` format, e.g. `2019-02-01`.
+</ParamField>
+
+<ParamField query="enddate" type="string" required>
+  End of the date range in `yyyy-MM-dd` format, e.g. `2019-02-28`.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order: `asc` for oldest-first or `desc` for newest-first.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="result" type="array">
+  An array of daily network difficulty records.
+
+  <Expandable title="result item fields">
+    <ResponseField name="UTCDate" type="string">
+      The date of the record in `yyyy-MM-dd` format.
+    </ResponseField>
+    <ResponseField name="unixTimeStamp" type="string">
+      Unix timestamp for the start of the UTC day.
+    </ResponseField>
+    <ResponseField name="networkDifficulty" type="string">
+      The average network difficulty on that day, in TH.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=stats&action=dailyavgnetdifficulty&startdate=2019-02-01&enddate=2019-02-28&sort=asc&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "UTCDate": "2019-02-01",
+      "unixTimeStamp": "1548979200",
+      "networkDifficulty": "2,408.028"
+    },
+    {
+      "UTCDate": "2019-02-02",
+      "unixTimeStamp": "1549065600",
+      "networkDifficulty": "2,358.910"
+    }
+  ]
+}
+```
+
+---
+
+## Daily Network Transaction Fee
+
+Retrieves the total transaction fees paid to validators (or miners, pre-Merge) each day, expressed in ETH. This is the aggregate of all gas fees collected across every transaction in a given day and is a useful proxy for network revenue.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `dailytxnfee` for this endpoint.
+</ParamField>
+
+<ParamField query="startdate" type="string" required>
+  Start of the date range in `yyyy-MM-dd` format, e.g. `2019-02-01`.
+</ParamField>
+
+<ParamField query="enddate" type="string" required>
+  End of the date range in `yyyy-MM-dd` format, e.g. `2019-02-28`.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order: `asc` for oldest-first or `desc` for newest-first.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="result" type="array">
+  An array of daily transaction fee records.
+
+  <Expandable title="result item fields">
+    <ResponseField name="UTCDate" type="string">
+      The date of the record in `yyyy-MM-dd` format.
+    </ResponseField>
+    <ResponseField name="unixTimeStamp" type="string">
+      Unix timestamp for the start of the UTC day.
+    </ResponseField>
+    <ResponseField name="transactionFee_Eth" type="string">
+      Total transaction fees collected on that day, expressed in ETH.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=stats&action=dailytxnfee&startdate=2019-02-01&enddate=2019-02-28&sort=asc&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "UTCDate": "2019-02-01",
+      "unixTimeStamp": "1548979200",
+      "transactionFee_Eth": "358.558440870590355682"
+    },
+    {
+      "UTCDate": "2019-02-02",
+      "unixTimeStamp": "1549065600",
+      "transactionFee_Eth": "286.886084685869906669"
+    }
+  ]
+}
+```

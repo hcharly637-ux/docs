@@ -1,0 +1,267 @@
+---
+title: "Get ERC-20 Token Holder List and Count"
+sidebarTitle: "Token Holders"
+description: "Retrieve the current list of ERC-20 token holders with balances, top holders, and total holder count using Etherscan token holder API endpoints."
+---
+
+These endpoints give you a complete picture of who holds a given ERC-20 token. You can retrieve a paginated list of all current holders with their balances, look up the top holders by balance, or get a quick count of unique addresses that hold the token. All three endpoints require a Standard plan or above.
+
+---
+
+## Token Holder List
+
+<Warning>
+  This is a PRO endpoint available to the Standard plan and above.
+</Warning>
+
+<Warning>
+  **Effective July 1, 2026**, the maximum records returned per request will be reduced from 10,000 to 1,000 for Free tier API users. See the full list of [affected endpoints](https://docs.etherscan.io/changelog#upcoming-change-reduced-maximum-records-per-request-on-the-free-api-tier).
+</Warning>
+
+Retrieves the current list of ERC-20 token holders and their token balances for a given contract address. Results are paginated — use `page` and `offset` to iterate through all holders.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken">
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base from our [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" default="token">
+  Set to `token` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="tokenholderlist">
+  Set to `tokenholderlist` for this endpoint.
+</ParamField>
+
+<ParamField query="contractaddress" type="string" default="0xaaaebe6fe48e54f431b0c390cfaf0b017d09d42d">
+  Contract address of the ERC-20 token.
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination.
+</ParamField>
+
+<ParamField query="offset" type="integer" default="100">
+  Number of records per page. Use the `page` parameter for subsequent records.
+</ParamField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=token\
+&action=tokenholderlist\
+&contractaddress=0xaaaebe6fe48e54f431b0c390cfaf0b017d09d42d\
+&page=1\
+&offset=100\
+&apikey=YourApiKeyToken"
+```
+
+### Response
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success, or an error description on failure.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  Array of token holder objects.
+
+  <ResponseField name="TokenHolderAddress" type="string">
+    Wallet address of the token holder.
+  </ResponseField>
+
+  <ResponseField name="TokenHolderQuantity" type="string">
+    Token balance held by this address, in the token's smallest unit.
+  </ResponseField>
+</ResponseField>
+
+<ResponseExample>
+```json Response
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "TokenHolderAddress": "0xa5b7d615c99f011a22f16f5809890ca6900200a3",
+      "TokenHolderQuantity": "2"
+    },
+    {
+      "TokenHolderAddress": "0x0412a1d25fbdcabc536603198330021ccb13240b",
+      "TokenHolderQuantity": "3385700"
+    }
+  ]
+}
+```
+</ResponseExample>
+
+---
+
+## Token Holder Count
+
+<Warning>
+  This is a PRO endpoint available to the Standard plan and above.
+</Warning>
+
+Retrieves a simple count of unique addresses currently holding the specified ERC-20 token. This is a lightweight alternative to fetching the full holder list when you only need the total number.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken">
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base from our [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" default="token">
+  Set to `token` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="tokenholdercount">
+  Set to `tokenholdercount` for this endpoint.
+</ParamField>
+
+<ParamField query="contractaddress" type="string" default="0xaaaebe6fe48e54f431b0c390cfaf0b017d09d42d">
+  Contract address of the ERC-20 token.
+</ParamField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=token\
+&action=tokenholdercount\
+&contractaddress=0xaaaebe6fe48e54f431b0c390cfaf0b017d09d42d\
+&apikey=YourApiKeyToken"
+```
+
+### Response
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success, or an error description on failure.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  Total number of unique addresses currently holding the token.
+</ResponseField>
+
+<ResponseExample>
+```json Response
+{
+  "status": "1",
+  "message": "OK",
+  "result": "30506"
+}
+```
+</ResponseExample>
+
+---
+
+## Top Token Holders
+
+<Warning>
+  This is a PRO endpoint available to the Standard plan and above. This endpoint is also throttled to **2 calls/second** regardless of API Pro tier.
+</Warning>
+
+Returns the list of top holders for a specified ERC-20 token, sorted by balance in descending order. You can retrieve up to 1,000 top holders in a single call. Note that HyperEVM (chain ID 999) is not currently supported by this endpoint.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken">
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base from our [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" default="token">
+  Set to `token` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="topholders">
+  Set to `topholders` for this endpoint.
+</ParamField>
+
+<ParamField query="contractaddress" type="string" default="0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9">
+  Contract address of the ERC-20 token.
+</ParamField>
+
+<ParamField query="offset" type="integer" default="100">
+  Number of top holders to return, up to 1,000.
+</ParamField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=token\
+&action=topholders\
+&contractaddress=0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9\
+&offset=100\
+&apikey=YourApiKeyToken"
+```
+
+### Response
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"Ok"` on success, or an error description on failure.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  Array of top token holder objects, sorted by balance descending.
+
+  <ResponseField name="TokenHolderAddress" type="string">
+    Wallet or contract address of the holder.
+  </ResponseField>
+
+  <ResponseField name="TokenHolderQuantity" type="string">
+    Token balance held by this address, in a human-readable decimal format.
+  </ResponseField>
+
+  <ResponseField name="TokenHolderAddressType" type="string">
+    Address type: `"C"` for contract, `"A"` for externally owned account (EOA).
+  </ResponseField>
+</ResponseField>
+
+<ResponseExample>
+```json Response
+{
+  "status": "1",
+  "message": "Ok",
+  "result": [
+    {
+      "TokenHolderAddress": "0x4da27a545c0c5b758a6ba100e3a049001de870f5",
+      "TokenHolderQuantity": "2696124.3026660371030000",
+      "TokenHolderAddressType": "C"
+    },
+    {
+      "TokenHolderAddress": "0xa700b4eb416be35b2911fd5dee80678ff64ff6c9",
+      "TokenHolderQuantity": "1650828.8050095955930000",
+      "TokenHolderAddressType": "C"
+    }
+  ]
+}
+```
+</ResponseExample>

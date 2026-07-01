@@ -1,0 +1,69 @@
+---
+title: "Etherscan: Blockchain Explorer API for Ethereum & EVM Chains"
+sidebarTitle: "Introduction"
+description: "Etherscan is the leading blockchain explorer, search, and API platform supporting Ethereum and 60+ EVM-compatible chains under one unified API key."
+---
+
+Etherscan is the leading blockchain explorer, search, API, and analytics platform for Ethereum and other EVM-compatible chains. Whether you're building a DeFi dashboard, a wallet, an on-chain analytics tool, or a smart contract integration, Etherscan gives you reliable, structured access to the blockchain data your application needs.
+
+## What You Can Build
+
+With the Etherscan API, you can query on-chain data across all supported networks — no node required. Use it to retrieve wallet balances, trace token transfers, decode contract ABIs, fetch event logs, monitor gas prices, and run deep analytics across the full history of any EVM chain.
+
+Key capabilities include:
+
+- **Accounts** — Query native balances, transaction histories, and internal transactions for any address
+- **Tokens** — Fetch ERC-20, ERC-721, and ERC-1155 transfers, holder lists, and token balances
+- **Contracts** — Retrieve verified source code, ABIs, and contract creation metadata
+- **Logs** — Filter event logs by address, topic, and block range with precision
+- **Gas** — Monitor real-time gas prices and historical gas usage trends
+- **Analytics** — Access daily network stats, block rewards, new address counts, and more
+
+## API V2: One Key for Every Chain
+
+With **Etherscan API V2**, all 60+ [supported chains](/supported-chains) are unified under a single account and a single API key. Your app becomes multichain simply by changing the `chainid` parameter — no new accounts, no extra keys, no per-chain dashboards.
+
+```
+https://api.etherscan.io/v2/api?chainid=1&module=account&action=balance&...
+```
+
+Switch `chainid=1` to `chainid=56` for BNB Smart Chain, `chainid=8453` for Base, `chainid=42161` for Arbitrum One, and so on. Every endpoint, every chain, one unified key.
+
+<Note>
+  New API keys activate within a few minutes and are immediately valid across all 60+ supported chains.
+</Note>
+
+## Start Building
+
+Explore the most popular use cases below and jump straight into the relevant endpoints.
+
+<CardGroup cols={2}>
+  <Card
+    title="Get Stablecoin Transfers to an Address"
+    icon="money-bill-wave"
+    href="/api-reference/tokens/erc20-transfers"
+  >
+    Check for USDC, USDT, and PYUSD token transfers to any address using the token transfer endpoint.
+  </Card>
+  <Card
+    title="Get Top Token Holders"
+    icon="arrow-up"
+    href="/api-reference/tokens/token-holders"
+  >
+    Analyze the largest holders of any ERC-20 token — from newly launched tokens to established protocols.
+  </Card>
+  <Card
+    title="Get Address Portfolio"
+    icon="briefcase"
+    href="/api-reference/tokens/address-holdings"
+  >
+    List all token balances held by an address, across chains, for a complete on-chain portfolio view.
+  </Card>
+  <Card
+    title="Get Address Name Tag"
+    icon="tag"
+    href="/api-reference/nametags/get-address-tag"
+  >
+    Retrieve name tags and labels associated with an address, such as exchange deposit labels like "Coinbase 10".
+  </Card>
+</CardGroup>

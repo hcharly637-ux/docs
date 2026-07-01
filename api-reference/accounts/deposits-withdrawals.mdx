@@ -1,0 +1,447 @@
+---
+title: "Get Deposit, Withdrawal, and Bridge Transactions by Address"
+sidebarTitle: "Deposits & Withdrawals"
+description: "Retrieve deposit transactions, ETH 2.0 beacon chain withdrawals, and Plasma bridge deposits for a specified address using Etherscan account endpoints."
+---
+
+Etherscan provides several account endpoints for querying cross-chain and protocol-level fund movements. This page covers four related endpoints: L1-to-L2 deposit transactions, L2-to-L1 withdrawal transactions, Ethereum beacon chain withdrawal transactions, and Plasma bridge deposits. Each section below documents the relevant endpoint, its parameters, and an example response.
+
+---
+
+## Deposit Transactions
+
+The `getdeposittxs` action retrieves all cross-chain deposit transactions sent from Ethereum (L1) to an L2 network for a specified address. This endpoint is available on Arbitrum, Optimism, and their testnets.
+
+Available on: **Arbitrum One Mainnet**, **Arbitrum Sepolia Testnet**, **OP Mainnet**, **OP Sepolia Testnet**
+
+### Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=10\
+&module=account\
+&action=getdeposittxs\
+&address=0x80f3950a4d371c43360f292a4170624abd9eed03\
+&page=1\
+&offset=100\
+&sort=asc\
+&apikey=YourApiKeyToken"
+```
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="10" required>
+  Chain ID to query, e.g. `10` for Optimism or `42161` for Arbitrum. See the full list at [supported chains](/api-reference/chainlist).
+</ParamField>
+
+<ParamField query="module" type="string" default="account" required>
+  Set to `account` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="getdeposittxs" required>
+  Set to `getdeposittxs` for this endpoint.
+</ParamField>
+
+<ParamField query="address" type="string" default="0x80f3950a4d371c43360f292a4170624abd9eed03" required>
+  Address to check for cross-chain deposits from Ethereum to L2.
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination.
+</ParamField>
+
+<ParamField query="offset" type="integer" default="100">
+  Number of records per page. Use the `page` parameter for subsequent records.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order: use `desc` to return the latest transactions first, or `asc` to return the oldest transactions first.
+</ParamField>
+
+### Response Example
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "blockNumber": "132992375",
+      "timeStamp": "1741583527",
+      "blockHash": "0xef2ff158c8b12be842429f4a8cde58bfa6a389c5274b46f8a1dd2ee7f958ca4d",
+      "hash": "0x64ccd0cfa9f333578b36227492f3bc7f5f3ec4bfa82cdc46f82884db680d8e5b",
+      "nonce": "520502",
+      "from": "0x36bde71c97b33cc4729cf772ae268934f7ab70b2",
+      "to": "0x4200000000000000000000000000000000000007",
+      "value": "598200000000000",
+      "gas": "490798",
+      "gasPrice": "0",
+      "cumulativeGasUsed": "169497",
+      "gasUsed": "117234",
+      "isError": "0",
+      "errDescription": "",
+      "txreceipt_status": "1",
+      "queueIndex": "999999",
+      "L1transactionhash": "0x303bd05c47e62e1243a33210e535ebc70a7567e53a9972fbdef52ee5bcda5acb",
+      "L1TxOrigin": "0x36bde71c97b33cc4729cf772ae268934f7ab70b2",
+      "tokenAddress": "ETH",
+      "tokenSentFrom": "",
+      "tokenSentTo": "0x80f3950a4d371c43360f292a4170624abd9eed03",
+      "tokenValue": "598200000000000"
+    }
+  ]
+}
+```
+
+### Response Fields
+
+<ResponseField name="result[].blockNumber" type="string">
+  The L2 block number in which the deposit was processed.
+</ResponseField>
+
+<ResponseField name="result[].timeStamp" type="string">
+  Unix timestamp of the L2 block.
+</ResponseField>
+
+<ResponseField name="result[].hash" type="string">
+  The L2 transaction hash for the deposit.
+</ResponseField>
+
+<ResponseField name="result[].from" type="string">
+  The L2 system address that submitted the deposit transaction.
+</ResponseField>
+
+<ResponseField name="result[].to" type="string">
+  The L2 contract address that received the deposit.
+</ResponseField>
+
+<ResponseField name="result[].value" type="string">
+  ETH value of the deposit in wei.
+</ResponseField>
+
+<ResponseField name="result[].L1transactionhash" type="string">
+  The originating L1 transaction hash.
+</ResponseField>
+
+<ResponseField name="result[].L1TxOrigin" type="string">
+  The address that initiated the transaction on L1.
+</ResponseField>
+
+<ResponseField name="result[].tokenAddress" type="string">
+  Token identifier — `"ETH"` for native ETH deposits, or a contract address for ERC-20 deposits.
+</ResponseField>
+
+<ResponseField name="result[].tokenSentTo" type="string">
+  The recipient address on L2.
+</ResponseField>
+
+<ResponseField name="result[].tokenValue" type="string">
+  The token or ETH amount transferred in the smallest denomination.
+</ResponseField>
+
+---
+
+## Withdrawal Transactions
+
+The `getwithdrawaltxs` action retrieves all cross-chain withdrawal transactions sent from an L2 network back to Ethereum (L1) for a specified address. This endpoint is available on Arbitrum, Optimism, and their testnets.
+
+Available on: **Arbitrum One Mainnet**, **Arbitrum Sepolia Testnet**, **OP Mainnet**, **OP Sepolia Testnet**
+
+### Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=10\
+&module=account\
+&action=getwithdrawaltxs\
+&address=0x80f3950a4d371c43360f292a4170624abd9eed03\
+&page=1\
+&offset=100\
+&sort=asc\
+&apikey=YourApiKeyToken"
+```
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="10" required>
+  Chain ID to query, e.g. `10` for Optimism or `42161` for Arbitrum. See the full list at [supported chains](/api-reference/chainlist).
+</ParamField>
+
+<ParamField query="module" type="string" default="account" required>
+  Set to `account` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="getwithdrawaltxs" required>
+  Set to `getwithdrawaltxs` for this endpoint.
+</ParamField>
+
+<ParamField query="address" type="string" default="0x80f3950a4d371c43360f292a4170624abd9eed03" required>
+  Address to check for cross-chain withdrawals from L2 to Ethereum.
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination.
+</ParamField>
+
+<ParamField query="offset" type="integer" default="100">
+  Number of records per page. Use the `page` parameter for subsequent records.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order: use `desc` to return the latest transactions first, or `asc` to return the oldest transactions first.
+</ParamField>
+
+### Response Example
+
+```json
+{
+  "status": "0",
+  "message": "No transactions found",
+  "result": []
+}
+```
+
+<Note>
+  A `status` of `"0"` with `"No transactions found"` is a normal response for addresses that have not initiated any L2-to-L1 withdrawals. This is not an error.
+</Note>
+
+---
+
+## Beacon Chain Withdrawals
+
+The `txsBeaconWithdrawal` action retrieves Ethereum beacon chain withdrawal transactions made to a specified address. These are the automatic ETH withdrawals from Ethereum validators that occur via the consensus layer, as introduced in the Shapella upgrade (EIP-4895).
+
+<Warning>
+  **Effective July 1, 2026**, the maximum records returned per request will be reduced from 10,000 to **1,000** for Free tier API users. See the full list of [affected endpoints](https://docs.etherscan.io/changelog#upcoming-change-reduced-maximum-records-per-request-on-the-free-api-tier).
+</Warning>
+
+### Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=account\
+&action=txsBeaconWithdrawal\
+&address=0xB9D7934878B5FB9610B3fE8A5e441e8fad7E293f\
+&startblock=0\
+&endblock=999999999\
+&page=1\
+&offset=100\
+&sort=asc\
+&apikey=YourApiKeyToken"
+```
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, e.g. `1` for Ethereum. See the full list at [supported chains](/api-reference/chainlist).
+</ParamField>
+
+<ParamField query="module" type="string" default="account" required>
+  Set to `account` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="txsBeaconWithdrawal" required>
+  Set to `txsBeaconWithdrawal` for this endpoint.
+</ParamField>
+
+<ParamField query="address" type="string" default="0xB9D7934878B5FB9610B3fE8A5e441e8fad7E293f" required>
+  The withdrawal credentials address to check for beacon chain withdrawals.
+</ParamField>
+
+<ParamField query="startblock" type="integer" default="0">
+  Starting block number to search from.
+</ParamField>
+
+<ParamField query="endblock" type="integer" default="999999999">
+  Ending block number to search to.
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination.
+</ParamField>
+
+<ParamField query="offset" type="integer" default="100">
+  Number of records per page. Use the `page` parameter for subsequent records.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order: use `desc` to return the latest withdrawals first, or `asc` to return the oldest first.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="result[].withdrawalIndex" type="string">
+  The global sequential index of this withdrawal across all validators.
+</ResponseField>
+
+<ResponseField name="result[].validatorIndex" type="string">
+  The index of the validator that generated this withdrawal.
+</ResponseField>
+
+<ResponseField name="result[].address" type="string">
+  The execution layer address that received the withdrawal.
+</ResponseField>
+
+<ResponseField name="result[].amount" type="string">
+  The withdrawal amount in Gwei (1 ETH = 10^9 Gwei).
+</ResponseField>
+
+<ResponseField name="result[].blockNumber" type="string">
+  The block number in which the withdrawal was processed.
+</ResponseField>
+
+<ResponseField name="result[].timestamp" type="string">
+  Unix timestamp of the block.
+</ResponseField>
+
+### Response Example
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "withdrawalIndex": "13",
+      "validatorIndex": "117823",
+      "address": "0xb9d7934878b5fb9610b3fe8a5e441e8fad7e293f",
+      "amount": "3402931175",
+      "blockNumber": "17034877",
+      "timestamp": "1681338599"
+    }
+  ]
+}
+```
+
+---
+
+## Plasma Deposits
+
+The `txnbridge` action retrieves Plasma bridge deposit transactions received by a specified address. Plasma deposits represent assets bridged from Ethereum to a Plasma-compatible chain such as Polygon (PoS), Gnosis, or BitTorrent Chain.
+
+Available on: **Polygon Mainnet**, **Gnosis**, **BitTorrent Chain Mainnet**
+
+<Warning>
+  **Effective July 1, 2026**, the maximum records returned per request will be reduced from 10,000 to **1,000** for Free tier API users. See the full list of [affected endpoints](https://docs.etherscan.io/changelog#upcoming-change-reduced-maximum-records-per-request-on-the-free-api-tier).
+</Warning>
+
+### Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=137\
+&module=account\
+&action=txnbridge\
+&address=0x4880bd4695a8e59dc527d124085749744b6c988e\
+&page=1\
+&offset=100\
+&apikey=YourApiKeyToken"
+```
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="137" required>
+  Chain ID to query, e.g. `137` for Polygon Mainnet. See the full list at [supported chains](/api-reference/chainlist).
+</ParamField>
+
+<ParamField query="module" type="string" default="account" required>
+  Set to `account` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="txnbridge" required>
+  Set to `txnbridge` for this endpoint.
+</ParamField>
+
+<ParamField query="address" type="string" default="0x4880bd4695a8e59dc527d124085749744b6c988e" required>
+  The address to check for incoming Plasma bridge deposits.
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination.
+</ParamField>
+
+<ParamField query="offset" type="integer" default="100">
+  Number of records per page. Use the `page` parameter for subsequent records.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="result[].hash" type="string">
+  The transaction hash of the Plasma deposit on the L2 chain.
+</ResponseField>
+
+<ResponseField name="result[].blockNumber" type="string">
+  The block number in which the deposit was included.
+</ResponseField>
+
+<ResponseField name="result[].timeStamp" type="string">
+  Unix timestamp of the block.
+</ResponseField>
+
+<ResponseField name="result[].from" type="string">
+  The sender address (typically the zero address `0x000...000` for system-generated deposits).
+</ResponseField>
+
+<ResponseField name="result[].address" type="string">
+  The recipient address that received the bridged tokens.
+</ResponseField>
+
+<ResponseField name="result[].amount" type="string">
+  The amount of tokens deposited in the token's smallest unit.
+</ResponseField>
+
+<ResponseField name="result[].tokenName" type="string">
+  The full name of the bridged token (e.g. `"Polygon Token"`).
+</ResponseField>
+
+<ResponseField name="result[].symbol" type="string">
+  The ticker symbol of the bridged token (e.g. `"POL"`).
+</ResponseField>
+
+<ResponseField name="result[].contractAddress" type="string">
+  The contract address of the token on the L2 chain.
+</ResponseField>
+
+<ResponseField name="result[].divisor" type="string">
+  The number of decimal places for the token (e.g. `"18"` for 18-decimal tokens).
+</ResponseField>
+
+### Response Example
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "hash": "0xf645deb2b6fbb8b76ccbcf4bde782e28d3520e8a30e9a568b9b8c526e2fd8434",
+      "blockNumber": "51844560",
+      "timeStamp": "1704181285",
+      "from": "0x0000000000000000000000000000000000000000",
+      "address": "0x4880bd4695a8e59dc527d124085749744b6c988e",
+      "amount": "2341706540000000000",
+      "tokenName": "Polygon Token",
+      "symbol": "POL",
+      "contractAddress": "0x0000000000000000000000000000000000001010",
+      "divisor": "18"
+    }
+  ]
+}
+```

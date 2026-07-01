@@ -1,0 +1,95 @@
+---
+title: "Get Smart Contract ABI by Contract Address"
+sidebarTitle: "Get ABI"
+description: "GET /v2/api?module=contract&action=getabi — Retrieves the ABI for a verified smart contract. Returns the JSON ABI array needed to interact with the contract."
+---
+
+Retrieve the ABI (Application Binary Interface) for a smart contract that has been verified on Etherscan. The ABI is the standard JSON-encoded description of a contract's functions, events, and errors — you need it to encode calls and decode responses when interacting with a contract programmatically.
+
+<Warning>
+  This endpoint only works for **verified** smart contracts. If the contract has not been verified on Etherscan, the API returns an error. You can verify a contract using the [Verify Source Code](/api-reference/contracts/verify-source-code) endpoints.
+</Warning>
+
+## Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key. [Register here](https://etherscan.io/register) to obtain one.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  The chain ID to query. For example, `1` for Ethereum Mainnet or `8453` for Base. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `contract` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `getabi` for this endpoint.
+</ParamField>
+
+<ParamField query="address" type="string" required>
+  The contract address whose ABI you want to retrieve. Example: `0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413`.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success, or an error description on failure (e.g., `"Contract source code not verified"`).
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  A JSON-encoded string containing the contract's ABI array. Parse this string with `JSON.parse()` to obtain a usable ABI object.
+</ResponseField>
+
+## Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=contract\
+&action=getabi\
+&address=0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413\
+&apikey=YourApiKeyToken"
+```
+
+## Example Response
+
+The `result` field is a JSON string. Here it is shown both as the raw API response and then as the parsed ABI array for clarity.
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": "[{\"constant\":false,\"inputs\":[{\"name\":\"_c\",\"type\":\"string\"}],\"name\":\"enterValue\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"test\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}]"
+}
+```
+
+After calling `JSON.parse(result)`, the ABI array looks like:
+
+```json
+[
+  {
+    "constant": false,
+    "inputs": [{ "name": "_c", "type": "string" }],
+    "name": "enterValue",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "test",
+    "outputs": [{ "name": "", "type": "string" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
+```

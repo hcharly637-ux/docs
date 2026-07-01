@@ -1,0 +1,328 @@
+---
+title: "Get Internal Transactions by Address, Hash, or Block Range"
+sidebarTitle: "Internal Transactions"
+description: "GET /v2/api?module=account&action=txlistinternal — Retrieve internal (contract-to-contract) transactions for an address, by transaction hash, or within a block range."
+---
+
+Internal transactions are value transfers and contract calls that occur within the EVM during the execution of a transaction — they are not directly recorded on the blockchain but are derived from transaction traces. The `txlistinternal` action supports three distinct query modes depending on which parameter you provide: by address, by transaction hash, or by block range. Choose the mode that fits your use case.
+
+---
+
+## By Address
+
+Retrieves the internal transaction history of a specified address, with optional block range filtering and pagination.
+
+<Warning>
+  **Effective July 1, 2026**, the maximum records returned per request will be reduced from 10,000 to **1,000** for Free tier API users. See the full list of [affected endpoints](https://docs.etherscan.io/changelog#upcoming-change-reduced-maximum-records-per-request-on-the-free-api-tier).
+</Warning>
+
+### Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=account\
+&action=txlistinternal\
+&address=0x2c1ba59d6f58433fb1eaee7d20b26ed83bda51a3\
+&startblock=0\
+&endblock=999999999\
+&page=1\
+&offset=100\
+&sort=asc\
+&apikey=YourApiKeyToken"
+```
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base. See the full list at [supported chains](/api-reference/chainlist).
+</ParamField>
+
+<ParamField query="module" type="string" default="account" required>
+  Set to `account` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="txlistinternal" required>
+  Set to `txlistinternal` for this endpoint.
+</ParamField>
+
+<ParamField query="address" type="string" default="0x2c1ba59d6f58433fb1eaee7d20b26ed83bda51a3" required>
+  The address to query, like `0xfefefefefefefefefefefefefefefefefefefefe`.
+</ParamField>
+
+<ParamField query="startblock" type="integer" default="0">
+  Starting block number to search from.
+</ParamField>
+
+<ParamField query="endblock" type="integer" default="999999999">
+  Ending block number to search to.
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination.
+</ParamField>
+
+<ParamField query="offset" type="integer" default="100">
+  Number of records per page. Use the `page` parameter for subsequent records.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order: use `desc` to return the latest transactions first, or `asc` to return the oldest transactions first.
+</ParamField>
+
+### Response Example
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "blockNumber": "2535368",
+      "timeStamp": "1477837690",
+      "hash": "0x8a1a9989bda84f80143181a68bc137ecefa64d0d4ebde45dd94fc0cf49e70cb6",
+      "from": "0x20d42f2e99a421147acf198d775395cac2e8b03d",
+      "to": "",
+      "value": "0",
+      "contractAddress": "0x2c1ba59d6f58433fb1eaee7d20b26ed83bda51a3",
+      "input": "",
+      "type": "create",
+      "gas": "254791",
+      "gasUsed": "46750",
+      "traceId": "0",
+      "isError": "0",
+      "errCode": ""
+    }
+  ]
+}
+```
+
+---
+
+## By Transaction Hash
+
+Retrieves all internal transactions executed within a specific transaction. This is useful when you already have a transaction hash and want to inspect the full internal call tree, including ETH transfers between contracts. Only non-zero value internal transactions are returned.
+
+### Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=account\
+&action=txlistinternal\
+&txhash=0x40eb908387324f2b575b4879cd9d7188f69c8fc9d87c901b9e2daaea4b442170\
+&apikey=YourApiKeyToken"
+```
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base. See the full list at [supported chains](/api-reference/chainlist).
+</ParamField>
+
+<ParamField query="module" type="string" default="account" required>
+  Set to `account` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="txlistinternal" required>
+  Set to `txlistinternal` for this endpoint.
+</ParamField>
+
+<ParamField query="txhash" type="string" default="0x40eb908387324f2b575b4879cd9d7188f69c8fc9d87c901b9e2daaea4b442170" required>
+  The transaction hash to inspect for internal transactions, like `0x36dc7f05085d0e4f9c3e4116345a2a487ac8f23f7e71bcc0ae20e27abbfa931d`. Only non-zero value internal transactions are returned.
+</ParamField>
+
+### Response Example
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "blockNumber": "1743059",
+      "timeStamp": "1466489498",
+      "from": "0x2cac6e4b11d6b58f6d3c1c9d5fe8faa89f60e5a2",
+      "to": "0x66a1c3eaf0f1ffc28d209c0763ed0ca614f3b002",
+      "value": "7106740000000000",
+      "contractAddress": "",
+      "input": "",
+      "type": "call",
+      "gas": "2300",
+      "gasUsed": "0",
+      "isError": "0",
+      "errCode": ""
+    }
+  ]
+}
+```
+
+---
+
+## By Block Range
+
+Returns all internal transactions that occurred within a specified block range. This mode is useful for indexing or monitoring contract activity across a contiguous range of blocks.
+
+<Warning>
+  **Effective July 1, 2026**, this endpoint will be moved to a **Pro endpoint**. View the [Changelog](https://docs.etherscan.io/changelog#upcoming-change-get-internal-transactions-by-block-range-endpoint-moving-to-pro-plans) for details.
+</Warning>
+
+### Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=account\
+&action=txlistinternal\
+&startblock=13481773\
+&endblock=999999999\
+&page=1\
+&offset=100\
+&sort=asc\
+&apikey=YourApiKeyToken"
+```
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base. See the full list at [supported chains](/api-reference/chainlist).
+</ParamField>
+
+<ParamField query="module" type="string" default="account" required>
+  Set to `account` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="txlistinternal" required>
+  Set to `txlistinternal` for this endpoint.
+</ParamField>
+
+<ParamField query="startblock" type="integer" default="13481773" required>
+  Starting block number to search from.
+</ParamField>
+
+<ParamField query="endblock" type="integer" default="999999999">
+  Ending block number to search to.
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination.
+</ParamField>
+
+<ParamField query="offset" type="integer" default="100">
+  Number of records per page. Use the `page` parameter for subsequent records.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order: use `desc` to return the latest transactions first, or `asc` to return the oldest transactions first.
+</ParamField>
+
+### Response Example
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "blockNumber": "13481773",
+      "timeStamp": "1635100060",
+      "hash": "0x8b440f5ec0e986589517b131c5b75e921f2768b9912f028d2cdb009d759036ab",
+      "from": "0x3909336de913344701c6f096502d26208210b39f",
+      "to": "0xff62dfadca3b5643d0b283571fe154d886580c0c",
+      "value": "1159078546481168231",
+      "contractAddress": "",
+      "input": "",
+      "type": "call",
+      "gas": "101300",
+      "gasUsed": "13898",
+      "traceId": "3",
+      "isError": "0",
+      "errCode": ""
+    }
+  ]
+}
+```
+
+---
+
+## Response Fields (All Modes)
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on error or empty result.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success, or an error message string.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of internal transaction objects.
+</ResponseField>
+
+<ResponseField name="result[].blockNumber" type="string">
+  The block number in which the internal transaction occurred.
+</ResponseField>
+
+<ResponseField name="result[].timeStamp" type="string">
+  Unix timestamp of the block.
+</ResponseField>
+
+<ResponseField name="result[].hash" type="string">
+  The parent transaction hash that triggered this internal transaction.
+</ResponseField>
+
+<ResponseField name="result[].from" type="string">
+  The sending address of the internal transaction.
+</ResponseField>
+
+<ResponseField name="result[].to" type="string">
+  The receiving address. Empty for contract creation internal transactions.
+</ResponseField>
+
+<ResponseField name="result[].value" type="string">
+  The value transferred in wei.
+</ResponseField>
+
+<ResponseField name="result[].contractAddress" type="string">
+  The address of the contract created, if this was a contract creation. Empty otherwise.
+</ResponseField>
+
+<ResponseField name="result[].input" type="string">
+  The input data for the internal call.
+</ResponseField>
+
+<ResponseField name="result[].type" type="string">
+  The type of internal transaction, such as `call` or `create`.
+</ResponseField>
+
+<ResponseField name="result[].gas" type="string">
+  Gas provided for this internal call.
+</ResponseField>
+
+<ResponseField name="result[].gasUsed" type="string">
+  Actual gas consumed by the internal call.
+</ResponseField>
+
+<ResponseField name="result[].traceId" type="string">
+  The trace identifier within the parent transaction's call tree.
+</ResponseField>
+
+<ResponseField name="result[].isError" type="string">
+  `"0"` if successful, `"1"` if the internal call failed.
+</ResponseField>
+
+<ResponseField name="result[].errCode" type="string">
+  Error code if the internal call reverted. Empty on success.
+</ResponseField>

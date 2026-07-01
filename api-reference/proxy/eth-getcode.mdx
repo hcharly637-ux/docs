@@ -1,0 +1,210 @@
+---
+title: "eth_getCode and eth_getStorageAt: Read Contract State"
+sidebarTitle: "eth_getCode"
+description: "Read the bytecode deployed at a contract address (eth_getCode) or retrieve a specific storage slot value (eth_getStorageAt) via the Etherscan JSON-RPC proxy."
+---
+
+These three proxy endpoints let you inspect low-level contract state and historical block data. Use `eth_getCode` to retrieve the EVM bytecode deployed at any address — a non-empty result confirms an address is a contract. Use `eth_getStorageAt` to read a specific storage slot directly from a contract's persistent storage. Use `eth_getUncleByBlockNumberAndIndex` to retrieve uncle (ommer) block data for pre-Merge proof-of-work analysis.
+
+---
+
+## eth_getCode
+
+Returns the compiled EVM bytecode stored at a given address. If the address is a contract, this will return its deployed bytecode. If the address is an externally owned account (EOA), the result will be `"0x"` (empty).
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `proxy` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `eth_getCode` for this endpoint.
+</ParamField>
+
+<ParamField query="address" type="string" required>
+  The contract or account address to query, e.g. `0xf75e354c5edc8efed9b59ee9f67a80845ade7d0c`.
+</ParamField>
+
+<ParamField query="tag" type="string" default="latest">
+  Block reference: `latest`, `earliest`, `pending`, or a block number in hexadecimal. Use a historical block number to retrieve code as it existed at that block.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="jsonrpc" type="string">
+  The JSON-RPC protocol version, always `"2.0"`.
+</ResponseField>
+
+<ResponseField name="id" type="number">
+  The request identifier echoed back from the call.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  The EVM bytecode stored at the given address, as a hex string. Returns `"0x"` for EOAs.
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_getCode&address=0xf75e354c5edc8efed9b59ee9f67a80845ade7d0c&tag=latest&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": "0x3660008037602060003660003473273930d21e01ee25e4c219b63259d214872220a261235a5a03f21560015760206000f3"
+}
+```
+
+---
+
+## eth_getStorageAt
+
+Returns the value stored at a specific storage position in a contract's state. Every contract has a key-value storage trie where each 32-byte slot can hold a 32-byte value. This endpoint allows you to read any slot directly, which is useful for inspecting proxies, reading packed variables, and verifying on-chain state.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `proxy` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `eth_getStorageAt` for this endpoint.
+</ParamField>
+
+<ParamField query="address" type="string" required>
+  The contract address to read storage from, e.g. `0x6e03d9cce9d60f3e9f2597e13cd4c54c55330cfd`.
+</ParamField>
+
+<ParamField query="position" type="string" required>
+  The storage slot number in hexadecimal, e.g. `0x0` for the first slot, `0x1` for the second.
+</ParamField>
+
+<ParamField query="tag" type="string" default="latest">
+  Block reference: `latest`, `earliest`, `pending`, or a block number in hexadecimal.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="jsonrpc" type="string">
+  The JSON-RPC protocol version, always `"2.0"`.
+</ResponseField>
+
+<ResponseField name="id" type="number">
+  The request identifier echoed back from the call.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  The 32-byte value stored at the given storage slot, as a zero-padded hex string.
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_getStorageAt&address=0x6e03d9cce9d60f3e9f2597e13cd4c54c55330cfd&position=0x0&tag=latest&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": "0x0000000000000000000000000000000000000000000000000000000000000000"
+}
+```
+
+---
+
+## eth_getUncleByBlockNumberAndIndex
+
+Returns the uncle (ommer) block at a given index within a specified block. Uncle blocks were valid but non-canonical blocks produced during Ethereum's proof-of-work era. They were included in subsequent blocks to reward miners for their work and improve network security. This endpoint is relevant for historical pre-Merge data only.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `proxy` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `eth_getUncleByBlockNumberAndIndex` for this endpoint.
+</ParamField>
+
+<ParamField query="tag" type="string" required>
+  The block number (in hex) that contains the uncle, e.g. `0xC63276`.
+</ParamField>
+
+<ParamField query="index" type="string" required>
+  The uncle's index position within the block, in hex, e.g. `0x0` for the first uncle.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="jsonrpc" type="string">
+  The JSON-RPC protocol version, always `"2.0"`.
+</ResponseField>
+
+<ResponseField name="id" type="number">
+  The request identifier echoed back from the call.
+</ResponseField>
+
+<ResponseField name="result" type="object">
+  The uncle block object, containing standard block header fields (number, hash, miner, gasLimit, gasUsed, timestamp, etc.) but without a transactions list.
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_getUncleByBlockNumberAndIndex&tag=0xC63276&index=0x0&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "baseFeePerGas": "0x65a42b13c",
+    "difficulty": "0x1b1457a8247bbb",
+    "extraData": "0x486976656f6e2063612d68656176792059476f6e",
+    "gasLimit": "0x1ca359a",
+    "gasUsed": "0xb48fe1",
+    "hash": "0x1da88e3581315d009f1cb600bf06f509cd27a68cb3d6437bda8698d04089f14a",
+    "miner": "0x1ad91ee08f21be3de0ba2ba6918e714da6b45836",
+    "nonce": "0x28cc3e5b7bee9866",
+    "number": "0xc63274",
+    "parentHash": "0x496dae3e722efdd9ee1eb69499bdc7ed0dca54e13cd1157a42811c442f01941f",
+    "timestamp": "0x6110bd1a",
+    "uncles": []
+  }
+}
+```

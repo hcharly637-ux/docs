@@ -1,0 +1,179 @@
+---
+title: "Internal Transactions Advanced Filter"
+sidebarTitle: "Internal Tx Filter"
+description: "GET /v2/api?module=accountsFilter&action=txlistinternal — Retrieve internal transactions with advanced from and to address filtering for precise contract call analysis."
+---
+
+Internal transactions are value transfers and contract calls that occur as part of the execution of a smart contract — they do not appear directly on the blockchain as top-level transactions. The Advanced Filter for internal transactions lets you query these calls by both the originating address (`from`) and the target address (`to`) simultaneously, making it straightforward to trace contract-to-contract interactions or monitor funds flowing through a specific set of addresses. You can explore and preview this data interactively on the [Etherscan Advanced Filter](https://etherscan.io/advanced-filter) page.
+
+<Warning>
+  This endpoint is currently in **Beta**. Response structure and behavior may change as the feature matures.
+</Warning>
+
+## Query Parameters
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, such as `1` for Ethereum or `8453` for Base. See [supported chains](/supported-chains) for the full list.
+</ParamField>
+
+<ParamField query="module" type="string" default="accountsFilter" required>
+  Set to `accountsFilter` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="txlistinternal" required>
+  Set to `txlistinternal` for this endpoint.
+</ParamField>
+
+<ParamField query="from" type="string" default="0x73605779985A11B8Fe32E6eD5ae5F249FFD0D7f0">
+  The sender address to filter transactions by.
+</ParamField>
+
+<ParamField query="to" type="string" default="0x71c7656ec7ab88b098defb751b7401b5f6d8976f">
+  The recipient address to filter transactions by.
+</ParamField>
+
+<ParamField query="fromto_opr" type="string" default="or">
+  Address filter operator, either `and` or `or`.
+
+  Use `fromto_opr=and` when both `from` and `to` must match. Use `fromto_opr=or` when either `from` or `to` can match.
+</ParamField>
+
+<ParamField query="startblock" type="integer" default="0">
+  Starting block number to search from.
+</ParamField>
+
+<ParamField query="endblock" type="string" default="latest">
+  Ending block number to search to, or `latest` for the latest block.
+</ParamField>
+
+<ParamField query="sort" type="string" default="desc">
+  Sort order, either `desc` for the latest transactions first or `asc` for the oldest transactions first.
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination.
+</ParamField>
+
+<ParamField query="offset" type="integer" default="10">
+  Number of records per page. Use the `page` parameter for subsequent records.
+</ParamField>
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  Returns `1` when the request succeeds, or `0` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Returns `OK` on success, or an error description on failure.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of internal transaction objects matching the filter criteria.
+
+  <Expandable title="result item properties">
+    <ResponseField name="blockNumber" type="string">
+      The block number in which the internal transaction occurred.
+    </ResponseField>
+
+    <ResponseField name="timeStamp" type="string">
+      Unix timestamp of the block.
+    </ResponseField>
+
+    <ResponseField name="hash" type="string">
+      The parent transaction hash that triggered this internal call.
+    </ResponseField>
+
+    <ResponseField name="from" type="string">
+      The address originating the internal transaction.
+    </ResponseField>
+
+    <ResponseField name="to" type="string">
+      The address receiving the internal transaction. Empty for contract creation calls.
+    </ResponseField>
+
+    <ResponseField name="value" type="string">
+      Value transferred in Wei.
+    </ResponseField>
+
+    <ResponseField name="contractAddress" type="string">
+      The address of the contract created, if this was a contract creation call.
+    </ResponseField>
+
+    <ResponseField name="input" type="string">
+      Input data for the internal call.
+    </ResponseField>
+
+    <ResponseField name="type" type="string">
+      The type of internal call, e.g. `call`, `create`, `delegatecall`.
+    </ResponseField>
+
+    <ResponseField name="gas" type="string">
+      Gas allocated for this internal call.
+    </ResponseField>
+
+    <ResponseField name="gasUsed" type="string">
+      Actual gas consumed by this internal call.
+    </ResponseField>
+
+    <ResponseField name="traceId" type="string">
+      Trace identifier indicating the call's position in the execution trace.
+    </ResponseField>
+
+    <ResponseField name="isError" type="string">
+      `0` if the call succeeded, `1` if it reverted or errored.
+    </ResponseField>
+
+    <ResponseField name="errCode" type="string">
+      Error code if the internal call failed; empty string on success.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api
+  ?chainid=1
+  &module=accountsFilter
+  &action=txlistinternal
+  &to=0x71c7656ec7ab88b098defb751b7401b5f6d8976f
+  &fromto_opr=or
+  &startblock=0
+  &endblock=latest
+  &sort=desc
+  &page=1
+  &offset=10
+  &apikey=YourApiKeyToken"
+```
+
+## Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "blockNumber": "2535368",
+      "timeStamp": "1477837690",
+      "hash": "0x8a1a9989bda84f80143181a68bc137ecefa64d0d4ebde45dd94fc0cf49e70cb6",
+      "from": "0x20d42f2e99a421147acf198d775395cac2e8b03d",
+      "to": "",
+      "value": "0",
+      "contractAddress": "0x2c1ba59d6f58433fb1eaee7d20b26ed83bda51a3",
+      "input": "",
+      "type": "create",
+      "gas": "254791",
+      "gasUsed": "46750",
+      "traceId": "0",
+      "isError": "0",
+      "errCode": ""
+    }
+  ]
+}
+```

@@ -1,0 +1,66 @@
+---
+title: "Etherscan MCP: Connect Blockchain Data to AI Models"
+sidebarTitle: "MCP Server"
+description: "Connect Etherscan's blockchain data to AI models like ChatGPT and Claude using the Model Context Protocol (MCP) server at mcp.etherscan.io."
+---
+
+<Badge icon="flask" color="yellow">Beta</Badge>
+
+Etherscan's [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server lets you connect Etherscan and [60+ supported chain](/supported-chains) data directly to your AI models, including ChatGPT and Claude.
+
+In plain terms, the MCP standard provides a list of tools that your model can call to look up information via the Etherscan API. Yes, it is an API wrapper — but a purposeful one. This approach avoids the common problem of LLMs making things up (hallucination) or getting blocked by a CAPTCHA when trying to search the web.
+
+## Use Cases
+
+Some use cases from our beta users:
+
+- Comparing Solidity code with actual contracts deployed on chain.
+- Customer support for bridge transactions — checking whether a transaction has arrived.
+- Portfolio management agents.
+
+## Connect
+
+Choose the tab that matches your AI client to get started.
+
+<Tabs>
+  <Tab title="General">
+    Etherscan hosts a Streamable HTTP MCP server at the following URL.
+
+    ```
+    https://mcp.etherscan.io/mcp
+    ```
+
+    Authenticate each request using your Etherscan API key as a Bearer token in the `Authorization` header.
+
+    ```
+    Authorization: Bearer YourEtherscanApiKey
+    ```
+
+    Configure your MCP-compatible client with this server URL and authentication header to start querying Etherscan data from within your AI model.
+  </Tab>
+
+  <Tab title="Codex">
+    This guide covers setting up the Etherscan MCP server as an extension within [Codex](https://developers.openai.com/codex/quickstart) in VS Code.
+
+    <Steps>
+      <Step title="MCP Settings">
+        Open the MCP settings from the gear icon ⚙️, then select **MCP settings**.
+
+        ![Codex settings](https://mintcdn.com/etherscan/FJ7GkrsyczwoBPf-/images/settings.png?fit=max&auto=format&n=FJ7GkrsyczwoBPf-&q=85&s=2cab2bf4aeba18f0bda9c053f9946889)
+      </Step>
+
+      <Step title="Add Server">
+        Click **Add Server** and fill in the following details.
+
+        - **Name:** `Etherscan MCP`
+        - **Server Type:** `Streamable HTTP`
+        - **URL:** `https://mcp.etherscan.io/mcp`
+        - **Bearer token env var:** Your Etherscan API key (endpoint access follows your usage tier)
+      </Step>
+
+      <Step title="Save">
+        Click **Save**. You will see a new **Custom server** entry appear in your MCP settings panel — your Etherscan MCP server is now active.
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>

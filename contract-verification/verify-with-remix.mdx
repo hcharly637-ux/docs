@@ -1,0 +1,33 @@
+---
+title: "Verify Smart Contracts with Remix IDE on Etherscan"
+sidebarTitle: "Remix"
+description: "Verify your Solidity smart contracts on Etherscan directly from the Remix IDE browser-based development environment in a few clicks."
+---
+
+[Remix](https://remix.ethereum.org/) is a no-frills, just-works-in-your-browser Solidity development tool. Once you have written and deployed your contract, verifying it on Etherscan takes only a few clicks directly inside the IDE — no local tooling required.
+
+## Activate
+
+Once you've written and deployed your contract, click on the **Plugin Manager** and select **Contract Verification**.
+
+![Remix homepage](https://mintcdn.com/etherscan/T1KjV-_fSmvoQ9iv/images/remix.png?fit=max&auto=format&n=T1KjV-_fSmvoQ9iv&q=85&s=3bccb8e28bebeb7b7127ac7ba2e72576)
+
+## Add an API Key
+
+The Etherscan verification plugin requires an API key. Click the **Enable** link inside the plugin and add your key, leaving the rest of the settings as default.
+
+![Remix add key](https://mintcdn.com/etherscan/T1KjV-_fSmvoQ9iv/images/remix-add-key.png?fit=max&auto=format&n=T1KjV-_fSmvoQ9iv&q=85&s=f8b7485653e56a47230d3ebab0bf97d1)
+
+## Verify
+
+Fill in the chain, contract address, and contract name that you deployed. Make sure the **Etherscan** checkbox is enabled, then click **Verify**. Without this checkbox, the contract will not show as verified on Etherscan's explorer.
+
+![Remix verify](https://mintcdn.com/etherscan/T1KjV-_fSmvoQ9iv/images/remix-verify.avif?fit=max&auto=format&n=T1KjV-_fSmvoQ9iv&q=85&s=b4265f5963aa6077cbd203a8bd866cce)
+
+Once verified, you will see a happy green ✅.
+
+![Remix verified](https://mintcdn.com/etherscan/T1KjV-_fSmvoQ9iv/images/remix-verified.avif?fit=max&auto=format&n=T1KjV-_fSmvoQ9iv&q=85&s=aaa54005623b0fa77bbdbb589e23ec0c)
+
+<Tip>
+  This open source integration was shipped by [@manuelwedler](https://github.com/manuelwedler) and the Remix team.
+</Tip>

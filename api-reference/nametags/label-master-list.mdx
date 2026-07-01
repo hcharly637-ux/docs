@@ -1,0 +1,186 @@
+---
+title: "Get Label Master List: All Etherscan Address Labels"
+sidebarTitle: "Label Master List"
+description: "Retrieve the full Etherscan label master list — a comprehensive dataset of all labeled addresses across supported chains — in V1 and V2 formats."
+---
+
+The **Label Master List** endpoint returns every label category that Etherscan has defined for on-chain addresses — from well-known exchanges and DeFi protocols to phishing wallets and OFAC-sanctioned entities. You can use the label slugs returned here as inputs to the [Export Address Tags](/api-reference/nametags/export-address-tags) endpoint to pull all addresses associated with a given category. Two versions are available: V2 (recommended, multi-chain) and V1 (legacy, Ethereum Mainnet only).
+
+<Warning>
+  This is a **PRO** endpoint, available exclusively to the [Enterprise tier](https://etherscan.io/apis).
+</Warning>
+
+---
+
+## Get Label Master List — V2 (Recommended)
+
+The V2 endpoint adds `chainid` support, allowing you to retrieve the label master list for any Etherscan-supported chain. The API returns a pre-signed download URL that expires after 5 minutes.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key. Defaults to `YourApiKeyToken`.
+</ParamField>
+
+<ParamField query="chainid" type="string" required>
+  The chain ID to query. Refer to mainnet networks on the [supported chains](/supported-chains) page. Note: MegaETH (4326) is temporarily unavailable.
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `nametag` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `getlabelmasterlist` for this endpoint.
+</ParamField>
+
+### Example Request (V2)
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=nametag\
+&action=getlabelmasterlist\
+&apikey=YourApiKeyToken"
+```
+
+### Response
+
+The API returns a JSON object whose `result` field is a **pre-signed download URL** that expires after **5 minutes**. Downloading that URL returns a JSON array of label objects for the requested chain.
+
+<ResponseField name="status" type="string">
+  Returns `"1"` on success or `"0"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A human-readable status message, e.g. `"OK"`.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  A pre-signed S3 URL to download the label master list JSON file. The link expires after 5 minutes.
+</ResponseField>
+
+### Example Response (V2)
+
+The initial response contains the download URL:
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": "https://metadata-export.etherscan.io/1/labelmasterlist_latest.json?X-Amz-Expires=300&response-content-disposition=attachment%3B%20filename%3Dexport-labelmasterlist_latest.json&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=0056c267039aefa0000000005/20260305/us-east-005/s3/aws4_request&X-Amz-Date=20260305T082933Z&X-Amz-SignedHeaders=host&X-Amz-Signature=a795d41a87821a3224b3d9e56819f0fdc5b869c43278c6c96773966798a80f71"
+}
+```
+
+After downloading the URL, the JSON payload contains a list of all available labels on the specified chain:
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "labelname": "Axelar",
+      "labelslug": "axelar",
+      "shortdescription": "Axelar delivers secure cross-chain communication for Web3. Its infrastructure enables dApp users to interact with any asset or application, on any chain, with one click. Axelar is an overlay network, delivering Turing-complete message passing via proof-of-stake and permissionless protocols.",
+      "notes": "",
+      "lastupdatedtimestamp": 1712897117
+    },
+    {
+      "labelname": "Binance",
+      "labelslug": "binance",
+      "shortdescription": "Binance is one of the world's leading blockchain ecosystems, with a product suite that includes the largest digital asset exchange.",
+      "notes": "",
+      "lastupdatedtimestamp": 1759922816
+    }
+  ]
+}
+```
+
+---
+
+## Get Label Master List — V1 (Legacy)
+
+The V1 endpoint returns the label master list for **Ethereum Mainnet** only and does not support the `chainid` parameter. The response is a direct JSON array rather than a pre-signed URL. Use V2 for new integrations.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key. Defaults to `YourApiKeyToken`.
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `nametag` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `getlabelmasterlist` for this endpoint.
+</ParamField>
+
+### Example Request (V1)
+
+```bash
+curl "https://api.etherscan.io/api\
+?module=nametag\
+&action=getlabelmasterlist\
+&apikey=YourApiKeyToken"
+```
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  Returns `"1"` on success or `"0"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A human-readable status message, e.g. `"OK"`.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of label objects.
+
+  <ResponseField name="labelname" type="string">
+    The human-readable name of the label, e.g. `"Axelar"` or `"Binance"`.
+  </ResponseField>
+
+  <ResponseField name="labelslug" type="string">
+    A URL-friendly slug for the label, e.g. `"axelar"` or `"binance"`. Use this value as the `label` parameter in [Export Address Tags](/api-reference/nametags/export-address-tags).
+  </ResponseField>
+
+  <ResponseField name="shortdescription" type="string">
+    A brief description of the label entity or category.
+  </ResponseField>
+
+  <ResponseField name="notes" type="string">
+    Any supplementary notes about the label. May be empty.
+  </ResponseField>
+
+  <ResponseField name="lastupdatedtimestamp" type="integer">
+    Unix timestamp of when this label entry was last updated.
+  </ResponseField>
+</ResponseField>
+
+### Example Response (V1)
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "labelname": "Axelar",
+      "labelslug": "axelar",
+      "shortdescription": "Axelar delivers secure cross-chain communication for Web3. Its infrastructure enables dApp users to interact with any asset or application, on any chain, with one click. Axelar is an overlay network, delivering Turing-complete message passing via proof-of-stake and permissionless protocols.",
+      "notes": "",
+      "lastupdatedtimestamp": 1712897117
+    },
+    {
+      "labelname": "Binance",
+      "labelslug": "binance",
+      "shortdescription": "Binance is one of the world's leading blockchain ecosystems, with a product suite that includes the largest digital asset exchange.",
+      "notes": "",
+      "lastupdatedtimestamp": 1759922816
+    }
+  ]
+}
+```

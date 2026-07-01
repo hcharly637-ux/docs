@@ -1,0 +1,27 @@
+---
+title: "API Rate Limits and Plan Tiers"
+sidebarTitle: "Rate Limits"
+description: "Understand Etherscan API rate limits across Free, Lite, Standard, Advanced, Professional, and Pro Plus tiers, and when PRO endpoints become available."
+---
+
+Every Etherscan API key operates within the rate limits of its assigned plan tier. Exceeding your plan's limit will return a `Max rate limit reached` error. Choose the tier that matches your application's throughput and data needs.
+
+## Rate Limit Tiers
+
+| API Tier         | Rate Limit                                          | API PRO       |
+| ---------------- | --------------------------------------------------- | ------------- |
+| Free             | 3 calls/second, up to 100,000 calls/day, [selected chains](/supported-chains) only | Not Available |
+| Lite             | 5 calls/second, up to 100,000 calls/day             | Not Available |
+| Standard         | 10 calls/second, up to 200,000 calls/day            | Available     |
+| Advanced         | 20 calls/second, up to 500,000 calls/day            | Available     |
+| Professional     | 30 calls/second, up to 1,000,000 calls/day          | Available     |
+| Pro Plus         | 30 calls/second, up to 1,500,000 calls/day          | Available     |
+| Dedicated/Custom | [Contact us](mailto:apisupport@etherscan.io)        | Available     |
+
+<Note>
+  **PRO endpoints** — including historical balances, daily network statistics, and gas analytics — require the **Standard tier or above**. They are not available on Free or Lite plans. See the full list of [PRO endpoints](/resources/pro-endpoints).
+</Note>
+
+## Upgrading Your Plan
+
+To upgrade your API plan or explore available tiers, visit [etherscan.io/apis](https://etherscan.io/apis). For dedicated or custom rate limit arrangements, contact [apisupport@etherscan.io](mailto:apisupport@etherscan.io).

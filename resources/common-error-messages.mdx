@@ -1,0 +1,103 @@
+---
+title: "Common Etherscan API Errors and How to Fix Them"
+sidebarTitle: "Error Messages"
+description: "Understand and resolve common Etherscan API error messages including invalid API keys, rate limits, chain errors, timeouts, and free tier restrictions."
+---
+
+When an API request encounters a problem, Etherscan returns a `status` of `"0"` with the error cause described in the `result` field. Use the `result` string — not the HTTP status code — to diagnose and fix the issue.
+
+```json
+{
+  "status": "0",
+  "message": "NOTOK",
+  "result": "<error description>"
+}
+```
+
+The sections below cover the most common errors you'll encounter, what causes them, and how to resolve each one.
+
+## Missing or Unsupported Chain
+
+<Warning>
+  "Missing or unsupported chainid parameter (required for v2 api), please see chainlist for the list of supported chainids"
+</Warning>
+
+You either omitted the `chainid` parameter or specified a chain that is not yet supported. Note that you can only specify **one chain per request** — passing multiple chain IDs (e.g., `chainid=420,10`) is not supported.
+
+**Fix:** Add a valid `chainid` to your request. See the [supported chains](/supported-chains) page for the full list of chain IDs.
+
+## Invalid API Key
+
+<Warning>
+  "Invalid API Key"
+</Warning>
+
+The API key you supplied is not recognized. This commonly happens when using keys issued by chain-specific explorers like PolygonScan or Arbiscan — those keys are **not valid** for Etherscan API V2.
+
+**Fix:** Use an API key generated from your [Etherscan API Dashboard](https://etherscan.io/apidashboard). New keys can take a few minutes to activate — wait and retry if you've just created one.
+
+## Too Many Invalid API Key Attempts
+
+<Warning>
+  "Too many invalid api key attempts, please try again later"
+</Warning>
+
+More than **5 invalid API key attempts** were made within a **30-second** window from the same source IP. As a security measure, your IP is temporarily throttled.
+
+**Fix:** Wait at least **30 seconds** for the throttle to reset, then retry with a valid API key. Avoid looping requests with a bad key in rapid succession.
+
+## Max Rate Limit Reached
+
+<Warning>
+  "Max rate limit reached, please use API Key for higher rate limit"
+</Warning>
+
+You've exceeded the calls-per-second or calls-per-day limit for your current plan tier.
+
+**Fix:** Review the [rate limits](/resources/rate-limits) for your plan and reduce your request frequency. If you're using a script, implement a token bucket or delay between calls. To increase your limits, [upgrade your plan](https://etherscan.io/apis).
+
+## Missing or Invalid Action Name
+
+<Warning>
+  "Error! Missing Or invalid Action name"
+</Warning>
+
+The `module` or `action` parameter is either missing from your request or contains a typo.
+
+**Fix:** Double-check your query string for the correct `module` and `action` values. The easiest way to verify is to copy a sample query directly from the [API Reference](/api-reference) playground and test it in your browser first.
+
+## Endpoint-Specific Errors
+
+<Warning>
+  "Error! Block number already pass"
+
+  "Error! Invalid address format"
+
+  "Contract source code not verified"
+</Warning>
+
+These errors are specific to the endpoint you're calling and relate to the parameter values you've supplied — for example, referencing a block number that has already passed, passing a malformed address, or querying a contract that hasn't been verified on Etherscan.
+
+**Fix:** Refer to the specific endpoint's documentation in the [API Reference](/api-reference) to confirm the correct format and valid values for each parameter.
+
+## Query Timeout
+
+<Warning>
+  "Query Timeout occured. Please select a smaller result dataset"
+
+  "Unexpected err, timeout occurred or server too busy. Please try again later"
+</Warning>
+
+Your query is requesting too large a dataset to complete within the allowed time window.
+
+**Fix:** Narrow your query by reducing the date or block range, lowering your `offset` value, or applying stricter filters. If you believe the timeout is a performance issue rather than a data size issue, [contact support](/resources/contact-us).
+
+## Free Tier Chain Restriction
+
+<Warning>
+  "Free API access is not supported for this chain. Please upgrade your api plan for full chain coverage."
+</Warning>
+
+The chain you're querying is not included in the Free tier. Some networks — such as BNB Smart Chain, Base, OP Mainnet, and Avalanche — require a paid plan.
+
+**Fix:** Check the [supported chains](/supported-chains) table to see which chains are available on the Free tier. To access all networks, [upgrade to a paid plan](https://etherscan.io/apis) — the Lite tier is an affordable option to unlock additional chain coverage.

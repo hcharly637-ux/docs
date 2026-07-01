@@ -1,0 +1,73 @@
+---
+title: "Migrate from Etherscan API V1 to V2"
+sidebarTitle: "V2 Migration"
+description: "Upgrade from deprecated Etherscan API V1 or chain-specific explorer APIs (PolygonScan, BscScan) to the unified Etherscan API V2 in four steps."
+---
+
+Etherscan API V2 introduces a unified multichain experience across 60+ supported networks under a single account and API key. If you're still using V1 endpoints or chain-specific explorer APIs like PolygonScan or BscScan, follow this guide to migrate your integration.
+
+<Warning>
+  **V1 endpoints have been deprecated as of August 15, 2025.** If you're still using the legacy V1 base URL, your requests will return the following error:
+
+  ```json
+  {
+    "status": "0",
+    "message": "NOTOK",
+    "result": "You are using a deprecated V1 endpoint, switch to Etherscan API V2."
+  }
+  ```
+
+  All existing endpoints remain fully compatible once you update to the V2 format.
+</Warning>
+
+<Tip>
+  [Contract verification](/contract-verification/verify-with-foundry) via Hardhat, Remix, and Foundry also supports a single Etherscan API key across all chains.
+</Tip>
+
+## How to Migrate
+
+<Steps>
+  <Step title="Create an Etherscan Account">
+    [Sign up](https://etherscan.io/register) for an Etherscan account if you don't already have one. This applies whether you're migrating from V1 or from another explorer such as BaseScan, BscScan, or PolygonScan.
+  </Step>
+
+  <Step title="Create an Etherscan API Key">
+    Log in and go to your [API Dashboard](https://etherscan.io/apidashboard) to create a new API key. This single key grants access to all [supported chains](/supported-chains) under API V2 — you no longer need separate keys per chain.
+  </Step>
+
+  <Step title="Migrate Endpoints from Etherscan API V1">
+    Update your base URL from the legacy V1 path to the new V2 path, and add the `chainid` parameter to specify your target network (use `1` for Ethereum Mainnet).
+
+    **Before (V1):**
+
+    ```text
+    https://api.etherscan.io/api?module=account&action=balance&apikey=YourEtherscanApiKey
+    ```
+
+    **After (V2):**
+
+    ```text
+    https://api.etherscan.io/v2/api?chainid=1&module=account&action=balance&apikey=YourEtherscanApiKey
+    ```
+
+    That's the only change required for existing Etherscan V1 integrations — all module/action pairs and parameters remain the same.
+  </Step>
+
+  <Step title="Migrate Endpoints from Other Explorers">
+    If you're migrating from a chain-specific explorer (such as PolygonScan, BscScan, or BaseScan), update your base URL to `https://api.etherscan.io/v2/api`, set the `chainid` to the correct chain from the [supported chains list](/supported-chains), and replace your old explorer API key with your Etherscan API key.
+
+    **Before (PolygonScan V1):**
+
+    ```text
+    https://api.polygonscan.com/api?module=account&action=balance&apikey=YourPolygonscanApiKey
+    ```
+
+    **After (V2):**
+
+    ```text
+    https://api.etherscan.io/v2/api?chainid=137&module=account&action=balance&apikey=YourEtherscanApiKey
+    ```
+
+    Use `chainid=137` for Polygon, `chainid=56` for BNB Smart Chain, `chainid=8453` for Base, and so on. See the full [supported chains](/supported-chains) reference for every available chain ID.
+  </Step>
+</Steps>

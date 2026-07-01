@@ -1,0 +1,53 @@
+---
+title: "Etherscan API Changelog"
+sidebarTitle: "Changelog"
+description: "Recent updates, deprecations, and upcoming changes to the Etherscan API, including the July 2026 free tier record limit reduction."
+---
+
+This page tracks recent updates, deprecations, and upcoming changes to the Etherscan API. Check back regularly to stay informed about breaking changes and required actions for your integration.
+
+## May 2026
+
+<Warning>
+  **Upcoming Change — Effective July 1, 2026: Reduced Maximum Records Per Request for Free Tier**
+
+  The maximum number of records returned per request will be reduced from **10,000 to 1,000** for Free tier API users. This change affects the following endpoints:
+
+  - [Get Beacon Chain Withdrawals by Address](/api-reference/accounts/deposits-withdrawals)
+  - [Get Blocks Validated by Address](/api-reference/accounts/mined-blocks)
+  - [Get ERC20 Token Transfers by Address](/api-reference/tokens/erc20-transfers)
+  - [Get ERC721 Token Transfers by Address](/api-reference/tokens/erc721-transfers)
+  - [Get ERC1155 Token Transfers by Address](/api-reference/tokens/erc1155-transfers)
+  - [Get Ethereum Nodes Size](/api-reference/stats/chain-size)
+  - [Get Event Logs by Address](/api-reference/logs/logs-by-address)
+  - [Get Internal Transactions by Address](/api-reference/accounts/internal-transactions)
+  - [Get Normal Transactions By Address](/api-reference/accounts/transactions)
+  - [Get Plasma Deposits by Address](/api-reference/accounts/deposits-withdrawals)
+  - [Get Token Holder List by Contract Address](/api-reference/tokens/token-holders)
+
+  **Action required:** Update your integration for the affected endpoints to paginate records in batches of **1,000 or fewer**. If your application does not use any of the endpoints listed above, no action is required.
+</Warning>
+
+<Warning>
+  **Upcoming Change — Effective July 1, 2026: Get Internal Transactions by Block Range Moving to Pro Plans**
+
+  The [Get Internal Transactions by Block Range](/api-reference/accounts/internal-transactions) endpoint will be restricted to Pro plans only.
+
+  **Action required:** If your application uses this endpoint, verify your current plan tier and upgrade if needed, or update your integration to use an alternative approach. If your application does not use this endpoint, no action is required.
+</Warning>
+
+## April 2026
+
+**Scroll Mainnet & Sepolia Testnet Deprecation**
+
+Scroll Mainnet (chainid: 534352) and Scroll Sepolia Testnet (chainid: 534351) API support has been deprecated effective **April 16, 2026**. API requests to these chains are no longer supported.
+
+## February 2026
+
+**MemeCore Formicarium Testnet Migration**
+
+MemeCore Formicarium Testnet (chainid: 43521) has migrated to **Insectarium Testnet (chainid: 43522)**, effective February 25, 2026. Update your integration to use `chainid=43522` for MemeCore testnet requests.
+
+**Swell Mainnet & Testnet Deprecation**
+
+Swell Mainnet (chainid: 1923) and Swell Testnet (chainid: 1924) API support has been deprecated effective **February 25, 2026**. API requests to these chains are no longer supported.

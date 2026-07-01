@@ -1,0 +1,67 @@
+---
+title: "Get Total Ethereum Node Count"
+sidebarTitle: "Node Count"
+description: "GET /v2/api?module=stats&action=nodecount — Retrieves the total count of discoverable Ethereum nodes currently active on the network."
+---
+
+The Node Count endpoint returns a snapshot of the total number of Ethereum nodes that Etherscan has discovered and verified as active on the network. You can use this metric to track the decentralization health of the Ethereum network over time — a higher node count generally indicates a more resilient and distributed network.
+
+## Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `nodecount` for this endpoint.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on error.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A short status message such as `"OK"`.
+</ResponseField>
+
+<ResponseField name="result" type="object">
+  An object containing the current node count snapshot.
+
+  <Expandable title="result fields">
+    <ResponseField name="UTCDate" type="string">
+      The UTC date on which the node count was last recorded, in `yyyy-MM-dd` format.
+    </ResponseField>
+    <ResponseField name="TotalNodeCount" type="string">
+      The total number of discoverable Ethereum nodes active on the network as of the recorded date.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=stats&action=nodecount&apikey=YourApiKeyToken"
+```
+
+## Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": {
+    "UTCDate": "2025-09-25",
+    "TotalNodeCount": "11786"
+  }
+}
+```

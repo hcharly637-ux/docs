@@ -1,0 +1,73 @@
+---
+title: "Get Historical Native Balance at a Block Height"
+sidebarTitle: "Historical Balance"
+description: "GET /v2/api?module=account&action=balancehistory — Retrieves the native token balance for an address at a specific block number. PRO endpoint, Standard plan and above."
+---
+
+The `balancehistory` action retrieves the native token balance held by a specified address at an exact historical block number. This is useful for auditing, portfolio reconstruction, or any workflow requiring point-in-time balance snapshots. The result is returned in the chain's smallest denomination (e.g. wei for ETH).
+
+<Warning>
+  This is a **PRO endpoint**, available to the [Standard Plan](/resources/rate-limits) and above. This endpoint is also throttled to **2 calls/second** regardless of API Pro tier.
+</Warning>
+
+## Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=account\
+&action=balancehistory\
+&address=0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae\
+&blockno=8000000\
+&apikey=YourApiKeyToken"
+```
+
+## Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base. See the full list at [supported chains](/api-reference/chainlist).
+</ParamField>
+
+<ParamField query="module" type="string" default="account" required>
+  Set to `account` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="balancehistory" required>
+  Set to `balancehistory` for this endpoint.
+</ParamField>
+
+<ParamField query="address" type="string" default="0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae" required>
+  The address to query, like `0xfefefefefefefefefefefefefefefefefefefefe`.
+</ParamField>
+
+<ParamField query="blockno" type="integer" default="8000000" required>
+  The block number at which to check the balance. You can query all the way back to the genesis block `0`.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on error.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success, or an error message string.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  The native token balance of the address at the specified block number, expressed in the chain's smallest unit (wei for ETH). Divide by `10^18` to convert to ETH.
+</ResponseField>
+
+## Response Example
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": "610538078574759898951277"
+}
+```

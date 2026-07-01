@@ -1,0 +1,193 @@
+---
+title: "Get Event Logs Filtered by Topics"
+sidebarTitle: "Logs by Topics"
+description: "GET /v2/api?module=logs&action=getLogs — Retrieves event logs within a block range filtered by one or more topics, without restricting to a specific contract address."
+---
+
+Retrieve event logs across all contracts within a specified block range, filtered by one or more topic values. This form of log query is useful when you want to track a specific event type (such as all ERC-20 `Transfer` events) regardless of which contract emitted it. You can combine up to four topic filters with configurable `and`/`or` operators between them to fine-tune your query.
+
+## Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `logs` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `getLogs` for this endpoint.
+</ParamField>
+
+<ParamField query="fromBlock" type="integer" required>
+  The starting block number (inclusive) to search from. Example: `12878196`.
+</ParamField>
+
+<ParamField query="toBlock" type="integer" required>
+  The ending block number (inclusive) to search to. Example: `12879196`.
+</ParamField>
+
+<ParamField query="topic0" type="string">
+  The first topic to filter by, typically the keccak-256 hash of an event signature. Example: `0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef` (ERC-20 `Transfer`).
+</ParamField>
+
+<ParamField query="topic0_1_opr" type="string" default="and">
+  The logical operator applied between `topic0` and `topic1`. Use `and` to require both, or `or` to match either.
+</ParamField>
+
+<ParamField query="topic1" type="string">
+  The second topic to filter by.
+</ParamField>
+
+<ParamField query="topic1_2_opr" type="string" default="and">
+  The logical operator applied between `topic1` and `topic2`. Use `and` or `or`.
+</ParamField>
+
+<ParamField query="topic2" type="string">
+  The third topic to filter by.
+</ParamField>
+
+<ParamField query="topic2_3_opr" type="string" default="and">
+  The logical operator applied between `topic2` and `topic3`. Use `and` or `or`.
+</ParamField>
+
+<ParamField query="topic3" type="string">
+  The fourth topic to filter by.
+</ParamField>
+
+<ParamField query="topic0_2_opr" type="string" default="and">
+  The logical operator applied between `topic0` and `topic2`. Use `and` or `or`.
+</ParamField>
+
+<ParamField query="topic0_3_opr" type="string" default="and">
+  The logical operator applied between `topic0` and `topic3`. Use `and` or `or`.
+</ParamField>
+
+<ParamField query="topic1_3_opr" type="string" default="and">
+  The logical operator applied between `topic1` and `topic3`. Use `and` or `or`.
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination.
+</ParamField>
+
+<ParamField query="offset" type="integer" default="100">
+  Number of records per page.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of log entry objects matching the topic filters.
+
+  <Expandable title="log entry fields">
+    <ResponseField name="address" type="string">
+      The contract address that emitted the log.
+    </ResponseField>
+
+    <ResponseField name="topics" type="array">
+      An array of up to four indexed topic values for this log entry.
+    </ResponseField>
+
+    <ResponseField name="data" type="string">
+      The ABI-encoded non-indexed event parameters as a hex string.
+    </ResponseField>
+
+    <ResponseField name="blockNumber" type="string">
+      The block number in which the log was emitted, as a hex string.
+    </ResponseField>
+
+    <ResponseField name="blockHash" type="string">
+      The hash of the block containing this log.
+    </ResponseField>
+
+    <ResponseField name="timeStamp" type="string">
+      The Unix timestamp of the block, as a hex string.
+    </ResponseField>
+
+    <ResponseField name="gasPrice" type="string">
+      The gas price of the transaction, as a hex string in wei.
+    </ResponseField>
+
+    <ResponseField name="gasUsed" type="string">
+      Total gas used by the transaction, as a hex string.
+    </ResponseField>
+
+    <ResponseField name="logIndex" type="string">
+      The position of this log within the block, as a hex string.
+    </ResponseField>
+
+    <ResponseField name="transactionHash" type="string">
+      The hash of the transaction that emitted this log.
+    </ResponseField>
+
+    <ResponseField name="transactionIndex" type="string">
+      The position of the transaction within the block, as a hex string.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example Request
+
+This example retrieves ERC-20 `Transfer` events from a specific address to a specific recipient across a block range.
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=logs\
+&action=getLogs\
+&fromBlock=12878196\
+&toBlock=12879196\
+&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef\
+&topic0_1_opr=and\
+&topic1=0x0000000000000000000000000000000000000000000000000000000000000000\
+&topic1_2_opr=and\
+&topic2=0x000000000000000000000000c45a4b3b698f21f88687548e7f5a80df8b99d93d\
+&topic2_3_opr=and\
+&topic3=0x00000000000000000000000000000000000000000000000000000000000000b5\
+&page=1\
+&offset=100\
+&apikey=YourApiKeyToken"
+```
+
+## Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "address": "0xbd3531da5cf5857e7cfaa92426877b022e612cf8",
+      "topics": [
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+        "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "0x000000000000000000000000c45a4b3b698f21f88687548e7f5a80df8b99d93d",
+        "0x00000000000000000000000000000000000000000000000000000000000000b5"
+      ],
+      "data": "0x",
+      "blockNumber": "0xc48174",
+      "blockHash": "0x837e109ab8b1b40ec7d1032bff82397325d85e719b97d900fa0d9aa9745b2c27",
+      "timeStamp": "0x60f9ce56",
+      "gasPrice": "0x2e90edd000",
+      "gasUsed": "0x247205",
+      "logIndex": "0x",
+      "transactionHash": "0x4ffd22d986913d33927a392fe4319bcd2b62f3afe1c15a2c59f77fc2cc4c20a9",
+      "transactionIndex": "0x"
+    }
+  ]
+}
+```

@@ -1,0 +1,174 @@
+---
+title: "Get Ether Price: Current and Historical USD/BTC"
+sidebarTitle: "ETH Price"
+description: "Retrieve the latest ETH price in USD and BTC, and historical daily ETH price data for a given date range using Etherscan stats endpoints."
+---
+
+Etherscan provides two complementary endpoints for tracking the price of Ether. The current price endpoint returns the latest market rate in both USD and BTC with timestamps, ideal for real-time dashboards or pricing widgets. The historical price endpoint lets you query daily closing prices over a custom date range, which is useful for charting, analytics, and backtesting.
+
+---
+
+## Get Ether Last Price
+
+Retrieves the latest price of Ether in both USD and BTC, along with the Unix timestamps of when those prices were last updated.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `ethprice` for this endpoint.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on error.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A short status message such as `"OK"`.
+</ResponseField>
+
+<ResponseField name="result" type="object">
+  An object containing the latest ETH price data.
+
+  <Expandable title="result fields">
+    <ResponseField name="ethbtc" type="string">
+      Current price of 1 ETH denominated in BTC.
+    </ResponseField>
+    <ResponseField name="ethbtc_timestamp" type="string">
+      Unix timestamp of when the ETH/BTC price was last updated.
+    </ResponseField>
+    <ResponseField name="ethusd" type="string">
+      Current price of 1 ETH denominated in USD.
+    </ResponseField>
+    <ResponseField name="ethusd_timestamp" type="string">
+      Unix timestamp of when the ETH/USD price was last updated.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=stats&action=ethprice&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": {
+    "ethbtc": "0.0368322132423383",
+    "ethbtc_timestamp": "1759139509",
+    "ethusd": "4129.30651044757",
+    "ethusd_timestamp": "1759139509"
+  }
+}
+```
+
+---
+
+## Get Ether Historical Daily Price
+
+<Warning>
+  This is a **PRO** endpoint, available to the [Standard Plan](/resources/rate-limits) and above.
+</Warning>
+
+Returns the daily closing price of Ether in USD for each day within a specified date range. Use this endpoint to build price charts, compute moving averages, or perform historical analysis on ETH price movements.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `ethdailyprice` for this endpoint.
+</ParamField>
+
+<ParamField query="startdate" type="string" required>
+  Start of the date range in `yyyy-MM-dd` format, e.g. `2019-02-01`.
+</ParamField>
+
+<ParamField query="enddate" type="string" required>
+  End of the date range in `yyyy-MM-dd` format, e.g. `2019-02-28`.
+</ParamField>
+
+<ParamField query="sort" type="string" default="asc">
+  Sort order: `asc` for oldest-first or `desc` for newest-first.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on error.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A short status message such as `"OK"`.
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  An array of daily ETH price records.
+
+  <Expandable title="result item fields">
+    <ResponseField name="UTCDate" type="string">
+      The date of the price record in `yyyy-MM-dd` format.
+    </ResponseField>
+    <ResponseField name="unixTimeStamp" type="string">
+      Unix timestamp corresponding to the start of the UTC day.
+    </ResponseField>
+    <ResponseField name="value" type="string">
+      The closing price of 1 ETH in USD on that day.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=stats&action=ethdailyprice&startdate=2019-02-01&enddate=2019-02-28&sort=asc&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "UTCDate": "2019-02-01",
+      "unixTimeStamp": "1548979200",
+      "value": "107.03"
+    },
+    {
+      "UTCDate": "2019-02-02",
+      "unixTimeStamp": "1549065600",
+      "value": "111.00"
+    }
+  ]
+}
+```

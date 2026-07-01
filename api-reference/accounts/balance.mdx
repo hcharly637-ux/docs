@@ -1,0 +1,69 @@
+---
+title: "Get Native Token Balance for an Address"
+sidebarTitle: "Native Balance"
+description: "GET /v2/api?module=account&action=balance — Retrieves the current native token (ETH, BNB, MATIC, etc.) balance for a specific address on any supported chain."
+---
+
+The `balance` action returns the current native token balance held by a specified address on any Etherscan-supported chain. The result is returned in the chain's smallest denomination (e.g. wei for ETH). To query balances for multiple addresses simultaneously, use the [Balance (Multi)](/api-reference/accounts/balance-multi) endpoint instead.
+
+## Request
+
+```bash
+curl "https://api.etherscan.io/v2/api\
+?chainid=1\
+&module=account\
+&action=balance\
+&address=0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae\
+&tag=latest\
+&apikey=YourApiKeyToken"
+```
+
+## Query Parameters
+
+<ParamField query="apikey" type="string" default="YourApiKeyToken" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1" required>
+  Chain ID to query, e.g. `1` for Ethereum, `8453` for Base. See the full list at [supported chains](/api-reference/chainlist).
+</ParamField>
+
+<ParamField query="module" type="string" default="account" required>
+  Set to `account` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" default="balance" required>
+  Set to `balance` for this endpoint.
+</ParamField>
+
+<ParamField query="address" type="string" default="0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae" required>
+  The address to query, like `0xfefefefefefefefefefefefefefefefefefefefe`. To query multiple addresses in a single call, use the [Balance (Multi)](/api-reference/accounts/balance-multi) endpoint.
+</ParamField>
+
+<ParamField query="tag" type="string" default="latest">
+  Use `latest` for the balance at the most recent block. Also accepts a specific block number in hex format (e.g. `0x10d4f`) for balances up to the last 128 blocks. For older historical balances, use the [Historical Balance](/api-reference/accounts/balance-history) endpoint.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on error.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"OK"` on success, or an error message string.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  The native token balance of the address, expressed in the chain's smallest unit (wei for ETH). Divide by `10^18` to convert to ETH.
+</ResponseField>
+
+## Response Example
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": "172774397764084972158218"
+}
+```

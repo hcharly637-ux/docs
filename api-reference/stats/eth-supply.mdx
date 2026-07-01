@@ -1,0 +1,135 @@
+---
+title: "Get Total Ether Supply and Circulation"
+sidebarTitle: "ETH Supply"
+description: "Retrieve the circulating supply of Ether, with options for V1 supply (excluding staking/burns) and V2 supply (including ETH2 rewards, EIP-1559 burns, and beacon withdrawals)."
+---
+
+Etherscan exposes two Ether supply endpoints that give you different perspectives on how much ETH is in circulation. The original `ethsupply` endpoint returns the classic circulating supply figure, excluding post-Merge staking rewards and EIP-1559 burned fees. The newer `ethsupply2` endpoint provides a fuller picture by breaking down the supply into its constituent components — base supply, ETH2 staking rewards, burned fees, and beacon chain withdrawals.
+
+---
+
+## Get Total Supply of Ether (V1)
+
+Returns the current circulating supply of Ether as a single integer string, measured in Wei. This figure excludes ETH2 staking rewards and EIP-1559 burned fees, consistent with the pre-Merge supply definition.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `ethsupply` for this endpoint.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on error.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A short status message such as `"OK"`.
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  The total circulating supply of Ether in Wei, excluding ETH2 staking rewards and EIP-1559 burned fees.
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=stats&action=ethsupply&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": "122373866217800000000000000"
+}
+```
+
+---
+
+## Get Total Supply of Ether (V2)
+
+Returns a detailed breakdown of Ether supply components including the base circulating supply, ETH2 staking rewards, EIP-1559 burned fees, and the total amount of ETH withdrawn from the beacon chain. This gives you a more complete picture of the actual state of ETH issuance and destruction since the Merge.
+
+### Query Parameters
+
+<ParamField query="apikey" type="string" required>
+  Your Etherscan API key.
+</ParamField>
+
+<ParamField query="chainid" type="string" default="1">
+  Chain ID to target. Use `1` for Ethereum Mainnet. See the full list of [supported chains](/supported-chains).
+</ParamField>
+
+<ParamField query="module" type="string" required>
+  Set to `stats` for this endpoint.
+</ParamField>
+
+<ParamField query="action" type="string" required>
+  Set to `ethsupply2` for this endpoint.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  `"1"` on success, `"0"` on error.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A short status message such as `"OK"`.
+</ResponseField>
+
+<ResponseField name="result" type="object">
+  An object containing a detailed breakdown of Ether supply.
+
+  <Expandable title="result fields">
+    <ResponseField name="EthSupply" type="string">
+      The base circulating supply of Ether in Wei, equivalent to the V1 supply figure.
+    </ResponseField>
+    <ResponseField name="Eth2Staking" type="string">
+      The total amount of ETH issued as staking rewards on the beacon chain, in Wei.
+    </ResponseField>
+    <ResponseField name="BurntFees" type="string">
+      The cumulative amount of ETH burned via EIP-1559 base fee destruction, in Wei.
+    </ResponseField>
+    <ResponseField name="WithdrawnTotal" type="string">
+      The total amount of ETH that has been withdrawn from the beacon chain back to the execution layer, in Wei.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Request
+
+```bash
+curl "https://api.etherscan.io/v2/api?chainid=1&module=stats&action=ethsupply2&apikey=YourApiKeyToken"
+```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": {
+    "EthSupply": "122373866217800000000000000",
+    "Eth2Staking": "2940327167090033000000000",
+    "BurntFees": "4610942856337430575173814",
+    "WithdrawnTotal": "7618584348954597000000000"
+  }
+}
+```
