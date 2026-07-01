@@ -1,7 +1,7 @@
 ---
-title: "Get Blocks Validated by Address"
+title: "Get Blocks Validated by a Miner or Validator Address"
 sidebarTitle: "Mined Blocks"
-description: "GET /v2/api?module=account&action=getminedblocks — Retrieves the list of blocks validated (mined) by a specified address, useful for validator analytics."
+description: "GET /v2/api?module=account&action=getminedblocks — Retrieves the list of blocks validated by a specified address, useful for validator and miner analytics."
 ---
 
 The `getminedblocks` action retrieves the list of blocks that have been validated (mined or proposed) by a specified address. This is useful for tracking validator performance, calculating block rewards, and auditing the activity of mining or staking nodes. You can also request uncle blocks from pre-Merge activity using the `blocktype` parameter.

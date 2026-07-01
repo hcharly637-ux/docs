@@ -1,7 +1,7 @@
 ---
-title: "Get Token Portfolio for an Address"
+title: "Get ERC-20 and ERC-721 NFT Token Holdings by Address"
 sidebarTitle: "Address Holdings"
-description: "Retrieve all ERC-20 tokens, ERC-721 NFT collections, and ERC-721 token inventory held by a specific address using Etherscan portfolio endpoints."
+description: "Retrieve ERC-20 token holdings, ERC-721 NFT collections, or specific ERC-721 token IDs held by any address. All three endpoints require a Standard plan."
 ---
 
 These endpoints let you build a complete token portfolio view for any address. You can fetch all ERC-20 tokens held with their current USD values, all ERC-721 NFT collections with holding counts, or a detailed inventory of specific token IDs owned within a given NFT contract. All three endpoints require a Standard plan or above.
@@ -210,9 +210,16 @@ curl "https://api.etherscan.io/v2/api\
 <ResponseExample>
 ```json Response
 {
-  "status": "0",
-  "message": "NOTOK",
-  "result": "Maximum rate limit reached"
+  "status": "1",
+  "message": "OK",
+  "result": [
+    {
+      "TokenAddress": "0xed5af388653567af2f388e6224dc7c4b3241c544",
+      "TokenName": "Azuki",
+      "TokenSymbol": "AZUKI",
+      "TokenQuantity": "3"
+    }
+  ]
 }
 ```
 </ResponseExample>

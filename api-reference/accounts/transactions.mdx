@@ -1,7 +1,7 @@
 ---
-title: "Get Normal Transactions by Address"
+title: "Get Normal Transactions by Address — Etherscan API"
 sidebarTitle: "Transactions"
-description: "GET /v2/api?module=account&action=txlist — Retrieves the full transaction history of an address with pagination, block range filtering, and sort order control."
+description: "GET /v2/api?module=account&action=txlist — Returns an address's transaction history with block range filtering, pagination, and configurable sort order."
 ---
 
 The `txlist` action retrieves the full list of normal (external) transactions sent to or from a specified address. You can narrow results using block range filters (`startblock` and `endblock`), paginate through large result sets with `page` and `offset`, and control the sort order of returned records. This endpoint returns up to 10,000 records per request (1,000 for Free tier users from July 2026).

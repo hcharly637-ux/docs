@@ -1,7 +1,7 @@
 ---
-title: "Get Total Ether Supply and Circulation"
+title: "Get Ether Supply: V1 Circulating and V2 Full Breakdown"
 sidebarTitle: "ETH Supply"
-description: "Retrieve the circulating supply of Ether, with options for V1 supply (excluding staking/burns) and V2 supply (including ETH2 rewards, EIP-1559 burns, and beacon withdrawals)."
+description: "Retrieve ETH circulating supply via V1 (simple Wei string) or V2 breakdown including EthSupply, Eth2Staking, BurntFees, and WithdrawnTotal fields."
 ---
 
 Etherscan exposes two Ether supply endpoints that give you different perspectives on how much ETH is in circulation. The original `ethsupply` endpoint returns the classic circulating supply figure, excluding post-Merge staking rewards and EIP-1559 burned fees. The newer `ethsupply2` endpoint provides a fuller picture by breaking down the supply into its constituent components — base supply, ETH2 staking rewards, burned fees, and beacon chain withdrawals.

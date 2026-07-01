@@ -1,7 +1,7 @@
 ---
-title: "Internal Transactions Advanced Filter"
+title: "Internal Transactions Advanced Filter — Etherscan"
 sidebarTitle: "Internal Tx Filter"
-description: "GET /v2/api?module=accountsFilter&action=txlistinternal — Retrieve internal transactions with advanced from and to address filtering for precise contract call analysis."
+description: "GET /v2/api?module=account&action=txlistinternal — Filter internal transactions by both sender and receiver address simultaneously for contract analysis."
 ---
 
 Internal transactions are value transfers and contract calls that occur as part of the execution of a smart contract — they do not appear directly on the blockchain as top-level transactions. The Advanced Filter for internal transactions lets you query these calls by both the originating address (`from`) and the target address (`to`) simultaneously, making it straightforward to trace contract-to-contract interactions or monitor funds flowing through a specific set of addresses. You can explore and preview this data interactively on the [Etherscan Advanced Filter](https://etherscan.io/advanced-filter) page.
@@ -16,8 +16,8 @@ Internal transactions are value transfers and contract calls that occur as part 
   Chain ID to query, such as `1` for Ethereum or `8453` for Base. See [supported chains](/supported-chains) for the full list.
 </ParamField>
 
-<ParamField query="module" type="string" default="accountsFilter" required>
-  Set to `accountsFilter` for this endpoint.
+<ParamField query="module" type="string" default="account" required>
+  Set to `account` for this endpoint.
 </ParamField>
 
 <ParamField query="action" type="string" default="txlistinternal" required>
@@ -139,7 +139,7 @@ Internal transactions are value transfers and contract calls that occur as part 
 ```bash
 curl "https://api.etherscan.io/v2/api
   ?chainid=1
-  &module=accountsFilter
+  &module=account
   &action=txlistinternal
   &to=0x71c7656ec7ab88b098defb751b7401b5f6d8976f
   &fromto_opr=or

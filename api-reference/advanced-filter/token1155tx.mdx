@@ -1,7 +1,7 @@
 ---
-title: "ERC-1155 Token Transfers Advanced Filter"
+title: "ERC-1155 Token Transfers Advanced Filter — Etherscan"
 sidebarTitle: "ERC-1155 Filter"
-description: "GET /v2/api?module=accountsFilter&action=token1155tx — Retrieve ERC-1155 multi-token transfers with advanced from and to address filtering."
+description: "GET /v2/api?module=account&action=token1155tx — Retrieve ERC-1155 multi-token transfers with advanced from and to address filtering."
 ---
 
 ERC-1155 is the multi-token standard that supports both fungible and non-fungible tokens within a single contract. Each transfer can involve any quantity of any token ID, making this standard popular for gaming items, digital collectibles, and semi-fungible assets. The Advanced Filter for ERC-1155 transfers lets you query these multi-token movements by both sender (`from`) and receiver (`to`) addresses, optionally scoped to a specific contract, giving you fine-grained visibility into multi-token flows. You can explore and preview this data interactively on the [Etherscan Advanced Filter](https://etherscan.io/advanced-filter) page.
@@ -16,8 +16,8 @@ ERC-1155 is the multi-token standard that supports both fungible and non-fungibl
   Chain ID to query, such as `1` for Ethereum or `8453` for Base. See [supported chains](/supported-chains) for the full list.
 </ParamField>
 
-<ParamField query="module" type="string" default="accountsFilter" required>
-  Set to `accountsFilter` for this endpoint.
+<ParamField query="module" type="string" default="account" required>
+  Set to `account` for this endpoint.
 </ParamField>
 
 <ParamField query="action" type="string" default="token1155tx" required>
@@ -171,7 +171,7 @@ ERC-1155 is the multi-token standard that supports both fungible and non-fungibl
 ```bash
 curl "https://api.etherscan.io/v2/api
   ?chainid=1
-  &module=accountsFilter
+  &module=account
   &action=token1155tx
   &contractaddress=0x76be3b62873462d2142405439777e971754e8e77
   &to=0x71c7656ec7ab88b098defb751b7401b5f6d8976f

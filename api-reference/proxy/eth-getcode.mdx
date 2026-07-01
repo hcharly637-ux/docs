@@ -1,7 +1,7 @@
 ---
 title: "eth_getCode and eth_getStorageAt: Read Contract State"
 sidebarTitle: "eth_getCode"
-description: "Read the bytecode deployed at a contract address (eth_getCode) or retrieve a specific storage slot value (eth_getStorageAt) via the Etherscan JSON-RPC proxy."
+description: "Read deployed EVM bytecode (eth_getCode), a contract storage slot (eth_getStorageAt), or uncle block data via the Etherscan JSON-RPC proxy."
 ---
 
 These three proxy endpoints let you inspect low-level contract state and historical block data. Use `eth_getCode` to retrieve the EVM bytecode deployed at any address — a non-empty result confirms an address is a contract. Use `eth_getStorageAt` to read a specific storage slot directly from a contract's persistent storage. Use `eth_getUncleByBlockNumberAndIndex` to retrieve uncle (ommer) block data for pre-Merge proof-of-work analysis.

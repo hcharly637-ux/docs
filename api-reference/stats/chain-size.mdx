@@ -1,7 +1,7 @@
 ---
-title: "Get Ethereum Blockchain Size Over Time"
+title: "Get Ethereum Blockchain Storage Size by Date Range"
 sidebarTitle: "Chain Size"
-description: "GET /v2/api?module=stats&action=chainsize — Retrieves the total size of the Ethereum blockchain in bytes within a specified date range. Includes July 2026 free tier record limit change."
+description: "Retrieve daily Ethereum blockchain size in bytes by date range, filtered by clienttype (geth/parity) and syncmode. Note: free tier limit drops July 2026."
 ---
 
 The Chain Size endpoint returns the cumulative size of the Ethereum blockchain in bytes, sampled daily across a specified date range. You can filter results by client type (`geth` or `parity`) and sync mode (`default` or `archive`) to understand storage requirements for different node configurations. This is useful for capacity planning, infrastructure sizing, and monitoring storage growth trends.

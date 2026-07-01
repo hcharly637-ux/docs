@@ -1,7 +1,7 @@
 ---
-title: "Get Event Logs Filtered by Topics"
+title: "Get Event Logs Filtered by Topics Across All Contracts"
 sidebarTitle: "Logs by Topics"
-description: "GET /v2/api?module=logs&action=getLogs — Retrieves event logs within a block range filtered by one or more topics, without restricting to a specific contract address."
+description: "Query event logs across all contracts by topic values and block range. Combine up to four topic filters with configurable and/or operators."
 ---
 
 Retrieve event logs across all contracts within a specified block range, filtered by one or more topic values. This form of log query is useful when you want to track a specific event type (such as all ERC-20 `Transfer` events) regardless of which contract emitted it. You can combine up to four topic filters with configurable `and`/`or` operators between them to fine-tune your query.

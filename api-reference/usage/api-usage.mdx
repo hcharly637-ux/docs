@@ -1,7 +1,7 @@
 ---
 title: "Get API Usage: Monitor Your API Credit Consumption"
 sidebarTitle: "API Usage"
-description: "GET /v2/api?module=stats&action=getapilimit — Returns your current API credit usage and daily limit, allowing you to monitor consumption and avoid hitting rate limits."
+description: "Returns creditsUsed, creditsAvailable, creditLimit, limitInterval, and intervalExpiryTimespan for your API key via module=getapilimit&action=getapilimit."
 ---
 
 The **Get API Usage** endpoint returns your current API credit consumption alongside your plan's daily credit limit. You can call this endpoint at any time to check how many credits you have used in the current interval, how many remain, and when the interval resets. This helps you manage high-volume integrations and avoid unexpected throttling.
@@ -17,7 +17,7 @@ The **Get API Usage** endpoint returns your current API credit consumption along
 </ParamField>
 
 <ParamField query="module" type="string" required>
-  Set to `stats` for this endpoint.
+  Set to `getapilimit` for this endpoint.
 </ParamField>
 
 <ParamField query="action" type="string" required>
@@ -28,7 +28,7 @@ The **Get API Usage** endpoint returns your current API credit consumption along
 
 ```bash
 curl "https://api.etherscan.io/v2/api\
-?module=stats\
+?module=getapilimit\
 &action=getapilimit\
 &apikey=YourApiKeyToken"
 ```

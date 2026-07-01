@@ -1,13 +1,17 @@
 ---
 title: "Get Token Info and Social Links by Contract Address"
 sidebarTitle: "Token Info"
-description: "GET /v2/api?module=token&action=tokeninfo — Retrieves project details, social media links, and token metadata for an ERC-20, ERC-721, or ERC-1155 token contract."
+description: "Retrieve rich metadata for ERC-20, ERC-721, and ERC-1155 token contracts: total supply, decimals, website, and social media links. PRO, Standard plan."
 ---
 
 Use this endpoint to retrieve rich metadata about any token contract, including the project's website, social media profiles, a short description, and key token parameters such as total supply and decimal divisor. It supports ERC-20, ERC-721, and ERC-1155 token types, making it a useful first step when building token explorer views or enriching wallet interfaces.
 
+<Note>
+  This is a PRO endpoint, available to the [Standard Plan](/resources/rate-limits) and above.
+</Note>
+
 <Warning>
-  This is a PRO endpoint available to the Standard plan and above. This endpoint is also throttled to **2 calls/second** regardless of API Pro tier.
+  This endpoint is throttled to **2 calls/second** regardless of API Pro tier.
 </Warning>
 
 ## Query Parameters

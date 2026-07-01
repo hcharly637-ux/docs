@@ -1,7 +1,7 @@
 ---
-title: "Get ERC-1155 Token Transfers by Address"
+title: "Get ERC-1155 Token Transfers by Address and Contract"
 sidebarTitle: "ERC-1155 Transfers"
-description: "GET /v2/api?module=account&action=token1155tx — Retrieves ERC-1155 multi-token transfer history for an address, with optional contract and block range filtering."
+description: "Retrieve ERC-1155 multi-token transfer events for a wallet, filtered by contract and block range. Supports pagination using the page and offset parameters."
 ---
 
 Use this endpoint to retrieve the full ERC-1155 multi-token transfer history for a given address. ERC-1155 supports both fungible and non-fungible tokens within a single contract. You can optionally filter by a specific contract address or block range, and paginate through results using `page` and `offset`.

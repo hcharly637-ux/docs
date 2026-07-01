@@ -1,5 +1,5 @@
 ---
-title: "Verify Solidity, Vyper, and Stylus Smart Contract Source Code"
+title: "Verify Solidity, Vyper, Stylus, and zkSync Contract Sources"
 sidebarTitle: "Verify Source Code"
 description: "Submit Solidity, Vyper, Stylus, or zkSync smart contract source code for verification on Etherscan using the contract verification API endpoints."
 ---
@@ -336,6 +336,18 @@ curl -X POST "https://api.etherscan.io/v2/api" \
   -d "constructorArguments=00000000000000000000000074271f2282ed7ee35c166122a60c9830354be42a" \
   -d "apikey=YourApiKeyToken"
 ```
+
+### Example Response
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": "a7lpxkm9kpcpicx7daftmjifrfhiuhf5vqqnawhkfhzfrcpnxj"
+}
+```
+
+The `result` value is the GUID you use to poll the [Check Source Code Verification Status](#check-source-code-verification-status) endpoint.
 
 ---
 

@@ -1,7 +1,7 @@
 ---
-title: "Get Block Number by Timestamp"
+title: "Get Block Number by Timestamp — Etherscan Block API"
 sidebarTitle: "Block by Timestamp"
-description: "GET /v2/api?module=block&action=getblocknobytime — Retrieves the block number closest to a given Unix timestamp, with control over before or after direction."
+description: "GET /v2/api?module=block&action=getblocknobytime — Look up the closest block number to a Unix timestamp, specifying before or after direction."
 ---
 
 When you need to anchor blockchain data to a specific point in time, this endpoint lets you look up the block number that was mined closest to a given Unix timestamp. You control the direction of the search — use `before` to find the latest block at or before your timestamp, or `after` to find the earliest block at or after it. This is useful for time-based analytics, historical data queries, and snapshotting on-chain state at a precise moment.

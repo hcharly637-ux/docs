@@ -1,7 +1,7 @@
 ---
 title: "Get Contract Creator and Creation Transaction Hash"
 sidebarTitle: "Contract Creation"
-description: "GET /v2/api?module=contract&action=getcontractcreation — Retrieves the deployer address and creation transaction hash for up to 5 contract addresses in a single call."
+description: "Look up the deployer address and creation transaction hash for up to 5 contracts in one call. Also returns block number and timestamp."
 ---
 
 Look up who deployed a contract and which transaction created it. This endpoint accepts up to five comma-separated contract addresses and returns the deployer address, creation transaction hash, block number, timestamp, and creation bytecode for each. It's useful for provenance checks, audit trails, and indexing contract deployments.

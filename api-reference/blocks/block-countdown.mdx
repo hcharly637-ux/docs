@@ -1,5 +1,5 @@
 ---
-title: "Get Estimated Block Countdown by Block Number"
+title: "Get Estimated Block Countdown — Etherscan Block API"
 sidebarTitle: "Block Countdown"
 description: "GET /v2/api?module=block&action=getblockcountdown — Retrieves the estimated time remaining, in seconds, until a specific future block is mined."
 ---
@@ -42,8 +42,26 @@ If you need to know how long until a specific block is produced, this endpoint r
   Returns `OK` on success, or `NOTOK` with an explanation on failure.
 </ResponseField>
 
-<ResponseField name="result" type="string">
-  On success, returns the estimated time remaining in seconds as a string. On failure, returns an error message such as `"Error! Block number already pass"`.
+<ResponseField name="result" type="object | string">
+  On success, returns an object with countdown details. On failure, returns an error string such as `"Error! Block number already pass"`.
+
+  <Expandable title="result properties (success)">
+    <ResponseField name="CurrentBlock" type="string">
+      The current block number at the time of the request.
+    </ResponseField>
+
+    <ResponseField name="CountdownBlock" type="string">
+      The target future block number supplied in the request.
+    </ResponseField>
+
+    <ResponseField name="RemainingBlock" type="string">
+      The number of blocks remaining until the target block is mined.
+    </ResponseField>
+
+    <ResponseField name="EstimateTimeInSec" type="string">
+      The estimated number of seconds until the target block is mined.
+    </ResponseField>
+  </Expandable>
 </ResponseField>
 
 ## Example Request
@@ -55,6 +73,21 @@ curl "https://api.etherscan.io/v2/api
   &action=getblockcountdown
   &blockno=16701588
   &apikey=YourApiKeyToken"
+```
+
+## Example Response (Future Block)
+
+```json
+{
+  "status": "1",
+  "message": "OK",
+  "result": {
+    "CurrentBlock": "16696810",
+    "CountdownBlock": "16701588",
+    "RemainingBlock": "4778",
+    "EstimateTimeInSec": "57336.0"
+  }
+}
 ```
 
 ## Example Response (Block Already Passed)

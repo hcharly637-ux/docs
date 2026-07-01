@@ -1,7 +1,7 @@
 ---
 title: "Get Gas Oracle: Safe, Proposed, and Fast Gas Prices"
 sidebarTitle: "Gas Oracle"
-description: "GET /v2/api?module=gastracker&action=gasoracle — Returns current gas price recommendations in Gwei: SafeGasPrice, ProposeGasPrice, FastGasPrice, and base fee."
+description: "Retrieve SafeGasPrice, ProposeGasPrice, FastGasPrice, suggestBaseFee, and gasUsedRatio in Gwei from the Etherscan Gas Tracker in real time."
 ---
 
 The Gas Oracle endpoint returns real-time gas price recommendations derived from recent block activity on the network. You can use these values to decide which gas price tier fits your transaction's urgency — `SafeGasPrice` for low-priority submissions, `ProposeGasPrice` for standard inclusion, or `FastGasPrice` when speed matters most. All prices are returned in Gwei.

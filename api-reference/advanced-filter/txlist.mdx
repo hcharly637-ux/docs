@@ -1,7 +1,7 @@
 ---
-title: "Normal Transactions Advanced Filter"
+title: "Normal Transactions Advanced Filter — Etherscan API"
 sidebarTitle: "Transactions Filter"
-description: "GET /v2/api?module=accountsFilter&action=txlist — Retrieve normal transactions with advanced from and to address filtering for precise multi-address queries."
+description: "GET /v2/api?module=account&action=txlist — Retrieve normal transactions with advanced from and to address filtering for precise multi-address queries."
 ---
 
 The Advanced Filter endpoints extend the standard transaction lookup by allowing you to filter results by both sender (`from`) and receiver (`to`) addresses simultaneously. By combining these two address fields with the `fromto_opr` operator, you can craft precise multi-address queries — for example, finding all transactions that flowed between two specific wallets, or all transactions that either sent from or received by a given address. You can explore and preview this data interactively on the [Etherscan Advanced Filter](https://etherscan.io/advanced-filter) page.
@@ -16,8 +16,8 @@ The Advanced Filter endpoints extend the standard transaction lookup by allowing
   Chain ID to query, such as `1` for Ethereum or `8453` for Base. See [supported chains](/supported-chains) for the full list.
 </ParamField>
 
-<ParamField query="module" type="string" default="accountsFilter" required>
-  Set to `accountsFilter` for this endpoint.
+<ParamField query="module" type="string" default="account" required>
+  Set to `account` for this endpoint.
 </ParamField>
 
 <ParamField query="action" type="string" default="txlist" required>
@@ -163,7 +163,7 @@ The Advanced Filter endpoints extend the standard transaction lookup by allowing
 ```bash
 curl "https://api.etherscan.io/v2/api
   ?chainid=1
-  &module=accountsFilter
+  &module=account
   &action=txlist
   &to=0x71c7656ec7ab88b098defb751b7401b5f6d8976f
   &fromto_opr=or

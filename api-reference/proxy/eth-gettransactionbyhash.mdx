@@ -1,7 +1,7 @@
 ---
-title: "eth_getTransactionByHash: Get Transaction Details"
+title: "eth_getTransactionByHash: Fetch Full Transaction Data"
 sidebarTitle: "eth_getTransactionByHash"
-description: "GET /v2/api?module=proxy&action=eth_getTransactionByHash — Returns full transaction details by hash, including block number, from/to addresses, value, and gas fields."
+description: "Look up transactions by hash, block position, or sender nonce. Returns full transaction fields including from, to, value, gas, and EIP-1559 fee data."
 ---
 
 These three proxy endpoints let you look up transaction data from different access paths: by transaction hash, by block position, or by address nonce. Together, they cover the most common patterns for inspecting transaction details — whether you're building an explorer, a wallet dashboard, or an on-chain analytics tool.
@@ -132,10 +132,12 @@ curl "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_getTrans
     "transactionIndex": "0x5b",
     "value": "0x19755d4ce12c00",
     "type": "0x2",
+    "accessList": [],
     "chainId": "0x1",
     "v": "0x0",
     "r": "0xa681faea68ff81d191169010888bbbe90ec3eb903e31b0572cd34f13dae281b9",
-    "s": "0x3f59b0fa5ce6cf38aff2cfeb68e7a503ceda2a72b4442c7e2844d63544383e3"
+    "s": "0x3f59b0fa5ce6cf38aff2cfeb68e7a503ceda2a72b4442c7e2844d63544383e3",
+    "yParity": "0x0"
   }
 }
 ```

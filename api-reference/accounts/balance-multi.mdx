@@ -1,7 +1,7 @@
 ---
-title: "Get Native Balance for Multiple Addresses"
+title: "Get Native Token Balance for Up to 20 Wallet Addresses"
 sidebarTitle: "Balance (Multi)"
-description: "GET /v2/api?module=account&action=balancemulti — Retrieves the native token balance for up to 20 addresses in a single API call across any supported chain."
+description: "GET /v2/api?module=account&action=balancemulti — Returns native token balances for up to 20 addresses in one API call on any Etherscan-supported chain."
 ---
 
 The `balancemulti` action retrieves the current native token balance for up to 20 addresses in a single API call, making it significantly more efficient than issuing individual balance requests. Balances are returned in the chain's smallest denomination (e.g. wei for ETH). Addresses are passed as a comma-separated list in the `address` parameter.

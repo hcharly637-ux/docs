@@ -1,7 +1,7 @@
 ---
-title: "ERC-20 Token Transfers Advanced Filter"
+title: "ERC-20 Token Transfers Advanced Filter — Etherscan"
 sidebarTitle: "ERC-20 Filter"
-description: "GET /v2/api?module=accountsFilter&action=tokentx — Retrieve ERC-20 token transfers with advanced from and to address filtering for precise token flow analysis."
+description: "GET /v2/api?module=account&action=tokentx — Retrieve ERC-20 token transfers with advanced from and to address filtering for precise token flow analysis."
 ---
 
 ERC-20 tokens represent fungible assets on Ethereum and EVM-compatible chains. The Advanced Filter for ERC-20 transfers lets you query token movements by both the sending address (`from`) and the receiving address (`to`) at the same time, optionally scoped to a specific token contract. This is ideal for tracking token flows between wallets, auditing DeFi interactions, or monitoring treasury movements with pinpoint accuracy. You can explore and preview this data interactively on the [Etherscan Advanced Filter](https://etherscan.io/advanced-filter) page.
@@ -16,8 +16,8 @@ ERC-20 tokens represent fungible assets on Ethereum and EVM-compatible chains. T
   Chain ID to query, such as `1` for Ethereum or `8453` for Base. See [supported chains](/supported-chains) for the full list.
 </ParamField>
 
-<ParamField query="module" type="string" default="accountsFilter" required>
-  Set to `accountsFilter` for this endpoint.
+<ParamField query="module" type="string" default="account" required>
+  Set to `account` for this endpoint.
 </ParamField>
 
 <ParamField query="action" type="string" default="tokentx" required>
@@ -171,7 +171,7 @@ ERC-20 tokens represent fungible assets on Ethereum and EVM-compatible chains. T
 ```bash
 curl "https://api.etherscan.io/v2/api
   ?chainid=1
-  &module=accountsFilter
+  &module=account
   &action=tokentx
   &contractaddress=0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2
   &to=0x71c7656ec7ab88b098defb751b7401b5f6d8976f

@@ -1,7 +1,7 @@
 ---
 title: "eth_sendRawTransaction: Broadcast a Signed Transaction"
 sidebarTitle: "eth_sendRawTransaction"
-description: "POST /v2/api?module=proxy&action=eth_sendRawTransaction — Broadcasts a signed raw transaction to the network via the Etherscan JSON-RPC proxy and returns the transaction hash."
+description: "Broadcast a pre-signed raw transaction to Ethereum via Etherscan. Returns the tx hash on success. Submitted transactions cannot be reversed."
 ---
 
 The `eth_sendRawTransaction` method allows you to broadcast a pre-signed raw transaction to the Ethereum network via the Etherscan JSON-RPC proxy. You must sign the transaction offline using your private key before calling this endpoint. If the broadcast succeeds, the response returns the transaction hash you can use to track confirmation status. If it fails, the response includes a JSON-RPC error with a descriptive message.

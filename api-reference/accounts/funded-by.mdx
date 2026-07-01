@@ -1,13 +1,17 @@
 ---
-title: "Get Address Funded By (Fund Origin Tracing)"
+title: "Get Address Funded By: Trace First Funding Transaction"
 sidebarTitle: "Funded By"
-description: "GET /v2/api?module=account&action=fundedby — Retrieves the address and transaction that first funded a specific EOA, useful for tracing fund origins and KYC workflows."
+description: "GET /v2/api?module=account&action=fundedby — Returns the first funding address and transaction for an EOA. PRO endpoint for fund origin tracing and KYC."
 ---
 
 The `fundedby` action returns the address and transaction that first sent funds to a given externally owned account (EOA). This is particularly useful for tracing the origin of funds in compliance, KYC, and anti-money laundering workflows. Note that this endpoint only works for EOA addresses — it is **not available for contract addresses**.
 
+<Note>
+  This is a **PRO endpoint**, available to the [Standard Plan](/resources/rate-limits) and above.
+</Note>
+
 <Warning>
-  This is a **PRO endpoint**, available to the [Standard Plan](/resources/rate-limits) and above. This endpoint is also throttled to **2 calls/second** regardless of API Pro tier.
+  This endpoint is throttled to **2 calls/second** regardless of API Pro tier.
 </Warning>
 
 ## Request

@@ -1,13 +1,17 @@
 ---
-title: "Get Historical Native Balance at a Block Height"
+title: "Get Historical Native Token Balance at a Block Number"
 sidebarTitle: "Historical Balance"
-description: "GET /v2/api?module=account&action=balancehistory — Retrieves the native token balance for an address at a specific block number. PRO endpoint, Standard plan and above."
+description: "GET /v2/api?module=account&action=balancehistory — Returns a native token balance at any historical block number. PRO: Standard plan and above required."
 ---
 
 The `balancehistory` action retrieves the native token balance held by a specified address at an exact historical block number. This is useful for auditing, portfolio reconstruction, or any workflow requiring point-in-time balance snapshots. The result is returned in the chain's smallest denomination (e.g. wei for ETH).
 
+<Note>
+  This is a **PRO endpoint**, available to the [Standard Plan](/resources/rate-limits) and above.
+</Note>
+
 <Warning>
-  This is a **PRO endpoint**, available to the [Standard Plan](/resources/rate-limits) and above. This endpoint is also throttled to **2 calls/second** regardless of API Pro tier.
+  This endpoint is throttled to **2 calls/second** regardless of API Pro tier.
 </Warning>
 
 ## Request

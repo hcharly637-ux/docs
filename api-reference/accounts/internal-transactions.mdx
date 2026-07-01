@@ -1,7 +1,7 @@
 ---
 title: "Get Internal Transactions by Address, Hash, or Block Range"
 sidebarTitle: "Internal Transactions"
-description: "GET /v2/api?module=account&action=txlistinternal — Retrieve internal (contract-to-contract) transactions for an address, by transaction hash, or within a block range."
+description: "GET /v2/api?module=account&action=txlistinternal — Retrieve internal transactions by address, by transaction hash, or within a specified block range."
 ---
 
 Internal transactions are value transfers and contract calls that occur within the EVM during the execution of a transaction — they are not directly recorded on the blockchain but are derived from transaction traces. The `txlistinternal` action supports three distinct query modes depending on which parameter you provide: by address, by transaction hash, or by block range. Choose the mode that fits your use case.

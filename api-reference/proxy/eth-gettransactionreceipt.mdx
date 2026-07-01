@@ -1,7 +1,7 @@
 ---
 title: "eth_getTransactionReceipt: Get Transaction Receipt"
 sidebarTitle: "eth_getTransactionReceipt"
-description: "GET /v2/api?module=proxy&action=eth_getTransactionReceipt — Returns the transaction receipt for a mined transaction, including status, gas used, and event logs."
+description: "Returns a mined transaction's receipt — execution status, gas used, contract address if deployed, and all emitted event logs — via the Etherscan proxy."
 ---
 
 The `eth_getTransactionReceipt` proxy method returns the receipt generated for a transaction after it has been included in a block. Unlike `eth_getTransactionByHash`, which returns the transaction as submitted, the receipt contains post-execution data — including whether the transaction succeeded or reverted, the exact amount of gas consumed, the contract address if a new contract was deployed, and all event logs emitted during execution.

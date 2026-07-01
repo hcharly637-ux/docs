@@ -1,7 +1,7 @@
 ---
-title: "eth_getBlockByNumber: Get Block Information"
+title: "eth_getBlockByNumber: Get Full Block Data and Tx Count"
 sidebarTitle: "eth_getBlockByNumber"
-description: "GET /v2/api?module=proxy&action=eth_getBlockByNumber — Returns block details including transactions list for a given block number via Etherscan's JSON-RPC proxy."
+description: "Returns full block details and transaction list for a given block number, plus a lightweight transaction count method, via the Etherscan JSON-RPC proxy."
 ---
 
 These two proxy endpoints give you access to block-level data by number. Use `eth_getBlockByNumber` to retrieve the full block object — including header fields, miner address, gas metrics, and the list of transactions. Use `eth_getBlockTransactionCountByNumber` when you only need a fast count of how many transactions were included in a specific block.

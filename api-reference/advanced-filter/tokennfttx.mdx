@@ -1,7 +1,7 @@
 ---
-title: "ERC-721 NFT Transfers Advanced Filter"
+title: "ERC-721 NFT Transfers Advanced Filter — Etherscan"
 sidebarTitle: "ERC-721 Filter"
-description: "GET /v2/api?module=accountsFilter&action=tokennfttx — Retrieve ERC-721 NFT token transfers with advanced from and to address filtering for precise NFT flow analysis."
+description: "GET /v2/api?module=account&action=tokennfttx — Retrieve ERC-721 NFT transfers filtered by sender and receiver address for precise NFT flow analysis."
 ---
 
 ERC-721 tokens are non-fungible tokens (NFTs) — each token is unique and identified by a distinct token ID. The Advanced Filter for ERC-721 transfers enables you to query NFT movements by both sender (`from`) and receiver (`to`) addresses simultaneously, with optional scoping to a specific NFT contract. Whether you are tracking provenance of a specific collection, auditing wallet activity, or building NFT analytics, this endpoint gives you precise control over which transfers you retrieve. You can explore and preview this data interactively on the [Etherscan Advanced Filter](https://etherscan.io/advanced-filter) page.
@@ -16,8 +16,8 @@ ERC-721 tokens are non-fungible tokens (NFTs) — each token is unique and ident
   Chain ID to query, such as `1` for Ethereum or `8453` for Base. See [supported chains](/supported-chains) for the full list.
 </ParamField>
 
-<ParamField query="module" type="string" default="accountsFilter" required>
-  Set to `accountsFilter` for this endpoint.
+<ParamField query="module" type="string" default="account" required>
+  Set to `account` for this endpoint.
 </ParamField>
 
 <ParamField query="action" type="string" default="tokennfttx" required>
@@ -171,7 +171,7 @@ ERC-721 tokens are non-fungible tokens (NFTs) — each token is unique and ident
 ```bash
 curl "https://api.etherscan.io/v2/api
   ?chainid=1
-  &module=accountsFilter
+  &module=account
   &action=tokennfttx
   &contractaddress=0x06012c8cf97bead5deae237070f9587f8e7a266d
   &to=0x71c7656ec7ab88b098defb751b7401b5f6d8976f
